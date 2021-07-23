@@ -1,0 +1,3 @@
+[submodule "snarks/depends/zeth"]
+	path = snarks/depends/zeth
+	url = https://github.com/clearmatics/zeth
