@@ -1,83 +1,41 @@
 #include <stdlib.h>
 #include <iostream>
+#include <vector>
+#include "prfxxx.hpp"
 
 #include "libff/algebra/fields/field_utils.hpp"
 #include "libsnark/zk_proof_systems/ppzksnark/r1cs_ppzksnark/r1cs_ppzksnark.hpp"
 #include "libsnark/common/default_types/r1cs_ppzksnark_pp.hpp"
 #include "libsnark/gadgetlib1/pb_variable.hpp"
 
-using namespace libsnark;
-using namespace std;
-
-// #include "util.hpp"
+using pp = libsnark::default_r1cs_ppzksnark_pp;
 
 int main()
 {
-    // Initialize the curve parameters
-    default_r1cs_ppzksnark_pp::init_public_params();
+    pp::init_public_params();
 
-    // Create protoboard
-    typedef libff::Fr<default_r1cs_ppzksnark_pp> FieldT;
-    protoboard<FieldT> pb;
+    const char* ask = "0F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
+    const char* rho = "0F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
+    std::string apk_expected = "2390c9e5370be7355f220b29caf3912ef970d828b73976ae9bfeb1402ce4c1f9";
+    std::string nf_expected  = "ea43866d185e1bdb84713b699a2966d929d1392488c010c603e46a4cb92986f8";
 
-    // Declare variables
-    pb_variable<FieldT> x;
-    pb_variable<FieldT> sym_1;
-    pb_variable<FieldT> y;
-    pb_variable<FieldT> sym_2;
-    pb_variable<FieldT> out;
+    std::string apk = PRFapk(ask);
+    std::string nf  = PRFnf(ask,rho);
 
-    // Allocate variables to protoboard
-    // The strings (like "x") are only for debugging purposes
-    out.allocate(pb, "out");
-    x.allocate(pb, "x");
-    sym_1.allocate(pb, "sym_1");
-    y.allocate(pb, "y");
-    sym_2.allocate(pb, "sym_2");
+    std::cout << "a_sk:     " << ask << std::endl;
+    std::cout << "a_pk:     " << apk << std::endl;
 
-    // This sets up the protoboard variables
-    // so that the first one (out) represents the public
-    // input and the rest is private input
-    pb.set_input_sizes(1);
+    std::transform(apk.begin(), apk.end(), apk.begin(), ::toupper);
+    std::transform(apk_expected.begin(), apk_expected.end(), apk_expected.begin(), ::toupper);
+    std::cout << "Verifies: " << (apk.compare(apk_expected) == 0) << std::endl << std::endl;
 
-    // Add R1CS constraints to protoboard
-    // x*x = sym_1
-    pb.add_r1cs_constraint(r1cs_constraint<FieldT>(x, x, sym_1));
-    // sym_1 * x = y
-    pb.add_r1cs_constraint(r1cs_constraint<FieldT>(sym_1, x, y));
-    // (y + x) * 1 = sym_2
-    pb.add_r1cs_constraint(r1cs_constraint<FieldT>(y + x, 1, sym_2));
-    // (sym_2 + 5) * 1 = ~out
-    pb.add_r1cs_constraint(r1cs_constraint<FieldT>(sym_2 + 5, 1, out));
-  
-    //Generate proving and verificaiton keys
-    const r1cs_constraint_system<FieldT> constraint_system = pb.get_constraint_system();
-    const r1cs_ppzksnark_keypair<default_r1cs_ppzksnark_pp> keypair = r1cs_ppzksnark_generator<default_r1cs_ppzksnark_pp>(constraint_system);
+    std::cout << "a_sk:     " << ask << std::endl;
+    std::cout << "rho:      " << rho << std::endl;
+    std::cout << "nf:       " << nf << std::endl;
 
-    //========================================================================================================
-    // Specify witness values
-    pb.val(x) = 3;
-    pb.val(out) = 35;
-    pb.val(sym_1) = 9;
-    pb.val(y) = 27;
-    pb.val(sym_2) = 30;
-
-    //Generate proof
-    const r1cs_ppzksnark_proof<default_r1cs_ppzksnark_pp> proof = r1cs_ppzksnark_prover<default_r1cs_ppzksnark_pp>(keypair.pk, pb.primary_input(), pb.auxiliary_input());
-
-    //verify proof
-    bool verified = r1cs_ppzksnark_verifier_strong_IC<default_r1cs_ppzksnark_pp>(keypair.vk, pb.primary_input(), proof);
-
-    cout << "Number of R1CS constraints: " << constraint_system.num_constraints() << endl;
-    cout << "Primary (public) input: " << pb.primary_input() << endl;
-    cout << "Auxiliary (private) input: " << pb.auxiliary_input() << endl;
-    cout << "Verification status: " << verified << endl;
-    //========================================================================================================
-
-    //stream out verification key and proof
-    const r1cs_ppzksnark_verification_key<default_r1cs_ppzksnark_pp> vk = keypair.vk;
-    // print_vk_to_file<default_r1cs_ppzksnark_pp>(vk, "../build/vk_data");
-    // print_proof_to_file<default_r1cs_ppzksnark_pp>(proof, "../build/proof_data");
+    std::transform(nf.begin(), nf.end(), nf.begin(), ::toupper);
+    std::transform(nf_expected.begin(), nf_expected.end(), nf_expected.begin(), ::toupper);
+    std::cout << "Verifies: " << (nf.compare(nf_expected) == 0) << std::endl << std::endl;
 
     return 0;
 }

@@ -1,6 +1,8 @@
 [Bb][Uu][Ii][Ll][Dd]
+node_modules
 
-
+# ===========================
+# C++
 # Prerequisites
 *.d
 
@@ -35,7 +37,8 @@
 *.app
 
 
-
+# ===========================
+# CMake
 CMakeLists.txt.user
 CMakeCache.txt
 CMakeFiles
@@ -48,5 +51,14 @@ compile_commands.json
 CTestTestfile.cmake
 _deps
 
+# ===========================
+# VS Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
 
-node_modules
+# Local History for Visual Studio Code
+.history/
