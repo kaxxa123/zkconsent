@@ -1,18 +1,11 @@
 #include <stdlib.h>
 #include <iostream>
-#include <vector>
-#include "snarkhlp/prfxxx.hpp"
-
-#include "libff/algebra/fields/field_utils.hpp"
-#include "libsnark/zk_proof_systems/ppzksnark/r1cs_ppzksnark/r1cs_ppzksnark.hpp"
-#include "libsnark/common/default_types/r1cs_ppzksnark_pp.hpp"
-#include "libsnark/gadgetlib1/pb_variable.hpp"
-
-using pp = libsnark::default_r1cs_ppzksnark_pp;
+#include <algorithm>
+#include "../snarkhlp/prfxxx.hpp"
 
 int main()
 {
-    pp::init_public_params();
+    InitSnarks();
 
     const char* ask = "0F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
     const char* rho = "0F000000000000FF00000000000000FF00000000000000FF00000000000000FF";

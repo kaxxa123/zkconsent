@@ -40,6 +40,11 @@ static std::string digest2hex(const std::vector<bool>& digest)
     return strOut;
 }
 
+void   InitSnarks()
+{
+    pp::init_public_params();
+}
+
 //Test Values
 //ask = "0F000000000000FF00000000000000FF00000000000000FF00000000000000FF"
 //apk = "2390c9e5370be7355f220b29caf3912ef970d828b73976ae9bfeb1402ce4c1f9"
