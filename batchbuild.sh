@@ -12,8 +12,9 @@ echo
 echo ">> Building SNARKs"
 cmake -S ./snarks -B ./snarks/build
 make -C  ./snarks/build
+sudo make install -C  ./snarks/build
 
-cp ./snarks/build/snarkhlp/libsnarkhlp.a    ./build/bin
+cp ./snarks/build/snarkhlp/libsnarkhlp.so   ./build/bin
 cp ./snarks/build/test/MYSNARK              ./build/bin
 cp ./snarks/snarkhlp/prfxxx.hpp             ./build/include
 

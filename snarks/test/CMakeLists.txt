@@ -10,8 +10,6 @@ target_include_directories(
   MYSNARK
 
   PUBLIC
-  
-  snarkhlp
   ${DEPENDS_DIR}/zeth/depends/libsnark
   ${DEPENDS_DIR}/zeth/depends/libsnark/depends/libfqfft
   ${DEPENDS_DIR}/zeth/depends/libsnark/depends/libff

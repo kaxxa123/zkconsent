@@ -5,7 +5,7 @@
 #include <algorithm>
 
 #include <node_api.h>
-#include "prfxxx.hpp"
+#include <prfxxx.hpp>
 
 
 namespace demo {

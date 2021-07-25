@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include <algorithm>
-#include "../snarkhlp/prfxxx.hpp"
+#include <prfxxx.hpp>
 
 int main()
 {
