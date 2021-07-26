@@ -13,7 +13,9 @@ Napi::Object ZkConsentNode::Init(Napi::Env env, Napi::Object exports)
         DefineClass(env,
                     "ZkConsentNode",
                     {InstanceMethod("prfapk",       &ZkConsentNode::StubPRFapk),
-                     InstanceMethod("prfconsentnf", &ZkConsentNode::StubPRFConsentnf)});
+                     InstanceMethod("prfconsentnf", &ZkConsentNode::StubPRFConsentnf),
+                     InstanceMethod("prfuidnf",     &ZkConsentNode::StubPRFIDnf),
+                     InstanceMethod("prfstudynf",   &ZkConsentNode::StubPRFStudynf)});
 
     Napi::FunctionReference* constructor = new Napi::FunctionReference();
     *constructor = Napi::Persistent(func);
@@ -76,5 +78,45 @@ Napi::Value ZkConsentNode::StubPRFConsentnf(const Napi::CallbackInfo& info)
     return Napi::String::New(env, nf.c_str());
 }
 
+Napi::Value ZkConsentNode::StubPRFIDnf(const Napi::CallbackInfo& info)
+{
+    Napi::Env env = info.Env();
 
+    if (info.Length() != 2) {
+        Napi::TypeError::New(env, "Wrong number of arguments")
+            .ThrowAsJavaScriptException();
+        return env.Null();
+    }
+
+    if (!info[0].IsString() || !info[1].IsString()) {
+        Napi::TypeError::New(env, "Wrong argument types").ThrowAsJavaScriptException();
+        return env.Null();
+    }
+
+    std::string ask = info[0].As<Napi::String>();
+    std::string rho = info[1].As<Napi::String>();
+    std::string nf = PRFIDnf(ask.c_str(), rho.c_str());
+    return Napi::String::New(env, nf.c_str());
+}
+
+Napi::Value ZkConsentNode::StubPRFStudynf(const Napi::CallbackInfo& info)
+{
+    Napi::Env env = info.Env();
+
+    if (info.Length() != 2) {
+        Napi::TypeError::New(env, "Wrong number of arguments")
+            .ThrowAsJavaScriptException();
+        return env.Null();
+    }
+
+    if (!info[0].IsString() || !info[1].IsString()) {
+        Napi::TypeError::New(env, "Wrong argument types").ThrowAsJavaScriptException();
+        return env.Null();
+    }
+
+    std::string ask = info[0].As<Napi::String>();
+    std::string sid = info[1].As<Napi::String>();
+    std::string nf = PRFStudynf(ask.c_str(), sid.c_str());
+    return Napi::String::New(env, nf.c_str());
+}
 
