@@ -10,7 +10,7 @@ class ZkConsentNode : public Napi::ObjectWrap<ZkConsentNode> {
 
  private:
   Napi::Value StubPRFapk(const Napi::CallbackInfo& info);
-  Napi::Value StubPRFnf(const Napi::CallbackInfo& info);
+  Napi::Value StubPRFConsentnf(const Napi::CallbackInfo& info);
 };
 
 #endif //SNARK_NODE_OBJ_H

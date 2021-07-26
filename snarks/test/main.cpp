@@ -13,7 +13,7 @@ int main()
     std::string nf_expected  = "ea43866d185e1bdb84713b699a2966d929d1392488c010c603e46a4cb92986f8";
 
     std::string apk = PRFapk(ask);
-    std::string nf  = PRFnf(ask,rho);
+    std::string nf  = PRFConsentnf(ask,rho);
 
     std::cout << "a_sk:     " << ask << std::endl;
     std::cout << "a_pk:     " << apk << std::endl;

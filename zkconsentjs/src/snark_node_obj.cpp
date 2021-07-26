@@ -12,8 +12,8 @@ Napi::Object ZkConsentNode::Init(Napi::Env env, Napi::Object exports)
     Napi::Function func =
         DefineClass(env,
                     "ZkConsentNode",
-                    {InstanceMethod("prfapk", &ZkConsentNode::StubPRFapk),
-                     InstanceMethod("prfnf",  &ZkConsentNode::StubPRFnf)});
+                    {InstanceMethod("prfapk",       &ZkConsentNode::StubPRFapk),
+                     InstanceMethod("prfconsentnf", &ZkConsentNode::StubPRFConsentnf)});
 
     Napi::FunctionReference* constructor = new Napi::FunctionReference();
     *constructor = Napi::Persistent(func);
@@ -55,7 +55,7 @@ Napi::Value ZkConsentNode::StubPRFapk(const Napi::CallbackInfo& info)
     return Napi::String::New(env, apk.c_str());
 }
 
-Napi::Value ZkConsentNode::StubPRFnf(const Napi::CallbackInfo& info) 
+Napi::Value ZkConsentNode::StubPRFConsentnf(const Napi::CallbackInfo& info) 
 {
     Napi::Env env = info.Env();
 
@@ -72,7 +72,7 @@ Napi::Value ZkConsentNode::StubPRFnf(const Napi::CallbackInfo& info)
 
     std::string ask = info[0].As<Napi::String>();
     std::string rho = info[1].As<Napi::String>();
-    std::string nf = PRFnf(ask.c_str(), rho.c_str());
+    std::string nf = PRFConsentnf(ask.c_str(), rho.c_str());
     return Napi::String::New(env, nf.c_str());
 }
 

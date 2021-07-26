@@ -16,7 +16,7 @@ console.log(`apk   = ${apk}`);
 console.log();
 assert((apk == apk_expected), "Unexpected apk");
 
-nf  = zkconsent.prfnf(ask, rho)
+nf  = zkconsent.prfconsentnf(ask, rho)
 nf.toUpperCase()
 nf_expected  = "ea43866d185e1bdb84713b699a2966d929d1392488c010c603e46a4cb92986f8".toUpperCase()
 console.log(`ask   = ${ask}`);
