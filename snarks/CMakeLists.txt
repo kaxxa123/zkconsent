@@ -82,5 +82,5 @@ endif()
 include_directories(.)
 
 add_subdirectory(depends)
-add_subdirectory(snarkhlp)
+add_subdirectory(zkconsenthlp)
 add_subdirectory(test)

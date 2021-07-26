@@ -10,9 +10,9 @@ echo ">> Deleting SNARK build"
 rm ./snarks/build -rf
 
 echo
-echo ">> Deleting nodegw build"
-node-gyp clean -C ./nodegw
-rm ./nodegw/node_modules -rf
+echo ">> Deleting zkconsentjs build"
+node-gyp clean -C ./zkconsentjs
+rm ./zkconsentjs/node_modules -rf
 
 echo
 echo ">> Deleting main build dir"

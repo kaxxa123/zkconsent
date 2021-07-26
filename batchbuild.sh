@@ -13,9 +13,9 @@ make -C  ./snarks/build
 sudo make install -C  ./snarks/build
 
 echo
-echo ">> Building nodegw"
-npm i --prefix ./nodegw
-# node-gyp rebuild -C ./nodegw
+echo ">> Building zkconsentjs"
+npm i --prefix ./zkconsentjs
+# node-gyp rebuild -C ./zkconsentjs
 
 echo
 echo "Ready!"

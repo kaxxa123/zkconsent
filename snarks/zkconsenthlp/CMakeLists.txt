@@ -1,7 +1,7 @@
 include_directories(.)
 
 add_library(
-  snarkhlp
+  zkconsenthlp
   SHARED
   prfxxx.cpp
   ${DEPENDS_DIR}/zeth/libzeth/core/bits.cpp
@@ -9,7 +9,7 @@ add_library(
 )
 
 target_include_directories(
-  snarkhlp
+  zkconsenthlp
 
   PUBLIC
 
@@ -21,10 +21,10 @@ target_include_directories(
 )
 
 target_link_libraries(
-  snarkhlp
+  zkconsenthlp
 
   snark
 )
 
-install(TARGETS snarkhlp   DESTINATION lib)
-install(FILES   prfxxx.hpp DESTINATION include)
+install(TARGETS zkconsenthlp DESTINATION lib)
+install(FILES   prfxxx.hpp   DESTINATION include)
