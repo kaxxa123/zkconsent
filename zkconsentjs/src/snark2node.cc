@@ -1,6 +1,7 @@
 // snark2node.cc using N-API
 
 #include <napi.h>
+#include <zkc_mktree.hpp>
 #include "snark_node_obj.h"
 
 Napi::Object InitAll(Napi::Env env, Napi::Object exports) {

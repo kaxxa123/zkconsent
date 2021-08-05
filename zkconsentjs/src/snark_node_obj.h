@@ -13,6 +13,12 @@ private:
     Napi::Value StubPRFConsentnf(const Napi::CallbackInfo& info);
     Napi::Value StubPRFIDnf(const Napi::CallbackInfo& info);
     Napi::Value StubPRFStudynf(const Napi::CallbackInfo& info);
+
+    Napi::Value StubMKTree_root(const Napi::CallbackInfo& info);
+    Napi::Value StubMKTree_get(const Napi::CallbackInfo& info);
+    void        StubMKTree_set(const Napi::CallbackInfo& info);
+
+    std::shared_ptr<zkc_mktree>  m_tree;
 };
 
 #endif //SNARK_NODE_OBJ_H

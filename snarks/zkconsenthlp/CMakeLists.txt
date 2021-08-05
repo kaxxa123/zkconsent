@@ -4,6 +4,7 @@ add_library(
   zkconsenthlp
   SHARED
   zkc_prf.cpp
+  zkc_mktree.cpp
   ${DEPENDS_DIR}/zeth/libzeth/core/bits.cpp
   ${DEPENDS_DIR}/zeth/libzeth/core/utils.cpp
 )
@@ -26,5 +27,6 @@ target_link_libraries(
   snark
 )
 
-install(TARGETS zkconsenthlp DESTINATION lib)
-install(FILES   zkc_prf.hpp  DESTINATION include)
+install(TARGETS zkconsenthlp    DESTINATION lib)
+install(FILES   zkc_prf.hpp     DESTINATION include)
+install(FILES   zkc_mktree.hpp  DESTINATION include)

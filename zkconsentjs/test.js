@@ -41,3 +41,13 @@ console.log(`ask     = ${ask}`);
 console.log(`rho     = ${rho}`);
 console.log(`nfstudy = ${nfstudy}`);
 console.log();
+
+console.log('==== merkle tree ====');
+mkroot0 = zkconsent.mktree_root();
+zkconsent.mktree_set(1, "104233707326581956155878965211552591892620143524616864409706009242461667751082");
+mkroot = zkconsent.mktree_root();
+mkleaf = zkconsent.mktree_get(1);
+console.log(`root0   = ${mkroot0}`);
+console.log(`root    = ${mkroot}`);
+console.log(`leaf    = ${mkleaf}`);
+console.log();

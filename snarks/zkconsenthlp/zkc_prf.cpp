@@ -1,22 +1,15 @@
 #include <stdlib.h>
 #include <iostream>
 
+#include "libzeth/circuits/circuit_types.hpp"
 #include "libzeth/circuits/blake2s/blake2s.hpp"
 #include "libzeth/circuits/circuit_utils.hpp"
 #include "libzeth/circuits/prfs/prf.hpp"
 #include "libzeth/core/utils.hpp"
 #include "libzeth/zeth_constants.hpp"
 
-#include "libff/algebra/fields/field_utils.hpp"
-#include "libsnark/zk_proof_systems/ppzksnark/r1cs_ppzksnark/r1cs_ppzksnark.hpp"
-#include "libsnark/common/default_types/r1cs_ppzksnark_pp.hpp"
-#include "libsnark/gadgetlib1/pb_variable.hpp"
-
 #include "prf_extra_gadgets.hpp"
-
-using pp = libsnark::default_r1cs_ppzksnark_pp;
-using FieldT = libff::Fr<pp>;
-using HashT = libzeth::BLAKE2s_256<FieldT>;
+#include "zkc_params.hpp"
 
 void   InitSnarks()
 {
