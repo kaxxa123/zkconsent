@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include <algorithm>
-#include <prfxxx.hpp>
+#include <zkc_prf.hpp>
 
 int main()
 {
