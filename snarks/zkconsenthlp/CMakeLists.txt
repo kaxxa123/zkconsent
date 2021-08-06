@@ -3,8 +3,10 @@ include_directories(.)
 add_library(
   zkconsenthlp
   SHARED
+  zkc_helpers.cpp  
   zkc_prf.cpp
   zkc_mktree.cpp
+  zkc_cm.cpp
   ${DEPENDS_DIR}/zeth/libzeth/core/bits.cpp
   ${DEPENDS_DIR}/zeth/libzeth/core/utils.cpp
 )
@@ -28,5 +30,6 @@ target_link_libraries(
 )
 
 install(TARGETS zkconsenthlp    DESTINATION lib)
+install(FILES   zkc_cm.hpp     DESTINATION include)
 install(FILES   zkc_prf.hpp     DESTINATION include)
 install(FILES   zkc_mktree.hpp  DESTINATION include)

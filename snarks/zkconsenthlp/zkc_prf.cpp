@@ -8,6 +8,7 @@
 #include "libzeth/core/utils.hpp"
 #include "libzeth/zeth_constants.hpp"
 
+#include "zkc_helpers.hpp"
 #include "prf_extra_gadgets.hpp"
 #include "zkc_params.hpp"
 
