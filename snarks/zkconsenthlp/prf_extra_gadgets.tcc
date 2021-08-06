@@ -126,7 +126,7 @@ PRF_nf_sid_gadget<FieldT, HashT>::PRF_nf_sid_gadget(
 // Helper function for generating nullifiers from  
 // gadgets that take 2*256UL inputs
 template<typename FieldT, typename HashT, typename GadgetT>
-std::string     PRF_1input_nfT(
+std::string     PRF_1input(
     const std::string& sOne)
 {
     libsnark::protoboard<FieldT> pb;
@@ -141,12 +141,12 @@ std::string     PRF_1input_nfT(
     ZERO.allocate(pb, "zero");
     one.allocate(pb, 256UL, "input_one");
 
-    GadgetT prf1_gadget(pb, ZERO, one, result);
-    prf1_gadget.generate_r1cs_constraints();
+    GadgetT prf_gadget(pb, ZERO, one, result);
+    prf_gadget.generate_r1cs_constraints();
 
     pb.val(ZERO) = FieldT::zero();
     one.fill_with_bits(pb, one_bits256.to_vector());
-    prf1_gadget.generate_r1cs_witness();
+    prf_gadget.generate_r1cs_witness();
 
     if (!pb.is_satisfied())
         return nullptr;
@@ -157,7 +157,7 @@ std::string     PRF_1input_nfT(
 // Helper function for generating nullifiers from  
 // gadgets that take 2*256UL inputs
 template<typename FieldT, typename HashT, typename GadgetT>
-std::string     PRF_2input_nfT(
+std::string     PRF_2input(
     const std::string& sOne, 
     const std::string& sTwo)
 {
@@ -176,13 +176,13 @@ std::string     PRF_2input_nfT(
     one.allocate(pb, 256UL, "input_one");
     two.allocate(pb, 256UL, "input_two");
 
-    GadgetT prf2_gadget(pb, ZERO, one, two, result);
-    prf2_gadget.generate_r1cs_constraints();
+    GadgetT prf_gadget(pb, ZERO, one, two, result);
+    prf_gadget.generate_r1cs_constraints();
 
     pb.val(ZERO) = FieldT::zero();
     one.fill_with_bits(pb, one_bits256.to_vector());
     two.fill_with_bits(pb, two_bits256.to_vector());
-    prf2_gadget.generate_r1cs_witness();
+    prf_gadget.generate_r1cs_witness();
 
     if (!pb.is_satisfied())
         return nullptr;
@@ -190,6 +190,39 @@ std::string     PRF_2input_nfT(
     return digest2hex(result->get_digest());
 }
 
+template<typename FieldT, typename HashT, typename GadgetT>
+std::string     PRF_3input(
+    const std::string& sOne, 
+    const std::string& sTwo,
+    size_t index)
+{
+    libsnark::protoboard<FieldT> pb;
+    libsnark::pb_variable<FieldT> ZERO;
+    libsnark::pb_variable_array<FieldT> one;
+    libsnark::pb_variable_array<FieldT> two;
+
+    libzeth::bits256 one_bits256 = libzeth::bits256::from_hex(sOne);
+    libzeth::bits256 two_bits256 = libzeth::bits256::from_hex(sTwo);
+
+    std::shared_ptr<libsnark::digest_variable<FieldT>> result(
+        new libsnark::digest_variable<FieldT>(pb, HashT::get_digest_len(), "result"));
+
+    ZERO.allocate(pb, "zero");
+    one.allocate(pb, 256UL, "input_one");
+    two.allocate(pb, 256UL, "input_two");
+
+    GadgetT prf_gadget(pb, ZERO, one, two, index, result);
+    prf_gadget.generate_r1cs_constraints();
+
+    pb.val(ZERO) = FieldT::zero();
+    one.fill_with_bits(pb, one_bits256.to_vector());
+    two.fill_with_bits(pb, two_bits256.to_vector());
+    prf_gadget.generate_r1cs_witness();
+
+    if (!pb.is_satisfied())
+        return nullptr;
+
+    return digest2hex(result->get_digest());}
 }
 
 #endif // __ZKCONSENT_PRFS_TCC__

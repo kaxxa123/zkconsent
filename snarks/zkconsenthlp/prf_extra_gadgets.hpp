@@ -23,13 +23,19 @@ libsnark::pb_variable_array<FieldT> get_tag_nf_sid(
     const libsnark::pb_variable_array<FieldT> &a_sk);
 
 template<typename FieldT, typename HashT, typename GadgetT>
-std::string     PRF_1input_nfT(
+std::string     PRF_1input(
     const std::string& sOne);
 
 template<typename FieldT, typename HashT, typename GadgetT>
-std::string     PRF_2input_nfT(
+std::string     PRF_2input(
     const std::string& sOne, 
     const std::string& sTwo);
+
+template<typename FieldT, typename HashT, typename GadgetT>
+std::string     PRF_3input(
+    const std::string& sOne, 
+    const std::string& sTwo,
+    size_t index);
 
 /// PRF to generate the nullifier for user id token
 /// nf = blake2sCompress("1101" || [a_sk]_252 || rho): See ZCash protocol

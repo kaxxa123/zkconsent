@@ -17,6 +17,7 @@ Napi::Object ZkConsentNode::Init(Napi::Env env, Napi::Object exports)
                      InstanceMethod("prfconsentnf", &ZkConsentNode::StubPRFConsentnf),
                      InstanceMethod("prfuidnf",     &ZkConsentNode::StubPRFIDnf),
                      InstanceMethod("prfstudynf",   &ZkConsentNode::StubPRFStudynf),
+                     InstanceMethod("prfhtag",      &ZkConsentNode::StubPRFHtag),
 
                      InstanceMethod("mktree_root",   &ZkConsentNode::StubMKTree_root),
                      InstanceMethod("mktree_get",   &ZkConsentNode::StubMKTree_get),
@@ -127,6 +128,29 @@ Napi::Value ZkConsentNode::StubPRFStudynf(const Napi::CallbackInfo& info)
     return Napi::String::New(env, nf.c_str());
 }
 
+Napi::Value ZkConsentNode::StubPRFHtag(const Napi::CallbackInfo& info)
+{
+    Napi::Env env = info.Env();
+
+    if (info.Length() != 3) {
+        Napi::TypeError::New(env, "Wrong number of arguments")
+            .ThrowAsJavaScriptException();
+        return env.Null();
+    }
+
+    if (!info[0].IsString() || !info[1].IsString() || !info[2].IsNumber()) {
+        Napi::TypeError::New(env, "Wrong argument types").ThrowAsJavaScriptException();
+        return env.Null();
+    }
+
+    std::string  ask = info[0].As<Napi::String>();
+    std::string  sid = info[1].As<Napi::String>();
+    Napi::Number idx = info[2].As<Napi::Number>();
+
+    std::string htag = PRFHtag(ask, sid, idx.Uint32Value());
+    return Napi::String::New(env, htag.c_str());
+}
+
 Napi::Value ZkConsentNode::StubMKTree_root(const Napi::CallbackInfo& info)
 {
     Napi::Env env = info.Env();
@@ -171,12 +195,7 @@ void ZkConsentNode::StubMKTree_set(const Napi::CallbackInfo& info)
         return;
     }
 
-    if (!info[0].IsNumber()) {
-        Napi::TypeError::New(env, "Wrong argument types").ThrowAsJavaScriptException();
-        return;
-    }
-
-    if (!info[1].IsString()) {
+    if (!info[0].IsNumber() || !info[1].IsString()) {
         Napi::TypeError::New(env, "Wrong argument types").ThrowAsJavaScriptException();
         return;
     }

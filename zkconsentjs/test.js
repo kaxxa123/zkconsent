@@ -5,8 +5,10 @@ const zkconsentjs = require('bindings')('zkconsentjs');
 
 var zkconsent = new zkconsentjs.ZkConsentNode();
 
-ask = "0F000000000000FF00000000000000FF00000000000000FF00000000000000FF"
-rho = "0F000000000000FF00000000000000FF00000000000000FF00000000000000FF"
+ask  = "0F000000000000FF00000000000000FF00000000000000FF00000000000000FF"
+rho  = "0F000000000000FF00000000000000FF00000000000000FF00000000000000FF"
+hsig = "0F000000000000FF00000000000000FF00000000000000FF00000000000000FF"
+
 apk = zkconsent.prfapk(ask)
 apk = apk.toUpperCase()
 apk_expected = "2390c9e5370be7355f220b29caf3912ef970d828b73976ae9bfeb1402ce4c1f9".toUpperCase()
@@ -41,6 +43,18 @@ console.log(`ask     = ${ask}`);
 console.log(`rho     = ${rho}`);
 console.log(`nfstudy = ${nfstudy}`);
 console.log();
+
+console.log('==== htag ====');
+htag0 = zkconsent.prfhtag(ask, hsig, 0)
+htag1 = zkconsent.prfhtag(ask, hsig, 1)
+htag0.toUpperCase()
+htag1.toUpperCase()
+console.log(`ask     = ${ask}`);
+console.log(`rho     = ${hsig}`);
+console.log(`htag0   = ${htag0}`);
+console.log(`htag1   = ${htag1}`);
+console.log();
+
 
 console.log('==== merkle tree ====');
 mkroot0 = zkconsent.mktree_root();

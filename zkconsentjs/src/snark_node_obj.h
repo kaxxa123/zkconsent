@@ -13,6 +13,7 @@ private:
     Napi::Value StubPRFConsentnf(const Napi::CallbackInfo& info);
     Napi::Value StubPRFIDnf(const Napi::CallbackInfo& info);
     Napi::Value StubPRFStudynf(const Napi::CallbackInfo& info);
+    Napi::Value StubPRFHtag(const Napi::CallbackInfo& info);
 
     Napi::Value StubMKTree_root(const Napi::CallbackInfo& info);
     Napi::Value StubMKTree_get(const Napi::CallbackInfo& info);
