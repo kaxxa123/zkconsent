@@ -1,6 +1,9 @@
 #ifndef __ZKC_MKTREE_H_
 #define __ZKC_MKTREE_H_
 
+namespace libzkconsent
+{
+
 //Thin wrapper hiding libsnark/libzeth depedencies 
 class zkc_mktree
 {
@@ -16,5 +19,6 @@ public:
     std::shared_ptr<void>   m_mktree;
 };
 
+}
 
 #endif //__ZKC_MKTREE_H_

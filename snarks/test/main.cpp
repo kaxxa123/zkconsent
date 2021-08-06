@@ -6,6 +6,8 @@
 #include <zkc_mktree.hpp>
 #include <zkc_prf.hpp>
 
+using namespace libzkconsent;
+
 void TestPRFs()
 {
     const char* ask  = "0F000000000000FF00000000000000FF00000000000000FF00000000000000FF";

@@ -19,7 +19,7 @@ private:
     Napi::Value StubMKTree_get(const Napi::CallbackInfo& info);
     void        StubMKTree_set(const Napi::CallbackInfo& info);
 
-    std::shared_ptr<zkc_mktree>  m_tree;
+    std::shared_ptr<libzkconsent::zkc_mktree>  m_tree;
 };
 
 #endif //SNARK_NODE_OBJ_H

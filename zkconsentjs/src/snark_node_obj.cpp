@@ -40,9 +40,9 @@ ZkConsentNode::ZkConsentNode(const Napi::CallbackInfo& info)
         return;
     }
 
-    InitSnarks();
+    libzkconsent::InitSnarks();
 
-    m_tree = std::shared_ptr<zkc_mktree>(new zkc_mktree());
+    m_tree = std::shared_ptr<libzkconsent::zkc_mktree>(new libzkconsent::zkc_mktree());
 }
 
 Napi::Value ZkConsentNode::StubPRFapk(const Napi::CallbackInfo& info) 
@@ -61,7 +61,7 @@ Napi::Value ZkConsentNode::StubPRFapk(const Napi::CallbackInfo& info)
     }
 
     std::string ask = info[0].As<Napi::String>();
-    std::string apk = PRFapk(ask);
+    std::string apk = libzkconsent::PRFapk(ask);
     return Napi::String::New(env, apk.c_str());
 }
 
@@ -82,7 +82,7 @@ Napi::Value ZkConsentNode::StubPRFConsentnf(const Napi::CallbackInfo& info)
 
     std::string ask = info[0].As<Napi::String>();
     std::string rho = info[1].As<Napi::String>();
-    std::string nf = PRFConsentnf(ask, rho);
+    std::string nf = libzkconsent::PRFConsentnf(ask, rho);
     return Napi::String::New(env, nf.c_str());
 }
 
@@ -103,7 +103,7 @@ Napi::Value ZkConsentNode::StubPRFIDnf(const Napi::CallbackInfo& info)
 
     std::string ask = info[0].As<Napi::String>();
     std::string rho = info[1].As<Napi::String>();
-    std::string nf = PRFIDnf(ask, rho);
+    std::string nf = libzkconsent::PRFIDnf(ask, rho);
     return Napi::String::New(env, nf.c_str());
 }
 
@@ -124,7 +124,7 @@ Napi::Value ZkConsentNode::StubPRFStudynf(const Napi::CallbackInfo& info)
 
     std::string ask = info[0].As<Napi::String>();
     std::string sid = info[1].As<Napi::String>();
-    std::string nf = PRFStudynf(ask, sid);
+    std::string nf = libzkconsent::PRFStudynf(ask, sid);
     return Napi::String::New(env, nf.c_str());
 }
 
@@ -147,7 +147,7 @@ Napi::Value ZkConsentNode::StubPRFHtag(const Napi::CallbackInfo& info)
     std::string  sid = info[1].As<Napi::String>();
     Napi::Number idx = info[2].As<Napi::Number>();
 
-    std::string htag = PRFHtag(ask, sid, idx.Uint32Value());
+    std::string htag = libzkconsent::PRFHtag(ask, sid, idx.Uint32Value());
     return Napi::String::New(env, htag.c_str());
 }
 

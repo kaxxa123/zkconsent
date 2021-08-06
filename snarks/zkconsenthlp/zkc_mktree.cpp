@@ -7,6 +7,9 @@
 #include "zkc_mktree.hpp"
 #include "zkc_params.hpp"
 
+namespace libzkconsent
+{
+
 using MKTreeT = libzeth::merkle_tree_field<FieldT, HashTreeT>;
 
 static std::string     FieldtoString(FieldT& value)
@@ -56,4 +59,6 @@ std::vector<std::string> zkc_mktree::get_path(const size_t address) const
         path[cnt] = FieldtoString(field_path[cnt]);
 
     return path;
+}
+
 }
