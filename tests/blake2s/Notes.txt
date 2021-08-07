@@ -1,0 +1,4 @@
+Testing commitments using an independent implementation of Blake2s
+
+https://www.npmjs.com/package/blake2s
+npm i blake2s

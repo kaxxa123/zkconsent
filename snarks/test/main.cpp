@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <zkc_mktree.hpp>
 #include <zkc_prf.hpp>
+#include <zkc_cm.hpp>
 
 using namespace libzkconsent;
 
@@ -62,9 +63,23 @@ void TestMKTree()
     std::string  mkroot = mktree.get_root();
     std::string  mkleaf = mktree.get_value(1);
 
-    std::cout << "Root0: "<< mkroot0 << std::endl;
-    std::cout << "Root:  "<< mkroot << std::endl;
-    std::cout << "Leaf:  "<< mkleaf << std::endl;
+    std::cout << "Root0:    " << mkroot0 << std::endl;
+    std::cout << "Root:     " << mkroot << std::endl;
+    std::cout << "Leaf:     " << mkleaf << std::endl << std::endl;
+}
+
+void TestCMs()
+{
+    std::string a_pk = "2390c9e5370be7355f220b29caf3912ef970d828b73976ae9bfeb1402ce4c1f9";
+    std::string rho  = "0F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
+    std::string cm_expected = "909497081322539459115998718838034696732800774784502252754327323052641165505";
+    
+    std::string cm   = CMMid(a_pk, rho);
+
+    std::cout << "a_pk:     " << a_pk << std::endl;
+    std::cout << "rho:      " << rho << std::endl;
+    std::cout << "cm:       " << cm << std::endl;
+    std::cout << "Verified: " << (cm.compare(cm_expected) == 0) << std::endl << std::endl;
 }
 
 int main()
@@ -72,6 +87,7 @@ int main()
     InitSnarks();
     TestPRFs();
     TestMKTree();
+    TestCMs();
 
     return 0;
 }
