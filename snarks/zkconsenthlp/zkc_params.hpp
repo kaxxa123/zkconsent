@@ -15,7 +15,10 @@ using VKT           = libsnark::r1cs_gg_ppzksnark_verification_key<pp>;
 using KeypairT      = libsnark::r1cs_gg_ppzksnark_keypair<pp>;
 using ProofT        = libsnark::r1cs_gg_ppzksnark_proof<pp>;
 
-const size_t TreeDepth = libzeth::ZETH_MERKLE_TREE_DEPTH;
+const size_t TreeDepth          = libzeth::ZETH_MERKLE_TREE_DEPTH;
+const size_t ZKC_STUDYID_SIZE   = libzeth::ZETH_V_SIZE;
+const size_t ZKC_CHOICE_SIZE    = 8;
+
 
 }
 

@@ -70,16 +70,46 @@ void TestMKTree()
 
 void TestCMs()
 {
-    std::string a_pk = "2390c9e5370be7355f220b29caf3912ef970d828b73976ae9bfeb1402ce4c1f9";
-    std::string rho  = "0F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
-    std::string cm_expected = "909497081322539459115998718838034696732800774784502252754327323052641165505";
-    
-    std::string cm   = CMMid(a_pk, rho);
+    std::string a_pk    = "f172d7299ac8ac974ea59413e4a87691826df038ba24a2b52d5c5d15c2cc8c49";
+    std::string rho     = "FFFF000000000000000000000000000000000000000000000000000000009009";
+    std::string trap_r  = "0F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
+    std::string studyid = "2F0000000000000F";
+
+    std::string cmid_expected = FieldBound("61664778562247255656556823324184647250836269861294200639716623376346843163443");
+                        // 61664778562247255656556823324184647250836269861294200639716623376346843163443
+                        // % p 
+                        // % 21888242871839275222246405745257275088696311157297823662689037894645226208583
+                        // = 17888292818568705212064011833670097073739541060462131952320215003195226172209
+    std::string cmid   = CMMid(a_pk, rho);
 
     std::cout << "a_pk:     " << a_pk << std::endl;
     std::cout << "rho:      " << rho << std::endl;
-    std::cout << "cm:       " << cm << std::endl;
-    std::cout << "Verified: " << (cm.compare(cm_expected) == 0) << std::endl << std::endl;
+    std::cout << "cmid:     " << cmid << std::endl;
+
+    bool bVerified = (cmid.compare(cmid_expected) == 0);
+    std::cout << "Verified: " << bVerified << std::endl << std::endl;
+    if (!bVerified) throw "Unexpcted: cm value";
+
+
+    std::string cmconsentOFF_expected = FieldBound("65214601563334233001744283039186002388797534047872762932441308784802186171368");
+    std::string cmconsentON_expected  = FieldBound("102050420437744923720576593890046050762017115676399819899053203733659731501135");
+    std::string cmconsentOFF  = CMMconsent(a_pk, rho, trap_r, studyid, false);
+    std::string cmconsentON   = CMMconsent(a_pk, rho, trap_r, studyid, true);
+
+    std::cout << "a_pk:     " << a_pk << std::endl;
+    std::cout << "rho:      " << rho << std::endl;
+    std::cout << "trap_r:   " << trap_r << std::endl;
+    std::cout << "studyid:  " << studyid << std::endl  << std::endl;
+
+    std::cout << "cmOFF:    " << cmconsentOFF << std::endl;
+    bVerified = (cmconsentOFF.compare(cmconsentOFF_expected) == 0);
+    std::cout << "Verified: " << bVerified << std::endl << std::endl;
+    if (!bVerified) throw "Unexpcted: cm value";
+
+    std::cout << "cmON:     " << cmconsentON << std::endl;
+    bVerified = (cmconsentON.compare(cmconsentON_expected) == 0);
+    std::cout << "Verified: " << bVerified << std::endl << std::endl;
+    if (!bVerified) throw "Unexpcted: cm value";
 }
 
 int main()
