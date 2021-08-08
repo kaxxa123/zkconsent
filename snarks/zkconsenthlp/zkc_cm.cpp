@@ -12,7 +12,7 @@
 
 #include "zkc_params.hpp"
 #include "zkc_helpers.hpp"
-#include "cm_extra_gadgets.hpp"
+#include "extra_cm_gadgets.hpp"
 #include "zkc_cm.hpp"
 
 namespace libzkconsent

@@ -1,6 +1,6 @@
 
-#ifndef __ZKCONSENT_PRFS_TCC__
-#define __ZKCONSENT_PRFS_TCC__
+#ifndef __EXTRA_PRF_GADGETS_TCC_
+#define __EXTRA_PRF_GADGETS_TCC_
 
 #include "libzeth/circuits/prfs/prf.hpp"
 
@@ -201,4 +201,4 @@ std::string     PRF_3input(
     return digest2hex(result->get_digest());}
 }
 
-#endif // __ZKCONSENT_PRFS_TCC__
+#endif // __EXTRA_PRF_GADGETS_TCC_

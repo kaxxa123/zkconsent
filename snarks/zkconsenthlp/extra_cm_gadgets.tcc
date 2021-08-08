@@ -1,5 +1,5 @@
-#ifndef __ZKC_COMM_TCC_
-#define __ZKC_COMM_TCC_
+#ifndef __EXTRA_CM_GADGETS_TCC_
+#define __EXTRA_CM_GADGETS_TCC_
 
 #include <libsnark/gadgetlib1/gadget.hpp>
 #include <libsnark/gadgetlib1/gadgets/hashes/hash_io.hpp>
@@ -205,4 +205,4 @@ std::string comm_consent_gadget<FieldT, HashT>::get_cm(
 
 }
 
-#endif //__ZKC_COMM_TCC_
+#endif //__EXTRA_CM_GADGETS_TCC_

@@ -9,7 +9,7 @@
 #include "libzeth/zeth_constants.hpp"
 
 #include "zkc_helpers.hpp"
-#include "prf_extra_gadgets.hpp"
+#include "extra_prf_gadgets.hpp"
 #include "zkc_params.hpp"
 
 namespace libzkconsent

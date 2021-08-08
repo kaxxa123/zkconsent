@@ -1,5 +1,5 @@
-#ifndef __ZKC_COMM_HPP_
-#define __ZKC_COMM_HPP_
+#ifndef __EXTRA_CM_GADGETS_HPP_
+#define __EXTRA_CM_GADGETS_HPP_
 
 namespace libzkconsent
 {
@@ -84,6 +84,6 @@ public:
 
 }
 
-#include "cm_extra_gadgets.tcc"
+#include "extra_cm_gadgets.tcc"
 
-#endif //__ZKC_COMM_HPP_
+#endif //__EXTRA_CM_GADGETS_HPP_

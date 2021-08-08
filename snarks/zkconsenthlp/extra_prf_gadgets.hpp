@@ -1,6 +1,6 @@
 
-#ifndef __ZKCONSENT_PRFS_HPP__
-#define __ZKCONSENT_PRFS_HPP__
+#ifndef __EXTRA_PRF_GADGETS_HPP_
+#define __EXTRA_PRF_GADGETS_HPP_
 
 // DISCLAIMER:
 // Content Taken and adapted from ZETH
@@ -71,6 +71,6 @@ public:
 
 }
 
-#include "prf_extra_gadgets.tcc"
+#include "extra_prf_gadgets.tcc"
 
-#endif // __ZKCONSENT_PRFS_HPP__
+#endif // __EXTRA_PRF_GADGETS_HPP_
