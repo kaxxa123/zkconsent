@@ -33,9 +33,9 @@ public:
     noteid_in_gadget(
         libsnark::protoboard<FieldT>        &pb,
         const libsnark::pb_variable<FieldT> &ZERO,
+        const libsnark::pb_variable<FieldT> &expected_root,
         std::shared_ptr<libsnark::digest_variable<FieldT>> a_sk,
         std::shared_ptr<libsnark::digest_variable<FieldT>> nullifier,
-        const libsnark::pb_variable<FieldT> &expected_root,
         const std::string &annotation_prefix = "noteid_in_gadget");
 
     void generate_r1cs_constraints();

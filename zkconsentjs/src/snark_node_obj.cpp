@@ -3,7 +3,7 @@
 #include <algorithm>
 
 #include <napi.h>
-#include <zkc_prf.hpp>
+#include <zkc_interface.hpp>
 #include <zkc_mktree.hpp>
 
 #include "snark_node_obj.h"

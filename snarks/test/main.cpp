@@ -4,8 +4,7 @@
 #include <vector>
 #include <algorithm>
 #include <zkc_mktree.hpp>
-#include <zkc_prf.hpp>
-#include <zkc_cm.hpp>
+#include <zkc_interface.hpp>
 
 using namespace libzkconsent;
 
@@ -112,12 +111,31 @@ void TestCMs()
     if (!bVerified) throw "Unexpcted: cm value";
 }
 
+void TestNoteId()
+{
+    const char* ask     = "0F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
+    const char* rho     = "0F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
+    size_t      mkAddr  = 1;
+
+    std::string nf_expected  = "ea43866d185e1bdb84713b699a2966d929d1392488c010c603e46a4cb92986f8";
+    std::string nf    = Test_NoteId_Input(ask, rho, mkAddr);
+
+    std::transform(nf.begin(), nf.end(), nf.begin(), ::toupper);
+    std::transform(nf_expected.begin(), nf_expected.end(), nf_expected.begin(), ::toupper);
+
+    std::cout << "a_sk:     " << ask << std::endl;
+    std::cout << "rho:      " << rho << std::endl;
+    std::cout << "nf:       " << nf << std::endl;
+    std::cout << "Verifies: " << (nf.compare(nf_expected) == 0) << std::endl << std::endl;
+}
+
 int main()
 {
     InitSnarks();
     TestPRFs();
     TestMKTree();
     TestCMs();
+    TestNoteId();
 
     return 0;
 }

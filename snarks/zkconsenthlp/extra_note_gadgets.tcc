@@ -8,9 +8,9 @@ template<typename FieldT, typename HashT, typename HashTreeT, size_t TreeDepth>
 noteid_in_gadget<FieldT, HashT, HashTreeT, TreeDepth>::noteid_in_gadget(
         libsnark::protoboard<FieldT>        &pb,
         const libsnark::pb_variable<FieldT> &ZERO,
+        const libsnark::pb_variable<FieldT> &expected_root,
         std::shared_ptr<libsnark::digest_variable<FieldT>> a_sk,
         std::shared_ptr<libsnark::digest_variable<FieldT>> nullifier,
-        const libsnark::pb_variable<FieldT> &expected_root,
         const std::string &annotation_prefix)
         : libsnark::gadget<FieldT>(pb, annotation_prefix), 
           mktree_root(expected_root)
@@ -99,11 +99,11 @@ std::string noteid_in_gadget<FieldT, HashT, HashTreeT, TreeDepth>::test_noteid_g
     std::shared_ptr<libsnark::digest_variable<FieldT>> nullifier_digest(new libsnark::digest_variable<FieldT>(pb, HashT::get_digest_len(), "nullifier_digest"));
     merkle_root.allocate(pb, "root");
     noteid_in_gadget<FieldT, HashT, HashTreeT, TreeDepth> input_note_g(
-        pb, ZERO, a_sk_digest, nullifier_digest, merkle_root);
+        pb, ZERO, merkle_root, a_sk_digest, nullifier_digest);
 
     a_sk_digest->generate_r1cs_constraints();
-    nullifier_digest->generate_r1cs_constraints();
     input_note_g.generate_r1cs_constraints();
+    nullifier_digest->generate_r1cs_constraints();
     //=======================================================
 
     //Compute the cm from the given ask and rho
@@ -125,8 +125,8 @@ std::string noteid_in_gadget<FieldT, HashT, HashTreeT, TreeDepth>::test_noteid_g
     libzeth::bits256 a_pk_bits256   = libzeth::bits256::from_hex(s_apk);
 
     pb.val(ZERO) = FieldT::zero();
-    a_sk_digest->generate_r1cs_witness(libff::bit_vector(a_sk_bits256.to_vector()));
     pb.val(merkle_root) = root_value;
+    a_sk_digest->generate_r1cs_witness(libff::bit_vector(a_sk_bits256.to_vector()));
 
     id_note anote(a_pk_bits256,rho_bits256);    
     input_note_g.generate_r1cs_witness(path, address_bits, anote);

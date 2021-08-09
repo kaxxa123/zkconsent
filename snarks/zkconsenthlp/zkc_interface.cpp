@@ -1,5 +1,7 @@
 #include <stdlib.h>
 #include <iostream>
+#include <sstream>
+#include <vector>
 
 #include "libzeth/circuits/circuit_types.hpp"
 #include "libzeth/circuits/blake2s/blake2s.hpp"
@@ -8,16 +10,26 @@
 #include "libzeth/core/utils.hpp"
 #include "libzeth/zeth_constants.hpp"
 
+#include "zkc_params.hpp"
 #include "zkc_helpers.hpp"
 #include "extra_prf_gadgets.hpp"
-#include "zkc_params.hpp"
+#include "extra_cm_gadgets.hpp"
+#include "extra_note_types.hpp"
+#include "extra_note_gadgets.hpp"
+#include "zkc_interface.hpp"
 
 namespace libzkconsent
 {
 
-void   InitSnarks()
+void            InitSnarks()
 {
     pp::init_public_params();
+}
+
+std::string     FieldBound(const std::string& value)
+{
+    FieldT fval = FieldT(value.c_str());
+    return FieldtoString(fval);
 }
 
 //Test Values
@@ -55,6 +67,30 @@ std::string     PRFHtag     (const std::string& ask, const std::string& hsig, si
 {
     return PRF_3input<FieldT, HashT, libzeth::PRF_pk_gadget<FieldT, HashT>>(
         ask, hsig, index);
+}
+
+std::string     CMMid(const std::string& a_pk, const std::string& rho)
+{
+    return comm_id_gadget<FieldT, HashT>::get_cm(a_pk, rho);    
+}
+
+std::string     CMMconsent(
+                    const std::string& sapk, 
+                    const std::string& srho,
+                    const std::string& strap_r,
+                    const std::string& sid,
+                    bool bChoice)
+{
+    return comm_consent_gadget<FieldT, HashT>::get_cm(sapk, srho, strap_r, sid, bChoice);    
+}
+
+std::string      Test_NoteId_Input(
+                    const std::string&  s_ask, 
+                    const std::string&  s_rho,
+                    size_t              mkAddr)
+{
+    return noteid_in_gadget<FieldT, HashT, HashTreeT, ZKC_TreeDepth>::test_noteid_gag(
+                s_ask, s_rho, mkAddr);
 }
 
 }
