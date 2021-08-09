@@ -89,8 +89,17 @@ std::string      Test_NoteId_Input(
                     const std::string&  s_rho,
                     size_t              mkAddr)
 {
-    return noteid_in_gadget<FieldT, HashT, HashTreeT, ZKC_TreeDepth>::test_noteid_gag(
+    return noteid_in_gadget<FieldT, HashT, HashTreeT, ZKC_TreeDepth>::test(
                 s_ask, s_rho, mkAddr);
 }
+
+std::string      Test_NoteId_Output(
+                    const std::string&  s_apk, 
+                    const std::string&  s_rho)
+{
+    return noteid_out_gadget<FieldT, HashT>::test(
+                s_apk, s_rho);
+}
+
 
 }

@@ -44,11 +44,10 @@ public:
         const libzeth::bits_addr<TreeDepth> &merkle_address,
         const id_note &note);
 
-    static std::string test_noteid_gag(
-                    const std::string&  s_ask, 
-                    const std::string&  s_rho,
-                    size_t              mkAddr
-                );
+    static std::string test(
+        const std::string&  s_ask, 
+        const std::string&  s_rho,
+        size_t              mkAddr);
 };
 
 template<typename FieldT, typename HashT>
@@ -67,6 +66,10 @@ public:
 
     void generate_r1cs_constraints();
     void generate_r1cs_witness(const id_note &note);
+
+    static std::string test(
+        const std::string&  s_apk, 
+        const std::string&  s_rho);
 };
 
 }

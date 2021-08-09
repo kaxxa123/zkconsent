@@ -84,7 +84,7 @@ void noteid_in_gadget<FieldT, HashT, HashTreeT, TreeDepth>::
 }
 
 template<typename FieldT, typename HashT, typename HashTreeT, size_t TreeDepth>
-std::string noteid_in_gadget<FieldT, HashT, HashTreeT, TreeDepth>::test_noteid_gag(
+std::string noteid_in_gadget<FieldT, HashT, HashTreeT, TreeDepth>::test(
                 const std::string&  s_ask, 
                 const std::string&  s_rho,
                 size_t              mkAddr)
@@ -166,6 +166,37 @@ void noteid_out_gadget<FieldT, HashT>::generate_r1cs_witness(const id_note &note
     cm_gag->generate_r1cs_witness();
 }
 
+template<typename FieldT, typename HashT>
+std::string noteid_out_gadget<FieldT, HashT>::test(
+            const std::string&  s_apk, 
+            const std::string&  s_rho)
+{
+    //Construct the circuit
+    libsnark::protoboard<FieldT> pb;
+    libsnark::pb_variable<FieldT> cm;
+
+    cm.allocate(pb, "cm");
+    std::shared_ptr<libsnark::digest_variable<FieldT>> rho_digest(new libsnark::digest_variable<FieldT>(pb, libzeth::ZETH_RHO_SIZE, "rho"));
+    noteid_out_gadget<FieldT, HashT> output_note_g(pb, rho_digest, cm);
+
+    rho_digest->generate_r1cs_constraints();
+    output_note_g.generate_r1cs_constraints();
+    //=======================================================
+
+    //Compute witness
+    libzeth::bits256 a_pk_bits256   = libzeth::bits256::from_hex(s_apk);
+    libzeth::bits256 rho_bits256    = libzeth::bits256::from_hex(s_rho);
+
+    rho_digest->generate_r1cs_witness(libff::bit_vector(rho_bits256.to_vector()));
+
+    id_note anote(a_pk_bits256,rho_bits256);    
+    output_note_g.generate_r1cs_witness(anote);
+
+    if (!pb.is_satisfied())
+        return nullptr;
+
+    return FieldtoString<FieldT>(pb.val(cm));
+}
 
 }
 

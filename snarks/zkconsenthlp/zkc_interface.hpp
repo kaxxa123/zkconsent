@@ -25,6 +25,10 @@ std::string      Test_NoteId_Input(
                     const std::string&  s_ask, 
                     const std::string&  s_rho,
                     size_t              mkAddr);
-                    
+
+std::string      Test_NoteId_Output(
+                    const std::string&  s_apk, 
+                    const std::string&  s_rho);
+
 }
 #endif //__ZKC_INTERFACE_H_

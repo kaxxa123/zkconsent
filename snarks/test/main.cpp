@@ -127,6 +127,18 @@ void TestNoteId()
     std::cout << "rho:      " << rho << std::endl;
     std::cout << "nf:       " << nf << std::endl;
     std::cout << "Verifies: " << (nf.compare(nf_expected) == 0) << std::endl << std::endl;
+
+    const char* a_pk    = "f172d7299ac8ac974ea59413e4a87691826df038ba24a2b52d5c5d15c2cc8c49";
+    const char* rho2    = "FFFF000000000000000000000000000000000000000000000000000000009009";
+    std::string cmid_expected = FieldBound("61664778562247255656556823324184647250836269861294200639716623376346843163443");
+    std::string cmid    = Test_NoteId_Output(a_pk, rho2);
+
+    std::cout << "a_pk:     " << a_pk << std::endl;
+    std::cout << "rho:      " << rho2 << std::endl;
+    std::cout << "cmid:     " << cmid << std::endl;
+
+    bool bVerified = (cmid.compare(cmid_expected) == 0);
+    std::cout << "Verified: " << bVerified << std::endl << std::endl;
 }
 
 int main()
