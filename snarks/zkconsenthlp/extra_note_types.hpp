@@ -1,5 +1,5 @@
-#ifndef __ZKC_NOTES_H_
-#define __ZKC_NOTES_H_
+#ifndef __ZKC_EXTRA_NOTE_TYPES_H_
+#define __ZKC_EXTRA_NOTE_TYPES_H_
 
 namespace libzkconsent
 {
@@ -75,4 +75,4 @@ public:
 
 }
 
-#endif //__ZKC_NOTES_H_
+#endif //__ZKC_EXTRA_NOTE_TYPES_H_

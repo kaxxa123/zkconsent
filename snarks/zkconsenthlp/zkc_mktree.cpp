@@ -13,7 +13,7 @@ using MKTreeT = libzeth::merkle_tree_field<FieldT, HashTreeT>;
 
 zkc_mktree::zkc_mktree()
 {
-    m_mktree = std::shared_ptr<void>(new MKTreeT(TreeDepth));
+    m_mktree = std::shared_ptr<void>(new MKTreeT(ZKC_TreeDepth));
 }
 
 zkc_mktree::~zkc_mktree()
