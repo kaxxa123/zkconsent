@@ -138,23 +138,24 @@ std::string noteid_in_gadget<FieldT, HashT, HashTreeT, TreeDepth>::test(
 }
 
 //================================================================================
-
-// Commit to the output notes of the JS
 template<typename FieldT, typename HashT>
 noteid_out_gadget<FieldT, HashT>::noteid_out_gadget(
     libsnark::protoboard<FieldT> &pb,
-    std::shared_ptr<libsnark::digest_variable<FieldT>> rho,
     const libsnark::pb_variable<FieldT> &cm,
     const std::string &annotation_prefix)
     : libsnark::gadget<FieldT>(pb, annotation_prefix)
 {
+    rho.allocate(pb, libzeth::ZETH_RHO_SIZE,   FMT(this->annotation_prefix, " rho"));
     a_pk.reset(new libsnark::digest_variable<FieldT>(pb, HashT::get_digest_len(), FMT(this->annotation_prefix, " a_pk")));
-    cm_gag.reset(new comm_id_gadget<FieldT, HashT>(pb, a_pk->bits, rho->bits, cm));
+    cm_gag.reset(new comm_id_gadget<FieldT, HashT>(pb, a_pk->bits, rho, cm));
 }
 
 template<typename FieldT, typename HashT>
 void noteid_out_gadget<FieldT, HashT>::generate_r1cs_constraints()
 {
+    for (size_t i = 0; i < libzeth::ZETH_RHO_SIZE; i++)
+        libsnark::generate_boolean_r1cs_constraint<FieldT>(this->pb, rho[i], FMT(this->annotation_prefix, " rho[%zu]", i));
+
     a_pk->generate_r1cs_constraints();
     cm_gag->generate_r1cs_constraints();
 }
@@ -162,6 +163,7 @@ void noteid_out_gadget<FieldT, HashT>::generate_r1cs_constraints()
 template<typename FieldT, typename HashT>
 void noteid_out_gadget<FieldT, HashT>::generate_r1cs_witness(const id_note &note)
 {
+    note.rho.fill_variable_array(this->pb, rho);
     note.a_pk.fill_variable_array(this->pb, a_pk->bits);
     cm_gag->generate_r1cs_witness();
 }
@@ -176,18 +178,13 @@ std::string noteid_out_gadget<FieldT, HashT>::test(
     libsnark::pb_variable<FieldT> cm;
 
     cm.allocate(pb, "cm");
-    std::shared_ptr<libsnark::digest_variable<FieldT>> rho_digest(new libsnark::digest_variable<FieldT>(pb, libzeth::ZETH_RHO_SIZE, "rho"));
-    noteid_out_gadget<FieldT, HashT> output_note_g(pb, rho_digest, cm);
-
-    rho_digest->generate_r1cs_constraints();
+    noteid_out_gadget<FieldT, HashT> output_note_g(pb, cm);
     output_note_g.generate_r1cs_constraints();
     //=======================================================
 
     //Compute witness
     libzeth::bits256 a_pk_bits256   = libzeth::bits256::from_hex(s_apk);
     libzeth::bits256 rho_bits256    = libzeth::bits256::from_hex(s_rho);
-
-    rho_digest->generate_r1cs_witness(libff::bit_vector(rho_bits256.to_vector()));
 
     id_note anote(a_pk_bits256,rho_bits256);    
     output_note_g.generate_r1cs_witness(anote);
@@ -197,6 +194,85 @@ std::string noteid_out_gadget<FieldT, HashT>::test(
 
     return FieldtoString<FieldT>(pb.val(cm));
 }
+
+//================================================================================
+template<typename FieldT, typename HashT>
+noteconsent_out_gadget<FieldT, HashT>::noteconsent_out_gadget(
+    libsnark::protoboard<FieldT> &pb,
+    const libsnark::pb_variable<FieldT> &cm,
+    const std::string &annotation_prefix)
+    : libsnark::gadget<FieldT>(pb, annotation_prefix)
+{
+    rho.allocate(pb, libzeth::ZETH_RHO_SIZE,   FMT(this->annotation_prefix, " rho"));
+    trap_r.allocate(pb, libzeth::ZETH_R_SIZE,   FMT(this->annotation_prefix, " trap_r"));
+    studyid.allocate(pb, ZKC_STUDYID_SIZE,      FMT(this->annotation_prefix, " studyid"));
+    choice.allocate(pb, FMT(this->annotation_prefix, " choice"));
+    a_pk.reset(new libsnark::digest_variable<FieldT>(pb, HashT::get_digest_len(), FMT(this->annotation_prefix, " a_pk")));
+    cm_gag.reset(new comm_consent_gadget<FieldT, HashT>(pb, a_pk->bits, rho, trap_r, studyid, choice, cm));
+}
+
+template<typename FieldT, typename HashT>
+void noteconsent_out_gadget<FieldT, HashT>::generate_r1cs_constraints()
+{
+    for (size_t i = 0; i < libzeth::ZETH_RHO_SIZE; i++)
+        libsnark::generate_boolean_r1cs_constraint<FieldT>(this->pb, rho[i], FMT(this->annotation_prefix, " rho[%zu]", i));
+
+    for (size_t i = 0; i < libzeth::ZETH_R_SIZE; i++)
+        libsnark::generate_boolean_r1cs_constraint<FieldT>(this->pb, trap_r[i], FMT(this->annotation_prefix, " trap_r[%zu]", i));
+
+    for (size_t i = 0; i < ZKC_STUDYID_SIZE; i++)
+        libsnark::generate_boolean_r1cs_constraint<FieldT>(this->pb, studyid[i], FMT(this->annotation_prefix, " studyid[%zu]", i));
+
+    libsnark::generate_boolean_r1cs_constraint<FieldT>(this->pb, choice, FMT(this->annotation_prefix, " choice"));
+
+    a_pk->generate_r1cs_constraints();
+    cm_gag->generate_r1cs_constraints();
+}
+
+template<typename FieldT, typename HashT>
+void noteconsent_out_gadget<FieldT, HashT>::generate_r1cs_witness(const consent_note &note)
+{
+    note.rho.fill_variable_array(this->pb, rho);
+    note.trap_r.fill_variable_array(this->pb, trap_r);
+    note.studyid.fill_variable_array(this->pb, studyid);
+    this->pb.val(choice) = note.choice ? FieldT::one() : FieldT::zero();
+
+    note.a_pk.fill_variable_array(this->pb, a_pk->bits);
+    cm_gag->generate_r1cs_witness();
+}
+
+template<typename FieldT, typename HashT>
+std::string noteconsent_out_gadget<FieldT, HashT>::test(
+            const std::string&  s_apk, 
+            const std::string&  s_rho,
+            const std::string&  s_trap_r,
+            const std::string&  s_studyid,
+            bool                choice)
+{
+    //Construct the circuit
+    libsnark::protoboard<FieldT> pb;
+    libsnark::pb_variable<FieldT> cm;
+
+    cm.allocate(pb, "cm");
+    noteconsent_out_gadget<FieldT, HashT> output_note_g(pb, cm);
+    output_note_g.generate_r1cs_constraints();
+    //=======================================================
+
+    //Compute witness
+    libzeth::bits256 a_pk_bits256   = libzeth::bits256::from_hex(s_apk);
+    libzeth::bits256 rho_bits256    = libzeth::bits256::from_hex(s_rho);
+    libzeth::bits256 trap_r_bits256 = libzeth::bits256::from_hex(s_trap_r);
+    libzeth::bits64 studyid_bits64  = libzeth::bits64::from_hex(s_studyid);
+
+    consent_note anote(a_pk_bits256,rho_bits256,trap_r_bits256,studyid_bits64,choice);    
+    output_note_g.generate_r1cs_witness(anote);
+
+    if (!pb.is_satisfied())
+        return nullptr;
+
+    return FieldtoString<FieldT>(pb.val(cm));
+}
+
 
 }
 

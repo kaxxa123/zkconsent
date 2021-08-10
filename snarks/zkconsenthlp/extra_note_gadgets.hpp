@@ -54,13 +54,13 @@ template<typename FieldT, typename HashT>
 class noteid_out_gadget : public libsnark::gadget<FieldT>
 {
 private:
+    libsnark::pb_variable_array<FieldT> rho;
     std::shared_ptr<libsnark::digest_variable<FieldT>> a_pk;
     std::shared_ptr<comm_id_gadget<FieldT, HashT>> cm_gag;
 
 public:
     noteid_out_gadget(
         libsnark::protoboard<FieldT> &pb,
-        std::shared_ptr<libsnark::digest_variable<FieldT>> rho,
         const libsnark::pb_variable<FieldT> &cm,
         const std::string &annotation_prefix = "noteid_out_gadget");
 
@@ -70,6 +70,34 @@ public:
     static std::string test(
         const std::string&  s_apk, 
         const std::string&  s_rho);
+};
+
+template<typename FieldT, typename HashT>
+class noteconsent_out_gadget : public libsnark::gadget<FieldT>
+{
+private:
+    libsnark::pb_variable_array<FieldT> rho;
+    libsnark::pb_variable_array<FieldT> trap_r;
+    libsnark::pb_variable_array<FieldT> studyid;
+    libsnark::pb_variable<FieldT>       choice;
+    std::shared_ptr<libsnark::digest_variable<FieldT>> a_pk;
+    std::shared_ptr<comm_consent_gadget<FieldT, HashT>> cm_gag;
+
+public:
+    noteconsent_out_gadget(
+        libsnark::protoboard<FieldT> &pb,
+        const libsnark::pb_variable<FieldT> &cm,
+        const std::string &annotation_prefix = "noteconsent_out_gadget");
+
+    void generate_r1cs_constraints();
+    void generate_r1cs_witness(const consent_note &note);
+
+    static std::string test(
+        const std::string&  s_apk, 
+        const std::string&  s_rho,
+        const std::string&  s_trap_r,
+        const std::string&  s_studyid,
+        bool                choice);
 };
 
 }

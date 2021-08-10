@@ -141,6 +141,35 @@ void TestNoteId()
     std::cout << "Verified: " << bVerified << std::endl << std::endl;
 }
 
+void    TestNodeConsent() 
+{
+    std::string a_pk    = "f172d7299ac8ac974ea59413e4a87691826df038ba24a2b52d5c5d15c2cc8c49";
+    std::string rho     = "FFFF000000000000000000000000000000000000000000000000000000009009";
+    std::string trap_r  = "0F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
+    std::string studyid = "2F0000000000000F";
+
+    std::string cmconsentOFF_expected = FieldBound("65214601563334233001744283039186002388797534047872762932441308784802186171368");
+    std::string cmconsentON_expected  = FieldBound("102050420437744923720576593890046050762017115676399819899053203733659731501135");
+
+    std::string cmconsentOFF   = Test_NoteConsent_Output(a_pk, rho, trap_r, studyid, false);
+    std::string cmconsentON    = Test_NoteConsent_Output(a_pk, rho, trap_r, studyid, true);
+
+    std::cout << "a_pk:     " << a_pk << std::endl;
+    std::cout << "rho:      " << rho << std::endl;
+    std::cout << "trap_r:   " << trap_r << std::endl;
+    std::cout << "studyid:  " << studyid << std::endl  << std::endl;
+
+    std::cout << "cmOFF:    " << cmconsentOFF << std::endl;
+    bool bVerified = (cmconsentOFF.compare(cmconsentOFF_expected) == 0);
+    std::cout << "Verified: " << bVerified << std::endl << std::endl;
+    if (!bVerified) throw "Unexpcted: cm value";
+
+    std::cout << "cmON:     " << cmconsentON << std::endl;
+    bVerified = (cmconsentON.compare(cmconsentON_expected) == 0);
+    std::cout << "Verified: " << bVerified << std::endl << std::endl;
+    if (!bVerified) throw "Unexpcted: cm value";
+}
+
 int main()
 {
     InitSnarks();
@@ -148,6 +177,7 @@ int main()
     TestMKTree();
     TestCMs();
     TestNoteId();
+    TestNodeConsent();
 
     return 0;
 }
