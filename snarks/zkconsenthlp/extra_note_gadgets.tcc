@@ -31,7 +31,7 @@ noteid_in_gadget<FieldT, HashT, HashTreeT, TreeDepth>::noteid_in_gadget(
     // 4. Given the computed cm (leaf), combine it with the mktree address/path 
     //    to compute the root. 
     a_pk_gag.reset(new libzeth::PRF_addr_a_pk_gadget<FieldT, HashT>(pb, ZERO, a_sk->bits, a_pk));
-    nf_gag.reset(new libzeth::PRF_nf_gadget<FieldT, HashT>(pb, ZERO, a_sk->bits, rho, nullifier));
+    nf_gag.reset(new PRF_nf_uid_gadget<FieldT, HashT>(pb, ZERO, a_sk->bits, rho, nullifier));
     cm_gag.reset(new comm_id_gadget<FieldT, HashT>(pb, a_pk->bits, rho, cm));
 
     //Note the root computed by this gadget is allocated to a pb_variable within the 

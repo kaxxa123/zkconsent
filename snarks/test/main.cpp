@@ -23,21 +23,33 @@ void TestPRFs()
     std::string htag0 = PRFHtag(ask,hsig,0);
     std::string htag1 = PRFHtag(ask,hsig,1);
 
+    std::cout << std::endl;
+    std::cout << "=== Testing computation of a_pk from a_sk ===" << std::endl;
     std::cout << "a_sk:     " << ask << std::endl;
     std::cout << "a_pk:     " << apk << std::endl;
 
     std::transform(apk.begin(), apk.end(), apk.begin(), ::toupper);
     std::transform(apk_expected.begin(), apk_expected.end(), apk_expected.begin(), ::toupper);
-    std::cout << "Verifies: " << (apk.compare(apk_expected) == 0) << std::endl << std::endl;
 
+    bool bVerified = (apk.compare(apk_expected) == 0);
+    std::cout << "Verified: " << bVerified << std::endl << std::endl;
+    if (!bVerified) throw "Unexpected: verification failed";
+
+
+    std::cout << "=== Testing computation of consent nullifier ===" << std::endl;
     std::cout << "a_sk:     " << ask << std::endl;
     std::cout << "rho:      " << rho << std::endl;
     std::cout << "nf:       " << nf << std::endl;
 
     std::transform(nf.begin(), nf.end(), nf.begin(), ::toupper);
     std::transform(nf_expected.begin(), nf_expected.end(), nf_expected.begin(), ::toupper);
-    std::cout << "Verifies: " << (nf.compare(nf_expected) == 0) << std::endl << std::endl;
 
+    bVerified = (nf.compare(nf_expected) == 0);
+    std::cout << "Verified: " << bVerified << std::endl << std::endl;
+    if (!bVerified) throw "Unexpected: verification failed";
+
+
+    std::cout << "=== Testing computation of HTAGs ===" << std::endl;
     std::cout << "a_sk:     " << ask << std::endl;
     std::cout << "hsig:     " << hsig << std::endl;
     std::cout << "htag0:    " << htag0 << std::endl;
@@ -45,11 +57,17 @@ void TestPRFs()
 
     std::transform(htag0.begin(), htag0.end(), htag0.begin(), ::toupper);
     std::transform(htag0_expect.begin(), htag0_expect.end(), htag0_expect.begin(), ::toupper);
-    std::cout << "Verifie0: " << (htag0.compare(htag0_expect) == 0) << std::endl;
+
+    bVerified = (htag0.compare(htag0_expect) == 0);
+    std::cout << "Verifie0: " << bVerified << std::endl;
+    if (!bVerified) throw "Unexpected: verification failed";
 
     std::transform(htag1.begin(), htag1.end(), htag1.begin(), ::toupper);
     std::transform(htag1_expect.begin(), htag1_expect.end(), htag1_expect.begin(), ::toupper);
-    std::cout << "Verifie1: " << (htag1.compare(htag1_expect) == 0) << std::endl << std::endl;
+
+    bVerified = (htag1.compare(htag1_expect) == 0);
+    std::cout << "Verifie1: " << bVerified << std::endl << std::endl;
+    if (!bVerified) throw "Unexpected: verification failed";
 }
 
 void TestMKTree() 
@@ -62,6 +80,8 @@ void TestMKTree()
     std::string  mkroot = mktree.get_root();
     std::string  mkleaf = mktree.get_value(1);
 
+    std::cout << std::endl;
+    std::cout << "=== Testing computation of MKTree values ===" << std::endl;
     std::cout << "Root0:    " << mkroot0 << std::endl;
     std::cout << "Root:     " << mkroot << std::endl;
     std::cout << "Leaf:     " << mkleaf << std::endl << std::endl;
@@ -81,13 +101,15 @@ void TestCMs()
                         // = 17888292818568705212064011833670097073739541060462131952320215003195226172209
     std::string cmid   = CMMid(a_pk, rho);
 
+    std::cout << std::endl;
+    std::cout << "=== Testing computation of Id Token Commitments ===" << std::endl;
     std::cout << "a_pk:     " << a_pk << std::endl;
     std::cout << "rho:      " << rho << std::endl;
     std::cout << "cmid:     " << cmid << std::endl;
 
     bool bVerified = (cmid.compare(cmid_expected) == 0);
     std::cout << "Verified: " << bVerified << std::endl << std::endl;
-    if (!bVerified) throw "Unexpcted: cm value";
+    if (!bVerified) throw "Unexpected: verification failed";
 
 
     std::string cmconsentOFF_expected = FieldBound("65214601563334233001744283039186002388797534047872762932441308784802186171368");
@@ -95,6 +117,7 @@ void TestCMs()
     std::string cmconsentOFF  = CMMconsent(a_pk, rho, trap_r, studyid, false);
     std::string cmconsentON   = CMMconsent(a_pk, rho, trap_r, studyid, true);
 
+    std::cout << "=== Testing computation of Consent Token Commitments ===" << std::endl;
     std::cout << "a_pk:     " << a_pk << std::endl;
     std::cout << "rho:      " << rho << std::endl;
     std::cout << "trap_r:   " << trap_r << std::endl;
@@ -103,12 +126,12 @@ void TestCMs()
     std::cout << "cmOFF:    " << cmconsentOFF << std::endl;
     bVerified = (cmconsentOFF.compare(cmconsentOFF_expected) == 0);
     std::cout << "Verified: " << bVerified << std::endl << std::endl;
-    if (!bVerified) throw "Unexpcted: cm value";
+    if (!bVerified) throw "Unexpected: verification failed";
 
     std::cout << "cmON:     " << cmconsentON << std::endl;
     bVerified = (cmconsentON.compare(cmconsentON_expected) == 0);
     std::cout << "Verified: " << bVerified << std::endl << std::endl;
-    if (!bVerified) throw "Unexpcted: cm value";
+    if (!bVerified) throw "Unexpected: verification failed";
 }
 
 void TestNoteId()
@@ -117,28 +140,36 @@ void TestNoteId()
     const char* rho     = "0F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
     size_t      mkAddr  = 1;
 
-    std::string nf_expected  = "ea43866d185e1bdb84713b699a2966d929d1392488c010c603e46a4cb92986f8";
-    std::string nf    = Test_NoteId_Input(ask, rho, mkAddr);
+    std::string nf_expected  = PRFIDnf(ask, rho);
+    std::string nf           = Test_NoteId_Input(ask, rho, mkAddr);
 
     std::transform(nf.begin(), nf.end(), nf.begin(), ::toupper);
     std::transform(nf_expected.begin(), nf_expected.end(), nf_expected.begin(), ::toupper);
 
+    std::cout << std::endl;
+    std::cout << "=== Testing computation of Note Id Input ===" << std::endl;
     std::cout << "a_sk:     " << ask << std::endl;
     std::cout << "rho:      " << rho << std::endl;
     std::cout << "nf:       " << nf << std::endl;
-    std::cout << "Verifies: " << (nf.compare(nf_expected) == 0) << std::endl << std::endl;
+
+    bool bVerified = (nf.compare(nf_expected) == 0);
+    std::cout << "Verified: " << bVerified << std::endl << std::endl;
+    if (!bVerified) throw "Unexpected: verification failed";
+
 
     const char* a_pk    = "f172d7299ac8ac974ea59413e4a87691826df038ba24a2b52d5c5d15c2cc8c49";
     const char* rho2    = "FFFF000000000000000000000000000000000000000000000000000000009009";
     std::string cmid_expected = FieldBound("61664778562247255656556823324184647250836269861294200639716623376346843163443");
     std::string cmid    = Test_NoteId_Output(a_pk, rho2);
 
+    std::cout << "=== Testing computation of Note Id Output ===" << std::endl;
     std::cout << "a_pk:     " << a_pk << std::endl;
     std::cout << "rho:      " << rho2 << std::endl;
     std::cout << "cmid:     " << cmid << std::endl;
 
-    bool bVerified = (cmid.compare(cmid_expected) == 0);
+    bVerified = (cmid.compare(cmid_expected) == 0);
     std::cout << "Verified: " << bVerified << std::endl << std::endl;
+    if (!bVerified) throw "Unexpected: verification failed";
 }
 
 void    TestNodeConsent() 
@@ -154,6 +185,8 @@ void    TestNodeConsent()
     std::string cmconsentOFF   = Test_NoteConsent_Output(a_pk, rho, trap_r, studyid, false);
     std::string cmconsentON    = Test_NoteConsent_Output(a_pk, rho, trap_r, studyid, true);
 
+    std::cout << std::endl;
+    std::cout << "=== Testing computation of Note Consent Output ===" << std::endl;
     std::cout << "a_pk:     " << a_pk << std::endl;
     std::cout << "rho:      " << rho << std::endl;
     std::cout << "trap_r:   " << trap_r << std::endl;
@@ -162,12 +195,12 @@ void    TestNodeConsent()
     std::cout << "cmOFF:    " << cmconsentOFF << std::endl;
     bool bVerified = (cmconsentOFF.compare(cmconsentOFF_expected) == 0);
     std::cout << "Verified: " << bVerified << std::endl << std::endl;
-    if (!bVerified) throw "Unexpcted: cm value";
+    if (!bVerified) throw "Unexpected: verification failed";
 
     std::cout << "cmON:     " << cmconsentON << std::endl;
     bVerified = (cmconsentON.compare(cmconsentON_expected) == 0);
     std::cout << "Verified: " << bVerified << std::endl << std::endl;
-    if (!bVerified) throw "Unexpcted: cm value";
+    if (!bVerified) throw "Unexpected: verification failed";
 }
 
 int main()
