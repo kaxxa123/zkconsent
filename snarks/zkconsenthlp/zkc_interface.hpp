@@ -30,6 +30,14 @@ std::string      Test_NoteId_Output(
                     const std::string&  s_apk, 
                     const std::string&  s_rho);
 
+std::string      Test_NoteConsent_Input(
+                    const std::string&  s_apk, 
+                    const std::string&  s_rho,
+                    const std::string&  s_trap_r,
+                    const std::string&  s_studyid,
+                    bool                choice,
+                    size_t              mkAddr);
+
 std::string      Test_NoteConsent_Output(
                     const std::string&  s_apk, 
                     const std::string&  s_rho,

@@ -172,8 +172,35 @@ void TestNoteId()
     if (!bVerified) throw "Unexpected: verification failed";
 }
 
-void    TestNodeConsent() 
+void TestNodeConsent() 
 {
+    std::string ask      = "0F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
+    std::string rho0     = "0F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
+    std::string trap_r0  = "0F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
+    std::string studyid0 = "2F0000000000000F";
+    bool        choice   = true;
+    size_t      mkAddr  = 1;
+
+    std::string nf_expected  = "ea43866d185e1bdb84713b699a2966d929d1392488c010c603e46a4cb92986f8";
+    std::string nf           = Test_NoteConsent_Input(ask, rho0, trap_r0, studyid0, choice, mkAddr);
+
+    std::transform(nf.begin(), nf.end(), nf.begin(), ::toupper);
+    std::transform(nf_expected.begin(), nf_expected.end(), nf_expected.begin(), ::toupper);
+
+    std::cout << std::endl;
+    std::cout << "=== Testing computation of Note Consent Input ===" << std::endl;
+    std::cout << "a_sk:     " << ask << std::endl;
+    std::cout << "rho:      " << rho0 << std::endl;
+    std::cout << "trap_r:   " << trap_r0 << std::endl;
+    std::cout << "studyid:  " << studyid0 << std::endl;
+    std::cout << "choice:   " << choice << std::endl;
+    std::cout << "nf:       " << nf << std::endl;
+
+    bool bVerified = (nf.compare(nf_expected) == 0);
+    std::cout << "Verified: " << bVerified << std::endl << std::endl;
+    if (!bVerified) throw "Unexpected: verification failed";
+
+
     std::string a_pk    = "f172d7299ac8ac974ea59413e4a87691826df038ba24a2b52d5c5d15c2cc8c49";
     std::string rho     = "FFFF000000000000000000000000000000000000000000000000000000009009";
     std::string trap_r  = "0F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
@@ -193,7 +220,7 @@ void    TestNodeConsent()
     std::cout << "studyid:  " << studyid << std::endl  << std::endl;
 
     std::cout << "cmOFF:    " << cmconsentOFF << std::endl;
-    bool bVerified = (cmconsentOFF.compare(cmconsentOFF_expected) == 0);
+    bVerified = (cmconsentOFF.compare(cmconsentOFF_expected) == 0);
     std::cout << "Verified: " << bVerified << std::endl << std::endl;
     if (!bVerified) throw "Unexpected: verification failed";
 

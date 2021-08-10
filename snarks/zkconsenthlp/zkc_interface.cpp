@@ -101,6 +101,18 @@ std::string      Test_NoteId_Output(
                 s_apk, s_rho);
 }
 
+std::string      Test_NoteConsent_Input(
+                    const std::string&  s_apk, 
+                    const std::string&  s_rho,
+                    const std::string&  s_trap_r,
+                    const std::string&  s_studyid,
+                    bool                choice,
+                    size_t              mkAddr)
+{
+    return noteconsent_in_gadget<FieldT, HashT, HashTreeT, ZKC_TreeDepth>::test(
+                s_apk, s_rho, s_trap_r, s_studyid, choice, mkAddr);    
+}
+
 std::string      Test_NoteConsent_Output(
                     const std::string&  s_apk, 
                     const std::string&  s_rho,
