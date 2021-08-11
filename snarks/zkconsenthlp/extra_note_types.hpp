@@ -47,7 +47,7 @@ public:
 };
 
 template<typename FieldT, typename NoteT, size_t TreeDepth> 
-class input_note
+class zkc_input_note
 {
 public:
     std::vector<FieldT>             mkpath;
@@ -57,8 +57,8 @@ public:
     libzeth::bits256        nf;
     NoteT                   note;
 
-    input_note(){};
-    input_note(
+    zkc_input_note(){};
+    zkc_input_note(
         std::vector<FieldT>     &&mkpath_in,
         const libzeth::bits_addr<TreeDepth> &mkaddress_in,
         const libzeth::bits256  &a_sk_in,
