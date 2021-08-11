@@ -5,11 +5,6 @@
 // DISCLAIMER:
 // Content Taken and adapted from ZETH
 
-#include "libzeth/circuits/circuit_utils.hpp"
-
-#include <libsnark/gadgetlib1/gadget.hpp>
-#include <libsnark/gadgetlib1/gadgets/hashes/hash_io.hpp>
-
 namespace libzkconsent
 {
 template<typename FieldT>

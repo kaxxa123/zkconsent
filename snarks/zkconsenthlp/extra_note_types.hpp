@@ -14,8 +14,7 @@ public:
         const libzeth::bits256 &a_pk_in,
         const libzeth::bits256 &rho_in)
         : a_pk(a_pk_in), rho(rho_in)
-    {
-    }
+    {}
 
     id_note() {}
 };
@@ -66,9 +65,9 @@ public:
         const NoteT             &note_in)
         : mkpath(std::move(mkpath_in))
         , mkaddress(mkaddress_in)
-        , note(note_in)
         , a_sk(a_sk_in)
         , nf(nf_in)
+        , note(note_in)
     {
     }
 };

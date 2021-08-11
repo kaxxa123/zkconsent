@@ -44,5 +44,12 @@ std::string      Test_NoteConsent_Output(
                     const std::string&  s_trap_r,
                     const std::string&  s_studyid,
                     bool                choice);
+
+bool            Test_UserTerminate(
+                    const std::string&  s_ask, 
+                    const std::string&  s_rho,
+                    const std::string&  s_hsig,
+                    size_t              mkAddr);
+                    
 }
 #endif //__ZKC_INTERFACE_H_

@@ -3,6 +3,7 @@
 #include <sstream>
 #include <vector>
 
+#include "libzeth/circuits/safe_arithmetic.hpp"
 #include "libzeth/circuits/circuit_types.hpp"
 #include "libzeth/circuits/blake2s/blake2s.hpp"
 #include "libzeth/circuits/circuit_utils.hpp"
@@ -10,12 +11,16 @@
 #include "libzeth/core/utils.hpp"
 #include "libzeth/zeth_constants.hpp"
 
+#include <libsnark/gadgetlib1/gadget.hpp>
+#include <libsnark/gadgetlib1/gadgets/hashes/hash_io.hpp>
+
 #include "zkc_params.hpp"
 #include "zkc_helpers.hpp"
 #include "extra_prf_gadgets.hpp"
 #include "extra_cm_gadgets.hpp"
 #include "extra_note_types.hpp"
 #include "extra_note_gadgets.hpp"
+#include "zkproof_terminate.hpp"
 #include "zkc_interface.hpp"
 
 namespace libzkconsent
@@ -123,5 +128,16 @@ std::string      Test_NoteConsent_Output(
     return noteconsent_out_gadget<FieldT, HashT>::test(
                 s_apk, s_rho, s_trap_r, s_studyid, choice);    
 }
+
+bool            Test_UserTerminate(
+                    const std::string&  s_ask, 
+                    const std::string&  s_rho,
+                    const std::string&  s_hsig,
+                    size_t              mkAddr)
+{
+    return zkterminate_gadget<FieldT,HashT,HashTreeT,ZKC_TreeDepth>::test(
+                s_ask,s_rho,s_hsig,mkAddr);
+}
+
 
 }

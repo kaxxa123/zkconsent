@@ -56,7 +56,7 @@ void noteid_in_gadget<FieldT, HashT, HashTreeT, TreeDepth>::generate_r1cs_constr
     mktree_gag->generate_r1cs_constraints();
 
     this->pb.add_r1cs_constraint(
-        libsnark::r1cs_constraint<FieldT>(mktree_gag->result() - mktree_root, 1, 0),
+        libsnark::r1cs_constraint<FieldT>(1, mktree_gag->result(), mktree_root),
         FMT(this->annotation_prefix, " expected_root authenticator"));    
 }
 
@@ -198,7 +198,7 @@ void noteconsent_in_gadget<FieldT, HashT, HashTreeT, TreeDepth>::generate_r1cs_c
     mktree_gag->generate_r1cs_constraints();
 
     this->pb.add_r1cs_constraint(
-        libsnark::r1cs_constraint<FieldT>(mktree_gag->result() - mktree_root, 1, 0),
+        libsnark::r1cs_constraint<FieldT>(1, mktree_gag->result(), mktree_root),
         FMT(this->annotation_prefix, " expected_root authenticator"));    
 }
 

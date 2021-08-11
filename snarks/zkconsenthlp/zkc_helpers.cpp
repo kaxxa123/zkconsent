@@ -3,6 +3,9 @@
 #include <sstream>
 #include <vector>
 
+#include <libsnark/gadgetlib1/gadget.hpp>
+#include <libsnark/gadgetlib1/gadgets/hashes/hash_io.hpp>
+
 #include "zkc_helpers.hpp"
 
 namespace libzkconsent

@@ -6,6 +6,7 @@ add_library(
   zkc_helpers.cpp  
   zkc_interface.cpp
   zkc_mktree.cpp
+  ${DEPENDS_DIR}/zeth/libzeth/circuits/safe_arithmetic.cpp
   ${DEPENDS_DIR}/zeth/libzeth/core/bits.cpp
   ${DEPENDS_DIR}/zeth/libzeth/core/utils.cpp
 )

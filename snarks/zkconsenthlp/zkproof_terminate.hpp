@@ -10,16 +10,9 @@ template<typename FieldT, typename HashT, typename HashTreeT, size_t TreeDepth>
 class zkterminate_gadget : libsnark::gadget<FieldT>
 {
 private:
-    const size_t digest_len_minus_field_cap =   
-        subtract_with_clamp(HashT::get_digest_len(), FieldT::capacity());
-
-    // Number of residual bits from packing of hash digests into smaller
-    // field elements: digest_len_minus_field_cap*(hsig + htag + nf)
-    const size_t length_bit_residual =  digest_len_minus_field_cap*3;
-
     // Multipacking gadgets for the inputs (nullifierS, hsig, htag, residuals)
-    std::array<libsnark::pb_variable_array<FieldT>, 4> packed_inputs;
-    std::array<libsnark::pb_variable_array<FieldT>, 4> unpacked_inputs;
+    std::array<libsnark::pb_variable_array<FieldT>, 4>  packed_inputs;
+    std::array<libsnark::pb_variable_array<FieldT>, 4>  unpacked_inputs;
     std::array<std::shared_ptr<libsnark::multipacking_gadget<FieldT>>,4> packers;
 
     libsnark::pb_variable<FieldT> ZERO;
@@ -40,7 +33,13 @@ public:
     void generate_r1cs_witness(
         const FieldT &rt,
         const zkc_input_note<FieldT, id_note, TreeDepth> &inputs,
-        const libzeth::bits256 h_sig_in);    
+        const libzeth::bits256 h_sig_in);
+
+    static bool test(
+        const std::string&  s_ask, 
+        const std::string&  s_rho,
+        const std::string&  s_hsig,
+        size_t              mkAddr);        
 };
 
 }
