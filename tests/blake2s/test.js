@@ -1,5 +1,21 @@
 const BLAKE2s = require("blake2s")
 
+function ModSubtraction(p)
+{
+    for (i = 0; i < p; ++i)
+        for (j = 0; j < p; ++j)
+        {
+            diff = (i - j) 
+            res  = (diff >= 0) ? diff % p : p - diff;
+
+            // console.log(`(${i} - ${j}) % ${p} = ${res}`);
+            // if (res == 0)   console.log("^^^^^^^^^^^^^^^^^");
+
+            if (res == 0)   
+                console.log(`(${i} - ${j}) % ${p} = ${res}`);
+        }
+}
+
 //https://stackoverflow.com/questions/21667377/javascript-hexadecimal-string-to-decimal-string
 function hexToDec(s) {
     var i, j, digits = [0], carry;
@@ -58,3 +74,5 @@ console.log("=== Consent Commitment ON ===")
 console.log(cm_hex)
 console.log(cm_dec)
 console.log()
+
+// ModSubtraction(30);
