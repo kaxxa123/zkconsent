@@ -1,0 +1,77 @@
+Sample ZETH dump generated using:
+    zeth mix --vin 10  --out zeth-address.pub,10 -n --dump-parameters -
+
+Notes:
+    ZETH has a nested proof structure of this form:
+
+    Outer Proof Inputs:
+        <primary inputs>    = Hash(<public inputs>), 
+        <auxiliary inputs>  = <public inputs>, <private inputs>
+
+    Outer Proof Verifier
+    {1,0} <-- Verfy(Proof, Hash)
+
+
+    However the smart contract is not supplied the Hash itself but is rather supplied 
+    the <public inputs>. In fact in the smart contract:
+    zeth_contracts/contracts/AbstractMixer.sol
+
+    ...we find this code, where the contract computes the hash from <public inputs>
+    and passes this to the verifier.
+
+        uint256 publicInputsHash = _hashPublicProofData(publicInputs);
+        require(
+            _verifyZkProof(proof, publicInputsHash),
+            "Invalid proof: Unable to verify the proof correctly"
+        );
+
+
+
+
+
+mix_params={
+    "extended_proof": 
+        {"proof": 
+            {"a": ["0x0ef6125158d1e1da7d1a046f99f0945b4533448310f47efc811d0ff074832206", 
+                    "0x184ced2976071784a2f893388baed276544a04be750cf5c545bd872385b8d8c1"], 
+            "b": [["0x0efb7877c10fd7dd7e536bd1f676b021dfe0047eb40c741e175b0cffac20de19", 
+                    "0x288c8d897fc6dfd09e6280da970073ea4b486f7d672959c52a710271374145e3"], 
+                    ["0x284a8d7c89db0d0a0649b01dc575742b6b363f865c89b9889a933aa150197c5f", 
+                    "0x08b98d6484154b84d0a5377c9be8abd86c01c3cf2345dd94afc683f68e868015"]], 
+            "c": [  "0x0afdf289d2086dbeebc2c39c1e069ff3d737b17a4d9d7c389380823bb0b005d9", 
+                    "0x0669ac5a33a05f40a0735390f254a138273ed00261a706f6d4790018c9b53100"]
+            }, 
+Hash -->    "inputs": ["0x1303a9ace49cfb82316a1c5427c7f929da40bc3cfc4ed64b3716ffb9a233d482"]
+        }, 
+
+    "public_data": 
+        ["0xbbbf0c84006060be41f4b0b0c8e05b2ecc7272847684984cd3f3b4b9f5f0321", 
+        "0x11bc7c575991cac43556fa8331ae875ce9cc2d9c87d09af492d6f672869601dc", 
+        "0x290b73f301945fe96697c4462a9197496c6ba5ee5c71b45ffe3e0c219742e16b", 
+        "0xcf19b38fd1fd157550622ed55922f587858566052751f945db2a26864ea9381", 
+        "0x621845b70e75021bf3f7a6b61cc1e1ff96be344270cb50481deb079ef430d13", 
+        "0x8b17ec237b6a7c16b253f6822e419415dcda068d4ae91dda2f7ab72f5529067", 
+        "0x13ff518f842fcf208ceca71f2219e536b7bbd1236d008acf8a644cc282faee73", 
+        "0x14f94e1ddc8545ffef3f5bfa56d589ce515530cc68147a3713e00eab3db69805", 
+        "0x65a300000000009896800000000000000000"], 
+    
+    "signature_vk": 
+        ["12347136104594811487826446958850236328106372135371734965195677585395922497057", 
+        "21179167258775722601679230809567523784242052152913587328830939564475867689835", 
+        "6941727730007474262845778077529992049366337968848922042501412647742542205512", 
+        "16352543914757735418204692292308276619349193753247395639301254555591052538610"], 
+
+    "signature": "9509078764800002727736285533037209682672650124727663589665654859095148889573", 
+
+    "ciphertexts": 
+        ["58739cb880b94ff55866281f841c52c3878a901969e8720181a7a2ace82fed090595f2cd708f2285c5
+        44e7056b031fd4668815054e3ce180d625285ba50ad661dea8cd30018816c4ff551ad2e2a761d4dc69ff
+        f2d585e663ac1aee287fc9400213a19195654451d1aceced8bb84462864c888d06941ebad8ff7391bb55
+        017d15c43e79c1ac16929147886d1ec2f2cff7f7affa19865dc1be", 
+        
+        "51a53a851fc0d4431b3e8a5acd70f44b7de7341ec01f25c33b615fe51fc98b5debd4d8c16bcebc0af72
+        eb2ef56c8b3d2b05b4377940541704fc1b13a696467429c7cc21ea2bf2b4c62c1a3c5d53ce21058aa76b
+        e51bfd820f5fbffd3f0aefa55a3124c91f8e375174dcfa6f469b4dc94202f6167e832f709d76e6e65853
+        a623aa45d844bc31ca3bcc3ee3c26d8283a6731a1f45750fcffa6"]
+
+}
