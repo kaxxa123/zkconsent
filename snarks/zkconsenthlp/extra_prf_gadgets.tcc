@@ -39,10 +39,10 @@ libsnark::pb_variable_array<FieldT> get_tag_nf_sid(
     const libsnark::pb_variable_array<FieldT> &a_sk)
 {
     libsnark::pb_variable_array<FieldT> tagged_a_sk;
-    tagged_a_sk.emplace_back(ONE);  // 1
-    tagged_a_sk.emplace_back(ONE);  // 11
-    tagged_a_sk.emplace_back(ONE);  // 111
-    tagged_a_sk.emplace_back(ONE);  // 1111
+    tagged_a_sk.emplace_back(ONE);   // 1
+    tagged_a_sk.emplace_back(ZERO);  // 10
+    tagged_a_sk.emplace_back(ZERO);  // 100
+    tagged_a_sk.emplace_back(ZERO);  // 1000
 
     // Should always be satisfied because a_sk
     // is a 256 bit string. This is just a sanity check
