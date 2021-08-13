@@ -9,6 +9,7 @@
 #include "libzeth/circuits/circuit_utils.hpp"
 #include "libzeth/circuits/prfs/prf.hpp"
 #include "libzeth/core/utils.hpp"
+#include "libzeth/core/field_element_utils.hpp"
 #include "libzeth/zeth_constants.hpp"
 
 #include <libsnark/gadgetlib1/gadget.hpp>
@@ -20,7 +21,9 @@
 #include "extra_cm_gadgets.hpp"
 #include "extra_note_types.hpp"
 #include "extra_note_gadgets.hpp"
+#include "extra_study_gadgets.hpp"
 #include "zkproof_terminate.hpp"
+// #include "zkproof_consent.hpp"
 #include "zkc_interface.hpp"
 
 namespace libzkconsent
@@ -65,7 +68,7 @@ std::string     PRFIDnf(const std::string& ask, const std::string& rho)
 std::string     PRFStudynf(const std::string& ask, const std::string& sid)
 {
     return PRF_2input<FieldT, HashT, PRF_nf_sid_gadget<FieldT, HashT>>(
-        ask, sid);
+        ask, Hex64to256(sid));
 }
 
 std::string     PRFHtag     (const std::string& ask, const std::string& hsig, size_t index)
@@ -107,7 +110,7 @@ std::string      Test_NoteId_Output(
 }
 
 std::string      Test_NoteConsent_Input(
-                    const std::string&  s_apk, 
+                    const std::string&  s_ask, 
                     const std::string&  s_rho,
                     const std::string&  s_trap_r,
                     const std::string&  s_studyid,
@@ -115,7 +118,7 @@ std::string      Test_NoteConsent_Input(
                     size_t              mkAddr)
 {
     return noteconsent_in_gadget<FieldT, HashT, HashTreeT, ZKC_TreeDepth>::test(
-                s_apk, s_rho, s_trap_r, s_studyid, choice, mkAddr);    
+                s_ask, s_rho, s_trap_r, s_studyid, choice, mkAddr);    
 }
 
 std::string      Test_NoteConsent_Output(
@@ -129,6 +132,15 @@ std::string      Test_NoteConsent_Output(
                 s_apk, s_rho, s_trap_r, s_studyid, choice);    
 }
 
+std::string      Test_Study_Input(
+                    const std::string&  s_ask, 
+                    const std::string&  s_studyid,
+                    size_t              mkAddr)
+{
+    return study_in_gadget<FieldT, HashT, HashTreeT, ZKC_TreeDepth>::test(
+                s_ask, s_studyid, mkAddr);    
+}
+
 bool            Test_UserTerminate(
                     const std::string&  s_ask, 
                     const std::string&  s_rho,
@@ -138,6 +150,16 @@ bool            Test_UserTerminate(
     return zkterminate_gadget<FieldT,HashT,HashTreeT,ZKC_TreeDepth>::test(
                 s_ask,s_rho,s_hsig,mkAddr);
 }
+
+// bool            Test_ConsentMint(
+//                     const std::string&  s_ask, 
+//                     const std::string&  s_rho,
+//                     const std::string&  s_hsig,
+//                     size_t              mkAddr)
+// {
+//     return zkmint_gadget<FieldT,HashT,HashTreeT,ZKC_TreeDepth>::test(
+//                 s_ask,s_rho,s_hsig,mkAddr);    
+// }
 
 
 }

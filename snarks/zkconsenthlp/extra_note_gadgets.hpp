@@ -24,8 +24,8 @@ private:
     std::shared_ptr<libsnark::pb_variable_array<FieldT>> mktree_path;
     std::shared_ptr<libzeth::merkle_path_compute<FieldT, HashTreeT>> mktree_gag;
 
-    // a_pk_gag - Makes sure the a_pk is computed corectly from a_sk
-    // nf_gag   - Makes sure the nullifiers are computed correctly from rho and a_sk
+    // a_pk_gag - Computes a_pk from a_sk
+    // nf_gag   - Computes nullifier from rho and a_sk
     std::shared_ptr<libzeth::PRF_addr_a_pk_gadget<FieldT, HashT>> a_pk_gag;
     std::shared_ptr<PRF_nf_uid_gadget<FieldT, HashT>>  nf_gag;
 
@@ -73,8 +73,8 @@ private:
     std::shared_ptr<libsnark::pb_variable_array<FieldT>> mktree_path;
     std::shared_ptr<libzeth::merkle_path_compute<FieldT, HashTreeT>> mktree_gag;
 
-    // a_pk_gag - Makes sure the a_pk is computed corectly from a_sk
-    // nf_gag   - Makes sure the nullifiers are computed correctly from rho and a_sk
+    // a_pk_gag - Computes a_pk from a_sk
+    // nf_gag   - Computes nullifier from rho and a_sk
     std::shared_ptr<libzeth::PRF_addr_a_pk_gadget<FieldT, HashT>> a_pk_gag;
     std::shared_ptr<libzeth::PRF_nf_gadget<FieldT, HashT>>  nf_gag;
 

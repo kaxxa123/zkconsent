@@ -31,7 +31,7 @@ std::string      Test_NoteId_Output(
                     const std::string&  s_rho);
 
 std::string      Test_NoteConsent_Input(
-                    const std::string&  s_apk, 
+                    const std::string&  s_ask, 
                     const std::string&  s_rho,
                     const std::string&  s_trap_r,
                     const std::string&  s_studyid,
@@ -45,11 +45,22 @@ std::string      Test_NoteConsent_Output(
                     const std::string&  s_studyid,
                     bool                choice);
 
+std::string      Test_Study_Input(
+                    const std::string&  s_ask, 
+                    const std::string&  s_studyid,
+                    size_t              mkAddr);
+
 bool            Test_UserTerminate(
                     const std::string&  s_ask, 
                     const std::string&  s_rho,
                     const std::string&  s_hsig,
                     size_t              mkAddr);
+                    
+// bool            Test_ConsentMint(
+//                     const std::string&  s_ask, 
+//                     const std::string&  s_rho,
+//                     const std::string&  s_hsig,
+//                     size_t              mkAddr);                    
                     
 }
 #endif //__ZKC_INTERFACE_H_

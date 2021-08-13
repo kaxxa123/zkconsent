@@ -245,6 +245,29 @@ void TestTerminate()
     if (!bVerified) throw "Unexpected: verification failed";
 }
 
+void TestStudy()
+{
+    const char* ask       = "0F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
+    std::string studyid   = "2F0000000000000F";
+    size_t      mkAddr    = 1;
+
+    std::string nf_expected  = PRFStudynf(ask, studyid);
+    std::string nf           = Test_Study_Input(ask, studyid, mkAddr);
+
+    std::transform(nf.begin(), nf.end(), nf.begin(), ::toupper);
+    std::transform(nf_expected.begin(), nf_expected.end(), nf_expected.begin(), ::toupper);
+
+    std::cout << std::endl;
+    std::cout << "=== Testing computation of Study Input ===" << std::endl;
+    std::cout << "a_sk:     " << ask << std::endl;
+    std::cout << "studyid:  " << studyid << std::endl;
+    std::cout << "nf:       " << nf << std::endl;
+
+    bool bVerified = (nf.compare(nf_expected) == 0);
+    std::cout << "Verified: " << bVerified << std::endl << std::endl;
+    if (!bVerified) throw "Unexpected: verification failed";
+}
+
 int main()
 {
     InitSnarks();
@@ -254,6 +277,6 @@ int main()
     TestNoteId();
     TestNodeConsent();
     TestTerminate();
-
+    TestStudy();
     return 0;
 }

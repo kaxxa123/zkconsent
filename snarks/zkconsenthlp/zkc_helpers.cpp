@@ -35,4 +35,12 @@ std::string digest2hex(const std::vector<bool>& digest)
     return strOut;
 }
 
+std::string     Hex64to256(const std::string& str64)
+{
+    if (str64.size() != 16)
+            throw   "Unexpected: Hex64 string length";
+    std::string strOut = "000000000000000000000000000000000000000000000000";
+    return  strOut + str64;
+}
+
 }
