@@ -14,20 +14,20 @@ zkterminate_gadget<FieldT,HashT,HashTreeT,TreeDepth>::zkterminate_gadget(
     // Allocation is currently performed here in the following order
     // (with the protoboard owner determining whether these are primary
     // or auxiliary inputs to the circuit):
-    //  Index   Field
-    // - [0]    Root
-    // - [1]    NullifierS
-    // - [2]    h_sig
-    // - [3]    h_tag
-    // - [4]    Residual field element(S)
+    //     PB Index       Field
+    // - [<start> + 0]    Root
+    // - [<start> + 1]    NullifierS
+    // - [<start> + 2]    hsig
+    // - [<start> + 3]    htag
+    // - [<start> + 4]    Residual field element(S)
 
     merkle_root.reset(new libsnark::pb_variable<FieldT>);
     merkle_root->allocate(pb, FMT(" merkle_root"));
     
     //AlexZ: packed_inputs[4][1]   ========================================
     packed_inputs[0].allocate(pb, 1, FMT(" in_nullifier"));
-    packed_inputs[1].allocate(pb, 1, FMT(" h_sig"));
-    packed_inputs[2].allocate(pb, 1, FMT(" h_tag"));
+    packed_inputs[1].allocate(pb, 1, FMT(" hsig"));
+    packed_inputs[2].allocate(pb, 1, FMT(" htag"));
     packed_inputs[3].allocate(pb, 1, FMT(" residual_bits"));
     // ====================================================================
 
@@ -36,30 +36,30 @@ zkterminate_gadget<FieldT,HashT,HashTreeT,TreeDepth>::zkterminate_gadget(
     // TODO: check whether/why this is actually needed
     ZERO.allocate(pb, FMT(this->annotation_prefix, " ZERO"));
 
-    h_sig.reset(new libsnark::digest_variable<FieldT>(pb, libzeth::ZETH_HSIG_SIZE, FMT(" h_sig")));
+    hsig.reset(new libsnark::digest_variable<FieldT>(pb, libzeth::ZETH_HSIG_SIZE, FMT(" hsig")));
     input_nullifier.reset(new libsnark::digest_variable<FieldT>( pb, HashT::get_digest_len(), FMT(" input_nullifier")));
     a_sk.reset(new libsnark::digest_variable<FieldT>(pb,libzeth::ZETH_A_SK_SIZE,FMT(" a_sk")));
-    h_is.reset(new libsnark::digest_variable<FieldT>(pb,HashT::get_digest_len(),FMT(" h_is")));
+    htag.reset(new libsnark::digest_variable<FieldT>(pb,HashT::get_digest_len(),FMT(" htag")));
 
     // We already allocated varaibles on the protoboard for the various unpacked digests
     // We now want unpacked_inputs to bring together the allocation indexes of these variables
 
-    // h_is contains the complete 256-bit digest variable. Now we want unpacked_inputs to reference 
+    // Now we want unpacked_inputs to reference 
     // the individual bits as follows:
     //  unpacked_inputs[    <htag>] = htag_253-bits
     //  unpacked_inputs[      <nf>] = nf_253-bits
     //  unpacked_inputs[    <hsig>] = hsig_253-bits
     //  unpacked_inputs[<residual>] = hsig_003-bits || nf_003-bits || htag_003-bits
-    digest_variable_assign_to_field_element_and_residual(*h_is,             unpacked_inputs[0], unpacked_inputs[3]);
-    digest_variable_assign_to_field_element_and_residual(*input_nullifier,  unpacked_inputs[1], unpacked_inputs[3]);
-    digest_variable_assign_to_field_element_and_residual(*h_sig,            unpacked_inputs[2], unpacked_inputs[3]);
+    digest_variable_assign_to_field_element_and_residual(*htag,             unpacked_inputs[2], unpacked_inputs[PCK_INPUTS-1]);
+    digest_variable_assign_to_field_element_and_residual(*input_nullifier,  unpacked_inputs[0], unpacked_inputs[PCK_INPUTS-1]);
+    digest_variable_assign_to_field_element_and_residual(*hsig,             unpacked_inputs[1], unpacked_inputs[PCK_INPUTS-1]);
 
     //The multipacking_gadget(s) packs our unpacked_inputs (bits) to our packed_inputs (field elements)
     packers[0].reset(new libsnark::multipacking_gadget<FieldT>(
                 pb,unpacked_inputs[0],packed_inputs[0],FieldT::capacity(),FMT(" packer_nullifier")));
 
     packers[1].reset(new libsnark::multipacking_gadget<FieldT>(
-                pb,unpacked_inputs[1],packed_inputs[1],FieldT::capacity(),FMT(" packer_h_sig")));
+                pb,unpacked_inputs[1],packed_inputs[1],FieldT::capacity(),FMT(" packer_hsig")));
 
     packers[2].reset(new libsnark::multipacking_gadget<FieldT>(
                 pb,unpacked_inputs[2],packed_inputs[2],FieldT::capacity(),FMT(" packer_htag")));
@@ -70,8 +70,8 @@ zkterminate_gadget<FieldT,HashT,HashTreeT,TreeDepth>::zkterminate_gadget(
     input_notes.reset(new noteid_in_gadget<FieldT, HashT, HashTreeT, TreeDepth>(
             pb, ZERO, *merkle_root, a_sk, input_nullifier));
 
-    h_i_gadgets.reset(new libzeth::PRF_pk_gadget<FieldT, HashT>(
-            pb, ZERO, a_sk->bits, h_sig->bits, 0, h_is));
+    htag_gadget.reset(new libzeth::PRF_pk_gadget<FieldT, HashT>(
+            pb, ZERO, a_sk->bits, hsig->bits, 0, htag));
 }
 
 template<typename FieldT, typename HashT, typename HashTreeT, size_t TreeDepth>
@@ -88,22 +88,22 @@ void zkterminate_gadget<FieldT,HashT,HashTreeT,TreeDepth>::generate_r1cs_constra
     libsnark::generate_r1cs_equals_const_constraint<FieldT>(this->pb, ZERO, FieldT::zero(), FMT(" ZERO"));
 
     input_notes->generate_r1cs_constraints();
-    h_i_gadgets->generate_r1cs_constraints();
+    htag_gadget->generate_r1cs_constraints();
 }
 
 template<typename FieldT, typename HashT, typename HashTreeT, size_t TreeDepth>
 void zkterminate_gadget<FieldT,HashT,HashTreeT,TreeDepth>::generate_r1cs_witness(
     const FieldT &rt,
     const zkc_input_note<FieldT, id_note, TreeDepth> &inputs,
-    const libzeth::bits256 h_sig_in)
+    const libzeth::bits256 hsig_in)
 {
     this->pb.val(ZERO) = FieldT::zero();
     this->pb.val(*merkle_root) = rt;
-    h_sig->generate_r1cs_witness(h_sig_in.to_vector());
+    hsig->generate_r1cs_witness(hsig_in.to_vector());
     a_sk->generate_r1cs_witness(inputs.a_sk.to_vector());
 
     input_notes->generate_r1cs_witness(inputs.mkpath,inputs.mkaddress,inputs.note);
-    h_i_gadgets->generate_r1cs_witness();
+    htag_gadget->generate_r1cs_witness();
 
     for (size_t i = 0; i < packers.size(); i++) {
         packers[i]->generate_r1cs_witness_from_bits();
