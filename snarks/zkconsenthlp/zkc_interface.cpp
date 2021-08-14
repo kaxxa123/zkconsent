@@ -23,7 +23,7 @@
 #include "extra_note_gadgets.hpp"
 #include "extra_study_gadgets.hpp"
 #include "zkproof_terminate.hpp"
-// #include "zkproof_consent.hpp"
+#include "zkproof_mint.hpp"
 #include "zkc_interface.hpp"
 
 namespace libzkconsent
@@ -151,15 +151,15 @@ bool            Test_UserTerminate(
                 s_ask,s_rho,s_hsig,mkAddr);
 }
 
-// bool            Test_ConsentMint(
-//                     const std::string&  s_ask, 
-//                     const std::string&  s_rho,
-//                     const std::string&  s_hsig,
-//                     size_t              mkAddr)
-// {
-//     return zkmint_gadget<FieldT,HashT,HashTreeT,ZKC_TreeDepth>::test(
-//                 s_ask,s_rho,s_hsig,mkAddr);    
-// }
+bool            Test_ConsentMint()
+                    // const std::string&  s_ask, 
+                    // const std::string&  s_rho,
+                    // const std::string&  s_hsig,
+                    // size_t              mkAddr)
+{
+    return zkmint_gadget<FieldT,HashT,HashTreeT,ZKC_TreeDepth>::test();
+                // s_ask,s_rho,s_hsig,mkAddr);    
+}
 
 
 }

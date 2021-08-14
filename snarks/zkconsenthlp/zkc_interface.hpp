@@ -56,11 +56,11 @@ bool            Test_UserTerminate(
                     const std::string&  s_hsig,
                     size_t              mkAddr);
                     
-// bool            Test_ConsentMint(
-//                     const std::string&  s_ask, 
-//                     const std::string&  s_rho,
-//                     const std::string&  s_hsig,
-//                     size_t              mkAddr);                    
+bool            Test_ConsentMint(
+                    const std::string&  s_ask, 
+                    const std::string&  s_rho,
+                    const std::string&  s_hsig,
+                    size_t              mkAddr);                    
                     
 }
 #endif //__ZKC_INTERFACE_H_
