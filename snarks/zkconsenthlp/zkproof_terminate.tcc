@@ -102,7 +102,7 @@ void zkterminate_gadget<FieldT,HashT,HashTreeT,TreeDepth>::generate_r1cs_witness
     hsig->generate_r1cs_witness(hsig_in.to_vector());
     a_sk->generate_r1cs_witness(inputs.a_sk.to_vector());
 
-    input_notes->generate_r1cs_witness(inputs.mkpath,inputs.mkaddress,inputs.note);
+    input_notes->generate_r1cs_witness(inputs.mkpath, inputs.mkaddress, inputs.note.rho.to_vector());
     htag_gadget->generate_r1cs_witness();
 
     for (size_t i = 0; i < packers.size(); i++) {
