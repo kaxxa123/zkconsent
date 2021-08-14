@@ -80,7 +80,7 @@ PRF_nf_uid_gadget<FieldT, HashT>::PRF_nf_uid_gadget(
 }
 
 // PRF to generate the nullifier
-// nf = blake2sCompress(1111 || [a_sk]_252 || sid): See ZCash protocol
+// nf = blake2sCompress(1000 || [a_sk]_252 || sid): See ZCash protocol
 // specification paper, page 57
 template<typename FieldT, typename HashT>
 PRF_nf_sid_gadget<FieldT, HashT>::PRF_nf_sid_gadget(
