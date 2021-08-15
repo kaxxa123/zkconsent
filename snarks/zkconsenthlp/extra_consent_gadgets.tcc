@@ -46,10 +46,10 @@ noteconsent_in_gadget<FieldT, HashT, HashTreeT, TreeDepth>::noteconsent_in_gadge
 template<typename FieldT, typename HashT, typename HashTreeT, size_t TreeDepth>
 void noteconsent_in_gadget<FieldT, HashT, HashTreeT, TreeDepth>::generate_r1cs_constraints()
 {
-    for (size_t i = 0; i < libzeth::ZETH_RHO_SIZE; i++)
+    for (size_t i = 0; i < rho.size(); i++)
         libsnark::generate_boolean_r1cs_constraint<FieldT>(this->pb, rho[i], FMT(this->annotation_prefix, " rho[%zu]", i));
 
-    for (size_t i = 0; i < libzeth::ZETH_R_SIZE; i++)
+    for (size_t i = 0; i < trap_r.size(); i++)
         libsnark::generate_boolean_r1cs_constraint<FieldT>(this->pb, trap_r[i], FMT(this->annotation_prefix, " trap_r[%zu]", i));
 
     nf_gag->generate_r1cs_constraints();
@@ -111,7 +111,7 @@ std::string noteconsent_in_gadget<FieldT, HashT, HashTreeT, TreeDepth>::test(
         pb, ZERO, merkle_root, a_sk_digest, a_pk_digest, studyid, choice, nullifier_digest);
 
     //=======================================================
-    for (size_t i = 0; i < ZKC_STUDYID_SIZE; i++)
+    for (size_t i = 0; i < studyid.size(); i++)
         libsnark::generate_boolean_r1cs_constraint<FieldT>(pb, studyid[i], FMT(" studyid[%zu]", i));
 
     libsnark::generate_boolean_r1cs_constraint<FieldT>(pb, choice, FMT(" choice"));
@@ -176,10 +176,10 @@ noteconsent_out_gadget<FieldT, HashT>::noteconsent_out_gadget(
 template<typename FieldT, typename HashT>
 void noteconsent_out_gadget<FieldT, HashT>::generate_r1cs_constraints()
 {
-    for (size_t i = 0; i < libzeth::ZETH_RHO_SIZE; i++)
+    for (size_t i = 0; i < rho.size(); i++)
         libsnark::generate_boolean_r1cs_constraint<FieldT>(this->pb, rho[i], FMT(this->annotation_prefix, " rho[%zu]", i));
 
-    for (size_t i = 0; i < libzeth::ZETH_R_SIZE; i++)
+    for (size_t i = 0; i < trap_r.size(); i++)
         libsnark::generate_boolean_r1cs_constraint<FieldT>(this->pb, trap_r[i], FMT(this->annotation_prefix, " trap_r[%zu]", i));
 
     cm_gag->generate_r1cs_constraints();
@@ -219,7 +219,7 @@ std::string noteconsent_out_gadget<FieldT, HashT>::test(
     noteconsent_out_gadget<FieldT, HashT> output_note_g(pb, a_pk_digest, studyid, choice, cm);
 
     //=======================================================
-    for (size_t i = 0; i < ZKC_STUDYID_SIZE; i++)
+    for (size_t i = 0; i < studyid.size(); i++)
         libsnark::generate_boolean_r1cs_constraint<FieldT>(pb, studyid[i], FMT(" studyid[%zu]", i));
 
     libsnark::generate_boolean_r1cs_constraint<FieldT>(pb, choice, FMT(" choice"));

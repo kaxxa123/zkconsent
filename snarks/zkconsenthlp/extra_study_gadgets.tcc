@@ -100,7 +100,7 @@ bool study_valid_gadget<FieldT, HashT, HashTreeT, TreeDepth>::test(
 
     //Compute witness
     pb.val(merkle_root) = root_value;
-    studyid.fill_with_bits(pb, studyid_bits64.to_vector());
+    studyid_bits64.fill_variable_array(pb, studyid);
     input_study_g.generate_r1cs_witness(path, address_bits);
 
     return pb.is_satisfied();
@@ -190,7 +190,7 @@ std::string study_in_gadget<FieldT, HashT, HashTreeT, TreeDepth>::test(
     //Compute witness
     pb.val(ZERO) = FieldT::zero();
     pb.val(merkle_root) = root_value;
-    studyid.fill_with_bits(pb, studyid_bits64.to_vector());
+    studyid_bits64.fill_variable_array(pb, studyid);
     a_sk_digest->generate_r1cs_witness(libff::bit_vector(a_sk_bits256.to_vector()));
     input_study_g.generate_r1cs_witness(path, address_bits);
 

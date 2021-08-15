@@ -121,7 +121,7 @@ std::string     PRF_1input(
     prf_gadget.generate_r1cs_constraints();
 
     pb.val(ZERO) = FieldT::zero();
-    one.fill_with_bits(pb, one_bits256.to_vector());
+    one_bits256.fill_variable_array(pb, one);
     prf_gadget.generate_r1cs_witness();
 
     if (!pb.is_satisfied())
@@ -156,8 +156,8 @@ std::string     PRF_2input(
     prf_gadget.generate_r1cs_constraints();
 
     pb.val(ZERO) = FieldT::zero();
-    one.fill_with_bits(pb, one_bits256.to_vector());
-    two.fill_with_bits(pb, two_bits256.to_vector());
+    one_bits256.fill_variable_array(pb, one);
+    two_bits256.fill_variable_array(pb, two);
     prf_gadget.generate_r1cs_witness();
 
     if (!pb.is_satisfied())
@@ -191,8 +191,8 @@ std::string     PRF_3input(
     prf_gadget.generate_r1cs_constraints();
 
     pb.val(ZERO) = FieldT::zero();
-    one.fill_with_bits(pb, one_bits256.to_vector());
-    two.fill_with_bits(pb, two_bits256.to_vector());
+    one_bits256.fill_variable_array(pb, one);
+    two_bits256.fill_variable_array(pb, two);
     prf_gadget.generate_r1cs_witness();
 
     if (!pb.is_satisfied())

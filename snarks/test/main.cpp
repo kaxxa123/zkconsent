@@ -230,21 +230,6 @@ void TestNodeConsent()
     if (!bVerified) throw "Unexpected: verification failed";
 }
 
-void TestTerminate()
-{
-    std::string ask     = "0F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
-    std::string rho     = "0F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
-    std::string hsig    = "0F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
-    size_t      mkAddr  = 1;
-
-    std::cout << std::endl;
-    std::cout << "=== Testing computation of Termination proof witness ===" << std::endl;
-
-    bool bVerified = Test_UserTerminate(ask, rho, hsig, mkAddr);
-    std::cout << "Verified: " << bVerified << std::endl << std::endl;
-    if (!bVerified) throw "Unexpected: verification failed";
-}
-
 void TestStudy()
 {
     const char* ask       = "0F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
@@ -268,6 +253,53 @@ void TestStudy()
     if (!bVerified) throw "Unexpected: verification failed";
 }
 
+void TestTerminate()
+{
+    std::string ask     = "0F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
+    std::string rho     = "0F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
+    std::string hsig    = "0F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
+    size_t      mkAddr  = 1;
+
+    std::cout << std::endl;
+    std::cout << "=== Testing computation of Termination proof witness ===" << std::endl;
+
+    bool bVerified = Test_UserTerminate(ask, mkAddr, rho, hsig);
+    std::cout << "Verified: " << bVerified << std::endl << std::endl;
+    if (!bVerified) throw "Unexpected: verification failed";
+}
+
+void TestMint()
+{
+    std::string ask                 = "0F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
+
+    size_t      mkaddrStudy         = 23;
+    std::string studyid             = "2F0000000000000F";
+
+    size_t      mkaddrId            = 1;
+    std::string rhoId_in            = "0F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
+    std::string rhoId_out           = "1F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
+
+    std::string rhoConsent_out      = "1F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
+    std::string traprConsent_out    = "1F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
+    bool        choice              = true;
+
+    std::string hsig                = "0F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
+
+    std::cout << std::endl;
+    std::cout << "=== Testing computation of Minting proof witness ===" << std::endl;
+
+
+    bool bVerified = Test_ConsentMint(ask,
+                        mkaddrStudy, studyid,
+                        mkaddrId, rhoId_in, rhoId_out,
+                        rhoConsent_out, traprConsent_out, choice,
+                        hsig);
+
+    std::cout << "Verified: " << bVerified << std::endl << std::endl;
+    if (!bVerified) throw "Unexpected: verification failed";
+}
+
+
 int main()
 {
     InitSnarks();
@@ -276,7 +308,8 @@ int main()
     TestCMs();
     TestNoteId();
     TestNodeConsent();
-    TestTerminate();
     TestStudy();
+    TestTerminate();
+    TestMint();
     return 0;
 }

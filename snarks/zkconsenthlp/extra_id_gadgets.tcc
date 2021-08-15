@@ -43,7 +43,7 @@ template<typename FieldT, typename HashT, typename HashTreeT, size_t TreeDepth>
 void noteid_in_gadget<FieldT, HashT, HashTreeT, TreeDepth>::generate_r1cs_constraints()
 {
     // Generate the constraints for the rho 256-bit string
-    for (size_t i = 0; i < libzeth::ZETH_RHO_SIZE; i++)
+    for (size_t i = 0; i < rho.size(); i++)
         libsnark::generate_boolean_r1cs_constraint<FieldT>(
             this->pb, rho[i], FMT(this->annotation_prefix, " rho"));
 
@@ -60,10 +60,10 @@ template<typename FieldT, typename HashT, typename HashTreeT, size_t TreeDepth>
 void noteid_in_gadget<FieldT, HashT, HashTreeT, TreeDepth>::generate_r1cs_witness(
         const std::vector<FieldT> &merkle_path,
         const libzeth::bits_addr<TreeDepth> &merkle_address,
-        const libff::bit_vector& rho_bits256)
+        const libzeth::bits256& rho_bits256)
 {
     // (a_sk, rho) -> nf
-    rho.fill_with_bits(this->pb, rho_bits256);
+    rho_bits256.fill_variable_array(this->pb, rho);
     nf_gag->generate_r1cs_witness();
 
     // [a_pk, rho] -> cm
@@ -127,7 +127,7 @@ std::string noteid_in_gadget<FieldT, HashT, HashTreeT, TreeDepth>::test(
     pb.val(merkle_root) = root_value;
     a_sk_digest->generate_r1cs_witness(libff::bit_vector(a_sk_bits256.to_vector()));
     a_pk_gag->generate_r1cs_witness();
-    input_note_g.generate_r1cs_witness(path, address_bits, rho_bits256.to_vector());
+    input_note_g.generate_r1cs_witness(path, address_bits, rho_bits256);
 
     if (!pb.is_satisfied())
         return nullptr;
@@ -151,16 +151,17 @@ noteid_out_gadget<FieldT, HashT>::noteid_out_gadget(
 template<typename FieldT, typename HashT>
 void noteid_out_gadget<FieldT, HashT>::generate_r1cs_constraints()
 {
-    for (size_t i = 0; i < libzeth::ZETH_RHO_SIZE; i++)
+    for (size_t i = 0; i < rho.size(); i++)
         libsnark::generate_boolean_r1cs_constraint<FieldT>(this->pb, rho[i], FMT(this->annotation_prefix, " rho[%zu]", i));
 
     cm_gag->generate_r1cs_constraints();
 }
 
 template<typename FieldT, typename HashT>
-void noteid_out_gadget<FieldT, HashT>::generate_r1cs_witness(const libff::bit_vector& rho_bits256)
+void noteid_out_gadget<FieldT, HashT>::generate_r1cs_witness(
+        const libzeth::bits256& rho_bits256)
 {
-    rho.fill_with_bits(this->pb, rho_bits256);
+    rho_bits256.fill_variable_array(this->pb, rho);
     cm_gag->generate_r1cs_witness();
 }
 
@@ -188,7 +189,7 @@ std::string noteid_out_gadget<FieldT, HashT>::test(
     libzeth::bits256 rho_bits256    = libzeth::bits256::from_hex(s_rho);
 
     a_pk_digest->generate_r1cs_witness(libff::bit_vector(a_pk_bits256.to_vector()));
-    output_note_g.generate_r1cs_witness(rho_bits256.to_vector());
+    output_note_g.generate_r1cs_witness(rho_bits256);
 
     if (!pb.is_satisfied())
         return nullptr;

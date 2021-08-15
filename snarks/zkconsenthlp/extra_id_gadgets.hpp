@@ -37,7 +37,7 @@ public:
     void generate_r1cs_witness(
         const std::vector<FieldT> &merkle_path,
         const libzeth::bits_addr<TreeDepth> &merkle_address,
-        const libff::bit_vector& rho_bits256);
+        const libzeth::bits256& rho_bits256);
 
     static std::string test(
         const std::string&  s_ask, 
@@ -60,7 +60,7 @@ public:
         const std::string &annotation_prefix = "noteid_out_gadget");
 
     void generate_r1cs_constraints();
-    void generate_r1cs_witness(const libff::bit_vector& rho_bits256);
+    void generate_r1cs_witness(const libzeth::bits256& rho_bits256);
 
     static std::string test(
             const std::string&  s_apk, 

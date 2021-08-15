@@ -51,16 +51,21 @@ std::string      Test_Study_Input(
                     size_t              mkAddr);
 
 bool            Test_UserTerminate(
-                    const std::string&  s_ask, 
+                    const std::string&  s_ask,
+                    size_t              mkAddr, 
                     const std::string&  s_rho,
-                    const std::string&  s_hsig,
-                    size_t              mkAddr);
+                    const std::string&  s_hsig);
                     
 bool            Test_ConsentMint(
-                    const std::string&  s_ask, 
-                    const std::string&  s_rho,
-                    const std::string&  s_hsig,
-                    size_t              mkAddr);                    
-                    
+                    const std::string&  s_ask,
+                    size_t              mkaddrStudy, 
+                    const std::string&  s_studyid,
+                    size_t              mkaddrId, 
+                    const std::string&  s_rhoId_in,
+                    const std::string&  s_rhoId_out,
+                    const std::string&  s_rhoConsent_out,
+                    const std::string&  s_traprConsent_out,
+                    bool                choice_out,
+                    const std::string&  s_hsig);                    
 }
 #endif //__ZKC_INTERFACE_H_

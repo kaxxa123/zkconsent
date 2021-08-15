@@ -19,7 +19,6 @@
 #include "zkc_helpers.hpp"
 #include "extra_prf_gadgets.hpp"
 #include "extra_cm_gadgets.hpp"
-#include "extra_note_types.hpp"
 #include "extra_id_gadgets.hpp"
 #include "extra_consent_gadgets.hpp"
 #include "extra_study_gadgets.hpp"
@@ -143,23 +142,34 @@ std::string      Test_Study_Input(
 }
 
 bool            Test_UserTerminate(
-                    const std::string&  s_ask, 
+                    const std::string&  s_ask,
+                    size_t              mkAddr, 
                     const std::string&  s_rho,
-                    const std::string&  s_hsig,
-                    size_t              mkAddr)
+                    const std::string&  s_hsig)
 {
     return zkterminate_gadget<FieldT,HashT,HashTreeT,ZKC_TreeDepth>::test(
-                s_ask,s_rho,s_hsig,mkAddr);
+                s_ask, mkAddr, s_rho, s_hsig);
 }
 
-bool            Test_ConsentMint()
-                    // const std::string&  s_ask, 
-                    // const std::string&  s_rho,
-                    // const std::string&  s_hsig,
-                    // size_t              mkAddr)
+bool            Test_ConsentMint(
+                    const std::string&  s_ask,
+                    size_t              mkaddrStudy, 
+                    const std::string&  s_studyid,
+                    size_t              mkaddrId, 
+                    const std::string&  s_rhoId_in,
+                    const std::string&  s_rhoId_out,
+                    const std::string&  s_rhoConsent_out,
+                    const std::string&  s_traprConsent_out,
+                    bool                choice_out,
+                    const std::string&  s_hsig)
 {
-    return zkmint_gadget<FieldT,HashT,HashTreeT,ZKC_TreeDepth>::test();
-                // s_ask,s_rho,s_hsig,mkAddr);    
+    return zkmint_gadget<FieldT,HashT,HashTreeT,ZKC_TreeDepth>::test(
+                    s_ask,
+                    mkaddrStudy, s_studyid, 
+                    mkaddrId,  s_rhoId_in,
+                    s_rhoId_out,
+                    s_rhoConsent_out, s_traprConsent_out, choice_out,
+                    s_hsig);        
 }
 
 

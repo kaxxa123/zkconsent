@@ -72,8 +72,8 @@ std::string comm_id_gadget<FieldT, HashT>::get_cm(
     comm_id_gadget<FieldT, HashT>  comm_id(pb, apk, rho, cm);
     comm_id.generate_r1cs_constraints();
 
-    apk.fill_with_bits(pb, a_pk_bits256.to_vector());
-    rho.fill_with_bits(pb, rho_bits256.to_vector());
+    a_pk_bits256.fill_variable_array(pb, apk);
+    rho_bits256.fill_variable_array(pb, rho);
     comm_id.generate_r1cs_witness();
 
     if (!pb.is_satisfied())
@@ -189,10 +189,10 @@ std::string comm_consent_gadget<FieldT, HashT>::get_cm(
     comm_consent_gadget<FieldT, HashT>  comm_id(pb, apk, rho, trap_r, studyid, choice, cm);
     comm_id.generate_r1cs_constraints();
 
-    apk.fill_with_bits(pb, a_pk_bits256.to_vector());
-    rho.fill_with_bits(pb, rho_bits256.to_vector());
-    trap_r.fill_with_bits(pb, trap_r_bits256.to_vector());
-    studyid.fill_with_bits(pb, studyid_bits64.to_vector());
+    a_pk_bits256.fill_variable_array(pb, apk);
+    rho_bits256.fill_variable_array(pb, rho);
+    trap_r_bits256.fill_variable_array(pb, trap_r);
+    studyid_bits64.fill_variable_array(pb, studyid);
     pb.val(choice) = bChoice ? FieldT::one() : FieldT::zero();
     comm_id.generate_r1cs_witness();
 
