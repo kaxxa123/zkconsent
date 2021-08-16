@@ -24,6 +24,7 @@
 #include "extra_study_gadgets.hpp"
 #include "zkproof_terminate.hpp"
 #include "zkproof_mint.hpp"
+#include "zkproof_consent.hpp"
 #include "zkc_interface.hpp"
 
 namespace libzkconsent
@@ -172,5 +173,29 @@ bool            Test_ConsentMint(
                     s_hsig);        
 }
 
+bool            Test_ConsentChg(
+                    const std::string&  s_ask,
+                    size_t              mkaddrStudy, 
+                    const std::string&  s_studyid,
+                    size_t              mkaddrId, 
+                    const std::string&  s_rhoId_in,
+                    const std::string&  s_rhoId_out,
+                    size_t              mkaddrConsent, 
+                    const std::string&  s_rhoConsent_in,
+                    const std::string&  s_traprConsent_in,
+                    bool                choice_in,
+                    const std::string&  s_rhoConsent_out,
+                    const std::string&  s_traprConsent_out,
+                    const std::string&  s_hsig)
+{
+    return zkconsent_gadget<FieldT,HashT,HashTreeT,ZKC_TreeDepth>::test(
+                    s_ask,
+                    mkaddrStudy, s_studyid, 
+                    mkaddrId,  s_rhoId_in,
+                    s_rhoId_out,
+                    mkaddrConsent, s_rhoConsent_in, s_traprConsent_in, choice_in,
+                    s_rhoConsent_out, s_traprConsent_out,
+                    s_hsig);
+}
 
 }

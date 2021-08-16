@@ -66,6 +66,21 @@ bool            Test_ConsentMint(
                     const std::string&  s_rhoConsent_out,
                     const std::string&  s_traprConsent_out,
                     bool                choice_out,
-                    const std::string&  s_hsig);                    
+                    const std::string&  s_hsig);
+
+bool            Test_ConsentChg(
+                    const std::string&  s_ask,
+                    size_t              mkaddrStudy, 
+                    const std::string&  s_studyid,
+                    size_t              mkaddrId, 
+                    const std::string&  s_rhoId_in,
+                    const std::string&  s_rhoId_out,
+                    size_t              mkaddrConsent, 
+                    const std::string&  s_rhoConsent_in,
+                    const std::string&  s_traprConsent_in,
+                    bool                choice_in,
+                    const std::string&  s_rhoConsent_out,
+                    const std::string&  s_traprConsent_out,
+                    const std::string&  s_hsig);
 }
 #endif //__ZKC_INTERFACE_H_

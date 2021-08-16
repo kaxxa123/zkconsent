@@ -279,9 +279,9 @@ void TestMint()
     std::string rhoId_in            = "0F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
     std::string rhoId_out           = "1F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
 
-    std::string rhoConsent_out      = "1F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
-    std::string traprConsent_out    = "1F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
-    bool        choice              = true;
+    std::string rhoConsent_out      = "4F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
+    std::string traprConsent_out    = "5F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
+    bool        choice              = false;
 
     std::string hsig                = "0F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
 
@@ -299,6 +299,40 @@ void TestMint()
     if (!bVerified) throw "Unexpected: verification failed";
 }
 
+void TestChgConsent()
+{
+    std::string ask                 = "0F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
+
+    size_t      mkaddrStudy         = 23;
+    std::string studyid             = "2F0000000000000F";
+
+    size_t      mkaddrId            = 1;
+    std::string rhoId_in            = "0F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
+    std::string rhoId_out           = "1F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
+
+    size_t      mkaddrConsent       = 4;
+    std::string rhoConsent_in      = "2F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
+    std::string traprConsent_in    = "3F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
+    bool        choice              = true;
+
+    std::string rhoConsent_out      = "4F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
+    std::string traprConsent_out    = "5F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
+
+    std::string hsig                = "0F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
+
+    std::cout << std::endl;
+    std::cout << "=== Testing computation of Consent Change proof witness ===" << std::endl;
+
+    bool bVerified = Test_ConsentChg(ask,
+                        mkaddrStudy, studyid,
+                        mkaddrId, rhoId_in, rhoId_out,
+                        mkaddrConsent, rhoConsent_in, traprConsent_in, choice,
+                        rhoConsent_out, traprConsent_out,
+                        hsig);
+    
+    std::cout << "Verified: " << bVerified << std::endl << std::endl;
+    if (!bVerified) throw "Unexpected: verification failed";
+}
 
 int main()
 {
@@ -311,5 +345,6 @@ int main()
     TestStudy();
     TestTerminate();
     TestMint();
+    TestChgConsent();
     return 0;
 }
