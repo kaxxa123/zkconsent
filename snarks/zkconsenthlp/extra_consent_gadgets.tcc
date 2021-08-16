@@ -154,13 +154,6 @@ std::string noteconsent_in_gadget<FieldT, HashT, HashTreeT, TreeDepth>::test(
     if (!pb.is_satisfied())
         return nullptr;
 
-    // std::cout << "---------- Debugging - Debugging ----------" << std::endl;
-    // std::cout << "Apk:               " << s_apk  << std::endl;
-    // std::cout << "Commitment String: " << s_cm  << std::endl;
-    // std::cout << "Commitment Field:  " << cm_field  << std::endl;
-    // std::cout << "Merkle Root:       " << root_value << std::endl;
-    // std::cout << "---------- Debugging - Debugging ----------" << std::endl << std::endl;
-
     return digest2hex(nullifier_digest->get_digest());
 }
 

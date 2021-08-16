@@ -251,9 +251,6 @@ bool zkmint_gadget<FieldT,HashT,HashTreeT,TreeDepth>::test(
         rhoConsent_Out_bits256, traprConsent_Out_bits256, choice_out,
         hsig_bits256);
 
-    // std::cout << "-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-"  << std::endl;
-    // std::cout << pb.auxiliary_input() << std::endl<< std::endl;
-
     return pb.is_satisfied();    
 }
 

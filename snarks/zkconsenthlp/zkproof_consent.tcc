@@ -274,7 +274,7 @@ bool zkconsent_gadget<FieldT,HashT,HashTreeT,TreeDepth>::test(
 
     test_mktreeConsent.set_value(mkaddrConsent, cmConsent);
     FieldT merkle_root_Consent = test_mktreeConsent.get_root();
-    std::vector<FieldT> mkpath_Consent  = test_mktreeId.get_path(mkaddrConsent);
+    std::vector<FieldT> mkpath_Consent  = test_mktreeConsent.get_path(mkaddrConsent);
 
     //We now have all the necessary values to run zkterminate_gadget
     libzeth::bits256 a_sk_bits256       = libzeth::bits256::from_hex(s_ask);
@@ -299,9 +299,6 @@ bool zkconsent_gadget<FieldT,HashT,HashTreeT,TreeDepth>::test(
         merkle_root_Consent,std::move(mkpath_Consent),  mkaddress_Consent,  rhoConsent_In_bits256, traprConsent_In_bits256, choice_in,
         rhoConsent_Out_bits256, traprConsent_Out_bits256,
         hsig_bits256);
-
-    // std::cout << "-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-"  << std::endl;
-    // std::cout << pb.auxiliary_input() << std::endl<< std::endl;
 
     return pb.is_satisfied();
 }
