@@ -172,16 +172,25 @@ void TestNoteId()
     if (!bVerified) throw "Unexpected: verification failed";
 }
 
-void TestNodeConsent() 
+void TestNoteConsent() 
 {
+    // std::string ask      = "0F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
+    // std::string rho0     = "0F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
+    // std::string trap_r0  = "0F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
+    // std::string studyid0 = "2F0000000000000F";
+    // bool        choice   = true;
+    // size_t      mkAddr  = 1;
+
+    // std::string nf_expected  = "ea43866d185e1bdb84713b699a2966d929d1392488c010c603e46a4cb92986f8";
+
     std::string ask      = "0F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
-    std::string rho0     = "0F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
-    std::string trap_r0  = "0F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
+    std::string rho0     = "2F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
+    std::string trap_r0  = "3F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
     std::string studyid0 = "2F0000000000000F";
     bool        choice   = true;
-    size_t      mkAddr  = 1;
+    size_t      mkAddr  = 4;
 
-    std::string nf_expected  = "ea43866d185e1bdb84713b699a2966d929d1392488c010c603e46a4cb92986f8";
+    std::string nf_expected  = "D65849550948F5CFAC1977E7B97C6D63887978737FB3D82735505F22A9127BFE";
     std::string nf           = Test_NoteConsent_Input(ask, rho0, trap_r0, studyid0, choice, mkAddr);
 
     std::transform(nf.begin(), nf.end(), nf.begin(), ::toupper);
@@ -341,7 +350,7 @@ int main()
     TestMKTree();
     TestCMs();
     TestNoteId();
-    TestNodeConsent();
+    TestNoteConsent();
     TestStudy();
     TestTerminate();
     TestMint();

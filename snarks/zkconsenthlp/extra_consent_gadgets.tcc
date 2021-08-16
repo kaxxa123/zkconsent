@@ -106,7 +106,8 @@ std::string noteconsent_in_gadget<FieldT, HashT, HashTreeT, TreeDepth>::test(
         new libsnark::digest_variable<FieldT>(pb, HashT::get_digest_len(), "a_sk_digest"));
     std::shared_ptr<libsnark::digest_variable<FieldT>> a_pk_digest(
         new libsnark::digest_variable<FieldT>(pb, HashT::get_digest_len(), "a_pk_digest"));
-    std::shared_ptr<libsnark::digest_variable<FieldT>> nullifier_digest(new libsnark::digest_variable<FieldT>(pb, HashT::get_digest_len(), "nullifier_digest"));
+    std::shared_ptr<libsnark::digest_variable<FieldT>> nullifier_digest(
+        new libsnark::digest_variable<FieldT>(pb, HashT::get_digest_len(), "nullifier_digest"));
     noteconsent_in_gadget<FieldT, HashT, HashTreeT, TreeDepth> input_note_g(
         pb, ZERO, merkle_root, a_sk_digest, a_pk_digest, studyid, choice, nullifier_digest);
 
@@ -152,6 +153,13 @@ std::string noteconsent_in_gadget<FieldT, HashT, HashTreeT, TreeDepth>::test(
 
     if (!pb.is_satisfied())
         return nullptr;
+
+    // std::cout << "---------- Debugging - Debugging ----------" << std::endl;
+    // std::cout << "Apk:               " << s_apk  << std::endl;
+    // std::cout << "Commitment String: " << s_cm  << std::endl;
+    // std::cout << "Commitment Field:  " << cm_field  << std::endl;
+    // std::cout << "Merkle Root:       " << root_value << std::endl;
+    // std::cout << "---------- Debugging - Debugging ----------" << std::endl << std::endl;
 
     return digest2hex(nullifier_digest->get_digest());
 }
