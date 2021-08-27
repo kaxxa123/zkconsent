@@ -1,6 +1,7 @@
 #include <stdlib.h>
 
 #include "libzeth/circuits/circuit_types.hpp"
+#include "libzeth/snarks/groth16/groth16_snark.hpp"
 
 #include "zkc_helpers.hpp"
 #include "zkc_mktree.hpp"

@@ -11,6 +11,8 @@
 #include "libzeth/core/utils.hpp"
 #include "libzeth/core/field_element_utils.hpp"
 #include "libzeth/zeth_constants.hpp"
+#include "libzeth/snarks/groth16/groth16_snark.hpp"
+#include "libzeth/core/extended_proof.hpp"
 
 #include <libsnark/gadgetlib1/gadget.hpp>
 #include <libsnark/gadgetlib1/gadgets/hashes/hash_io.hpp>
@@ -25,6 +27,7 @@
 #include "zkproof_terminate.hpp"
 #include "zkproof_mint.hpp"
 #include "zkproof_consent.hpp"
+#include "zkproof_wrap.hpp"
 #include "zkc_interface.hpp"
 
 namespace libzkconsent
@@ -32,7 +35,7 @@ namespace libzkconsent
 
 void            InitSnarks()
 {
-    pp::init_public_params();
+    ppT::init_public_params();
 }
 
 std::string     FieldBound(const std::string& value)
@@ -148,8 +151,10 @@ bool            Test_UserTerminate(
                     const std::string&  s_rho,
                     const std::string&  s_hsig)
 {
-    return zkterminate_gadget<FieldT,HashT,HashTreeT,ZKC_TreeDepth>::test(
-                s_ask, mkAddr, s_rho, s_hsig);
+    // return zkterminate_gadget<FieldT,HashT,HashTreeT,ZKC_TreeDepth>::test(
+    //             s_ask, mkAddr, s_rho, s_hsig);
+    return zkterminate_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>::test(
+                    s_ask, mkAddr, s_rho, s_hsig);
 }
 
 bool            Test_ConsentMint(
@@ -164,13 +169,21 @@ bool            Test_ConsentMint(
                     bool                choice_out,
                     const std::string&  s_hsig)
 {
-    return zkmint_gadget<FieldT,HashT,HashTreeT,ZKC_TreeDepth>::test(
+    // return zkmint_gadget<FieldT,HashT,HashTreeT,ZKC_TreeDepth>::test(
+    //                 s_ask,
+    //                 mkaddrStudy, s_studyid, 
+    //                 mkaddrId,  s_rhoId_in,
+    //                 s_rhoId_out,
+    //                 s_rhoConsent_out, s_traprConsent_out, choice_out,
+    //                 s_hsig);        
+
+    return zkmint_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>::test(
                     s_ask,
                     mkaddrStudy, s_studyid, 
                     mkaddrId,  s_rhoId_in,
                     s_rhoId_out,
                     s_rhoConsent_out, s_traprConsent_out, choice_out,
-                    s_hsig);        
+                    s_hsig);
 }
 
 bool            Test_ConsentChg(
@@ -188,7 +201,16 @@ bool            Test_ConsentChg(
                     const std::string&  s_traprConsent_out,
                     const std::string&  s_hsig)
 {
-    return zkconsent_gadget<FieldT,HashT,HashTreeT,ZKC_TreeDepth>::test(
+    // return zkconsent_gadget<FieldT,HashT,HashTreeT,ZKC_TreeDepth>::test(
+    //                 s_ask,
+    //                 mkaddrStudy, s_studyid, 
+    //                 mkaddrId,  s_rhoId_in,
+    //                 s_rhoId_out,
+    //                 mkaddrConsent, s_rhoConsent_in, s_traprConsent_in, choice_in,
+    //                 s_rhoConsent_out, s_traprConsent_out,
+    //                 s_hsig);
+
+    return zkconsent_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>::test(
                     s_ask,
                     mkaddrStudy, s_studyid, 
                     mkaddrId,  s_rhoId_in,
