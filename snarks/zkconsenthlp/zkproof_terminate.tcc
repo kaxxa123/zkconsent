@@ -129,8 +129,9 @@ void zkterminate_gadget<FieldT,HashT,HashTreeT,TreeDepth>::generate_r1cs_witness
     }
 }
 
+
 template<typename FieldT, typename HashT, typename HashTreeT, size_t TreeDepth>
-bool zkterminate_gadget<FieldT,HashT,HashTreeT,TreeDepth>::test(
+void zkterminate_gadget<FieldT,HashT,HashTreeT,TreeDepth>::generate_r1cs_witness_test(
         const std::string&  s_ask,
         size_t              mkaddrId, 
         const std::string&  s_rhoId,
@@ -154,18 +155,27 @@ bool zkterminate_gadget<FieldT,HashT,HashTreeT,TreeDepth>::test(
     libzeth::bits256 rho_bits256    = libzeth::bits256::from_hex(s_rhoId);
     libzeth::bits256 hsig_bits256   = libzeth::bits256::from_hex(s_hsig);
 
+    generate_r1cs_witness(
+            a_sk_bits256, 
+            merkle_root, 
+            std::move(mkpath), 
+            mkaddress,
+            rho_bits256, 
+            hsig_bits256);
+}
+
+template<typename FieldT, typename HashT, typename HashTreeT, size_t TreeDepth>
+bool zkterminate_gadget<FieldT,HashT,HashTreeT,TreeDepth>::test(
+        const std::string&  s_ask,
+        size_t              mkaddrId, 
+        const std::string&  s_rhoId,
+        const std::string&  s_hsig)
+{
     libsnark::protoboard<FieldT> pb;
     zkterminate_gadget<FieldT, HashT, HashTreeT, TreeDepth> term_gag(pb);
 
     term_gag.generate_r1cs_constraints();
-    term_gag.generate_r1cs_witness(
-        a_sk_bits256, 
-        merkle_root, 
-        std::move(mkpath), 
-        mkaddress,
-        rho_bits256, 
-        hsig_bits256);
-
+    term_gag.generate_r1cs_witness_test(s_ask, mkaddrId, s_rhoId, s_hsig);
     return pb.is_satisfied();    
 }
 

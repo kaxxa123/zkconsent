@@ -197,7 +197,7 @@ void zkmint_gadget<FieldT,HashT,HashTreeT,TreeDepth>::generate_r1cs_witness(
 }
 
 template<typename FieldT, typename HashT, typename HashTreeT, size_t TreeDepth>
-bool zkmint_gadget<FieldT,HashT,HashTreeT,TreeDepth>::test(
+void zkmint_gadget<FieldT,HashT,HashTreeT,TreeDepth>::generate_r1cs_witness_test(
         const std::string&  s_ask,
         size_t              mkaddrStudy, 
         const std::string&  s_studyid,
@@ -207,7 +207,7 @@ bool zkmint_gadget<FieldT,HashT,HashTreeT,TreeDepth>::test(
         const std::string&  s_rhoConsent_out,
         const std::string&  s_traprConsent_out,
         bool                choice_out,
-        const std::string&  s_hsig)
+        const std::string&  s_hsig)      
 {
     std::string s_apk   = PRF_1input<FieldT, HashT, libzeth::PRF_addr_a_pk_gadget<FieldT, HashT>>(s_ask);
 
@@ -239,17 +239,38 @@ bool zkmint_gadget<FieldT,HashT,HashTreeT,TreeDepth>::test(
     libzeth::bits256 traprConsent_Out_bits256  = libzeth::bits256::from_hex(s_traprConsent_out);
     libzeth::bits256 hsig_bits256       = libzeth::bits256::from_hex(s_hsig);
 
-    libsnark::protoboard<FieldT> pb;
-    zkmint_gadget<FieldT,HashT,HashTreeT,TreeDepth> mint_gag(pb);
-
-    mint_gag.generate_r1cs_constraints();
-    mint_gag.generate_r1cs_witness(
+    generate_r1cs_witness(
         a_sk_bits256, 
         merkle_root_Study,std::move(mkpath_Study),mkaddress_Study,studyid_bits64,
         merkle_root_Id,   std::move(mkpath_Id),   mkaddress_Id,   rhoId_In_bits256,
         rhoId_Out_bits256, 
         rhoConsent_Out_bits256, traprConsent_Out_bits256, choice_out,
         hsig_bits256);
+}
+
+template<typename FieldT, typename HashT, typename HashTreeT, size_t TreeDepth>
+bool zkmint_gadget<FieldT,HashT,HashTreeT,TreeDepth>::test(
+        const std::string&  s_ask,
+        size_t              mkaddrStudy, 
+        const std::string&  s_studyid,
+        size_t              mkaddrId, 
+        const std::string&  s_rhoId_in,
+        const std::string&  s_rhoId_out,
+        const std::string&  s_rhoConsent_out,
+        const std::string&  s_traprConsent_out,
+        bool                choice_out,
+        const std::string&  s_hsig)
+{
+    libsnark::protoboard<FieldT> pb;
+    zkmint_gadget<FieldT,HashT,HashTreeT,TreeDepth> mint_gag(pb);
+
+    mint_gag.generate_r1cs_constraints();
+    mint_gag.generate_r1cs_witness_test(
+                    s_ask,
+                    mkaddrStudy, s_studyid,
+                    mkaddrId, s_rhoId_in, s_rhoId_out,
+                    s_rhoConsent_out, s_traprConsent_out, choice_out,
+                    s_hsig);
 
     return pb.is_satisfied();    
 }

@@ -7,6 +7,7 @@ namespace libzkconsent
 template<typename FieldT, typename HashT, typename HashTreeT, size_t TreeDepth>
 class zkconsent_gadget : libsnark::gadget<FieldT>
 {
+public:
     //Packed Inputs: 2*nf, hsig, htag, residuals
     //Public Inputs: Packed Inputs + 2*cm + mkrootId + mkrootConsent + mkrootStudy
     static const size_t PCK_INPUTS = 5;
@@ -67,6 +68,21 @@ public:
         const libzeth::bits256      &rhoConsent_out,
         const libzeth::bits256      &traprConsent_out,
         const libzeth::bits256      &hsig_in);
+
+    void generate_r1cs_witness_test(
+        const std::string&  s_ask,
+        size_t              mkaddrStudy, 
+        const std::string&  s_studyid,
+        size_t              mkaddrId, 
+        const std::string&  s_rhoId_in,
+        const std::string&  s_rhoId_out,
+        size_t              mkaddrConsent, 
+        const std::string&  s_rhoConsent_in,
+        const std::string&  s_traprConsent_in,
+        bool                choice_in,
+        const std::string&  s_rhoConsent_out,
+        const std::string&  s_traprConsent_out,
+        const std::string&  s_hsig);
 
     static bool test(
         const std::string&  s_ask,

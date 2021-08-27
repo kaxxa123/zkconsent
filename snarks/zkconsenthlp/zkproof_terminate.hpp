@@ -9,6 +9,7 @@ namespace libzkconsent
 template<typename FieldT, typename HashT, typename HashTreeT, size_t TreeDepth>
 class zkterminate_gadget : libsnark::gadget<FieldT>
 {
+public:
     //Packed Inputs: nf, hsig, htag, residuals
     //Public Inputs: Packed Inputs + mkroot
     static const size_t PCK_INPUTS = 4;
@@ -44,6 +45,12 @@ public:
         const libzeth::bits_addr<TreeDepth> &mkaddrId,
         const libzeth::bits256      &rhoId_in,
         const libzeth::bits256      &hsig_in);
+
+    void generate_r1cs_witness_test(
+        const std::string&  s_ask,
+        size_t              mkaddrId, 
+        const std::string&  s_rhoId,
+        const std::string&  s_hsig);
 
     static bool test(
         const std::string&  s_ask,
