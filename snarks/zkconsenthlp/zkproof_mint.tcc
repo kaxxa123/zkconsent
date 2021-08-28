@@ -63,9 +63,7 @@ zkmint_gadget<FieldT,HashT,HashTreeT,TreeDepth>::zkmint_gadget(
     //  unpacked_inputs[   <nf_id>] = nf_id_253-bits
     //  unpacked_inputs[   <nf_st>] = nf_st_253-bits
     //  unpacked_inputs[    <hsig>] = hsig_253-bits
-    //  unpacked_inputs[<residual>] = hsig_003-bits || nf_st_003-bits || nf_id_003-bits || htag_003-bits || StudyId_064-bits || Choice_001bit
-    unpacked_inputs[PCK_INPUTS-1].emplace_back(choice);
-    assign_public_value_to_residual_bits(studyid, unpacked_inputs[PCK_INPUTS-1]);
+    //  unpacked_inputs[<residual>] = hsig_003-bits || nf_st_003-bits || nf_id_003-bits || htag_003-bits
     digest_variable_assign_to_field_element_and_residual(*htag,     unpacked_inputs[3], unpacked_inputs[PCK_INPUTS-1]);
     digest_variable_assign_to_field_element_and_residual(*nf_id,    unpacked_inputs[0], unpacked_inputs[PCK_INPUTS-1]);
     digest_variable_assign_to_field_element_and_residual(*nf_study, unpacked_inputs[1], unpacked_inputs[PCK_INPUTS-1]);

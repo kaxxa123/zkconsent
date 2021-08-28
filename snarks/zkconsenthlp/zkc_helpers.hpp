@@ -23,17 +23,6 @@ std::string     FieldtoString(FieldT& value)
 // FieldT base_field_element_from_hex(const std::string &hex)
 
 template<typename FieldT>    
-static void assign_public_value_to_residual_bits(
-    const libsnark::pb_variable_array<FieldT> &unpacked_public_value,
-    libsnark::pb_variable_array<FieldT> &unpacked_residual_bits)
-{
-    unpacked_residual_bits.insert(
-        unpacked_residual_bits.end(),
-        unpacked_public_value.rbegin(),
-        unpacked_public_value.rend());
-}
-
-template<typename FieldT>    
 void digest_variable_assign_to_field_element_and_residual(
     const libsnark::digest_variable<FieldT> &digest_var,
     libsnark::pb_variable_array<FieldT> &unpacked_element,
