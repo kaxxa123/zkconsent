@@ -28,7 +28,7 @@
 #include "zkproof_mint.hpp"
 #include "zkproof_consent.hpp"
 #include "zkproof_confirm.hpp"
-#include "zkproof_wrap.hpp"
+#include "zkproof_wrap_hash.hpp"
 #include "zkc_interface.hpp"
 
 namespace libzkconsent

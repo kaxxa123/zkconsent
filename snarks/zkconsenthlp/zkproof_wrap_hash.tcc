@@ -1,5 +1,5 @@
-#ifndef __ZKPROOF_WRAP_TCC_
-#define __ZKPROOF_WRAP_TCC_
+#ifndef __ZKPROOF_WRAP_HASH_TCC_
+#define __ZKPROOF_WRAP_HASH_TCC_
 
 namespace libzkconsent
 {
@@ -354,4 +354,4 @@ bool zkconsent_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, TreeDepth>::test(
 
 }
 
-#endif //__ZKPROOF_WRAP_TCC_
+#endif //__ZKPROOF_WRAP_HASH_TCC_

@@ -1,5 +1,5 @@
-#ifndef __ZKPROOF_WRAP_HPP_
-#define __ZKPROOF_WRAP_HPP_
+#ifndef __ZKPROOF_WRAP_HASH_HPP_
+#define __ZKPROOF_WRAP_HASH_HPP_
 
 namespace libzkconsent
 {
@@ -197,6 +197,6 @@ using ZkpT =  zkconsent_gadget<FieldT, HashT, HashTreeT, TreeDepth>;
 
 }
 
-#include "zkproof_wrap.tcc"
+#include "zkproof_wrap_hash.tcc"
 
-#endif //__ZKPROOF_WRAP_HPP_
+#endif //__ZKPROOF_WRAP_HASH_HPP_
