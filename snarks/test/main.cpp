@@ -343,6 +343,25 @@ void TestChgConsent()
     if (!bVerified) throw "Unexpected: verification failed";
 }
 
+void TestConfirm()
+{
+    std::string a_pk    = "f172d7299ac8ac974ea59413e4a87691826df038ba24a2b52d5c5d15c2cc8c49";
+    std::string rho     = "FFFF000000000000000000000000000000000000000000000000000000009009";
+    std::string trap_r  = "0F000000000000FF00000000000000FF00000000000000FF00000000000000FF";
+    std::string studyid = "2F0000000000000F";
+
+    std::cout << std::endl;
+    std::cout << "=== Testing computation of Consent Confirmation ===" << std::endl;
+
+    bool bVerified = Test_ConsentConfirm(a_pk, studyid, rho, trap_r, false);
+    std::cout << "Verified OFF: " << bVerified << std::endl << std::endl;
+    if (!bVerified) throw "Unexpected: verification failed";
+
+    bVerified    = Test_ConsentConfirm(a_pk, studyid, rho, trap_r, true);
+    std::cout << "Verified ON: " << bVerified << std::endl << std::endl;
+    if (!bVerified) throw "Unexpected: verification failed";
+}
+
 int main()
 {
     InitSnarks();
@@ -352,8 +371,10 @@ int main()
     TestNoteId();
     TestNoteConsent();
     TestStudy();
+    
     TestTerminate();
     TestMint();
     TestChgConsent();
+    TestConfirm();
     return 0;
 }

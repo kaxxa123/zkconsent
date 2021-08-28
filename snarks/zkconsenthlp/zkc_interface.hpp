@@ -82,5 +82,13 @@ bool            Test_ConsentChg(
                     const std::string&  s_rhoConsent_out,
                     const std::string&  s_traprConsent_out,
                     const std::string&  s_hsig);
+
+bool            Test_ConsentConfirm(
+                    const std::string&  s_apk,
+                    const std::string&  s_studyid,
+                    const std::string&  s_rho,
+                    const std::string&  s_trapr,
+                    bool                choice);
+
 }
 #endif //__ZKC_INTERFACE_H_

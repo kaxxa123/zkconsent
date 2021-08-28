@@ -27,6 +27,7 @@
 #include "zkproof_terminate.hpp"
 #include "zkproof_mint.hpp"
 #include "zkproof_consent.hpp"
+#include "zkproof_confirm.hpp"
 #include "zkproof_wrap.hpp"
 #include "zkc_interface.hpp"
 
@@ -218,6 +219,17 @@ bool            Test_ConsentChg(
                     mkaddrConsent, s_rhoConsent_in, s_traprConsent_in, choice_in,
                     s_rhoConsent_out, s_traprConsent_out,
                     s_hsig);
+}
+
+bool            Test_ConsentConfirm(
+                    const std::string&  s_apk,
+                    const std::string&  s_studyid,
+                    const std::string&  s_rho,
+                    const std::string&  s_trapr,
+                    bool                choice)
+{
+    return zkconfirm_gadget<FieldT,HashT,HashTreeT,ZKC_TreeDepth>::test(
+                    s_apk, s_studyid, s_rho, s_trapr, choice);
 }
 
 }

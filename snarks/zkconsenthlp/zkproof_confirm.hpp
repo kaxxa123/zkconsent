@@ -8,11 +8,19 @@ template<typename FieldT, typename HashT, typename HashTreeT, size_t TreeDepth>
 class zkconfirm_gadget : libsnark::gadget<FieldT>
 {
 private:
+    //Public
+    libsnark::pb_variable<FieldT>                           cm_consent;
+
+    //Private
     libsnark::pb_variable<FieldT>                           ZERO;
     std::shared_ptr<libsnark::digest_variable<FieldT>>      a_pk;
+
+    //We also require extra validation to ensure studyid != 0
     libsnark::pb_variable_array<FieldT>                     studyid;
+    libsnark::pb_variable<FieldT>                           study_not_zero;
+    std::shared_ptr<libsnark::disjunction_gadget<FieldT>>   study_zero_gag;
+
     libsnark::pb_variable<FieldT>                           choice;
-    libsnark::pb_variable<FieldT>                           cm_consent;
     std::shared_ptr<noteconsent_out_gadget<FieldT, HashT>>  noteConsentOut_gag;
 
 public:
