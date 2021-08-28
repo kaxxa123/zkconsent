@@ -11,7 +11,7 @@ template<typename   ppT,
          typename   snarkT,
          typename   ZkpT,
          size_t     TreeDepth>
-zkpbase_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, ZkpT, TreeDepth>::zkpbase_wrap()
+zkpbase_wrap_hash<ppT, FieldT, HashT, HashTreeT, snarkT, ZkpT, TreeDepth>::zkpbase_wrap_hash()
 {
     // The ZKP wrapper will have a single input a hash
     // of all the inputs of the wrapped ZKP
@@ -46,7 +46,7 @@ template<typename   ppT,
          typename   snarkT,
          typename   ZkpT,
          size_t     TreeDepth>
-typename snarkT::keypair zkpbase_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, ZkpT, TreeDepth>
+typename snarkT::keypair zkpbase_wrap_hash<ppT, FieldT, HashT, HashTreeT, snarkT, ZkpT, TreeDepth>
                             ::generate_trusted_setup() const
 {
     // Generate a verification and proving key (trusted setup) 
@@ -60,7 +60,7 @@ template<typename   ppT,
          typename   snarkT,
          typename   ZkpT,
          size_t     TreeDepth>
-const libsnark::r1cs_constraint_system<FieldT> &zkpbase_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, ZkpT, TreeDepth>
+const libsnark::r1cs_constraint_system<FieldT> &zkpbase_wrap_hash<ppT, FieldT, HashT, HashTreeT, snarkT, ZkpT, TreeDepth>
                             ::get_constraint_system() const
 {
     return pb.get_constraint_system();
@@ -73,7 +73,7 @@ template<typename   ppT,
          typename   snarkT,
          typename   ZkpT,
          size_t     TreeDepth>
-const std::vector<FieldT> &zkpbase_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, ZkpT, TreeDepth>
+const std::vector<FieldT> &zkpbase_wrap_hash<ppT, FieldT, HashT, HashTreeT, snarkT, ZkpT, TreeDepth>
                             ::get_last_assignment() const
 {
     return pb.full_variable_assignment();
@@ -86,7 +86,7 @@ template<typename   ppT,
          typename   snarkT,
          typename   ZkpT,
          size_t     TreeDepth>
-libzeth::extended_proof<ppT, snarkT> zkpbase_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, ZkpT, TreeDepth>
+libzeth::extended_proof<ppT, snarkT> zkpbase_wrap_hash<ppT, FieldT, HashT, HashTreeT, snarkT, ZkpT, TreeDepth>
                             ::outer_prove(const typename snarkT::proving_key    &proving_key,
                                           std::vector<FieldT>                   &out_public_data) const
 {

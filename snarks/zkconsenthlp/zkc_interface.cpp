@@ -29,6 +29,7 @@
 #include "zkproof_consent.hpp"
 #include "zkproof_confirm.hpp"
 #include "zkproof_wrap_hash.hpp"
+#include "zkproof_wrap_simple.hpp"
 #include "zkc_interface.hpp"
 
 namespace libzkconsent
@@ -228,7 +229,10 @@ bool            Test_ConsentConfirm(
                     const std::string&  s_trapr,
                     bool                choice)
 {
-    return zkconfirm_gadget<FieldT,HashT,HashTreeT,ZKC_TreeDepth>::test(
+    // return zkconfirm_gadget<FieldT,HashT,HashTreeT,ZKC_TreeDepth>::test(
+    //                 s_apk, s_studyid, s_rho, s_trapr, choice);
+
+    return zkconfirm_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>::test(
                     s_apk, s_studyid, s_rho, s_trapr, choice);
 }
 

@@ -13,14 +13,14 @@ template<typename   ppT,
          typename   snarkT,
          typename   ZkpT,
          size_t     TreeDepth>
-class zkpbase_wrap
+class zkpbase_wrap_hash
 {
 public:
     using InputHasherT  = libzeth::mimc_input_hasher<FieldT, HashTreeT>;
 
-    zkpbase_wrap();
-    zkpbase_wrap(const zkpbase_wrap &) = delete;
-    zkpbase_wrap &operator=(const zkpbase_wrap &) = delete;
+    zkpbase_wrap_hash();
+    zkpbase_wrap_hash(const zkpbase_wrap_hash &) = delete;
+    zkpbase_wrap_hash &operator=(const zkpbase_wrap_hash &) = delete;
 
     typename snarkT::keypair        generate_trusted_setup() const;
     const libsnark::r1cs_constraint_system<FieldT>  
@@ -41,7 +41,7 @@ protected:
 
 //====================================================================================
 template<typename ppT, typename FieldT, typename HashT, typename HashTreeT, typename snarkT, size_t TreeDepth>
-class zkterminate_wrap : public zkpbase_wrap<ppT, FieldT, HashT, HashTreeT, snarkT,
+class zkterminate_wrap : public zkpbase_wrap_hash<ppT, FieldT, HashT, HashTreeT, snarkT,
                                                 zkterminate_gadget<FieldT, HashT, HashTreeT, TreeDepth>,
                                                 TreeDepth>
 {
@@ -76,7 +76,7 @@ using ZkpT =  zkterminate_gadget<FieldT, HashT, HashTreeT, TreeDepth>;
 
 //====================================================================================
 template<typename ppT, typename FieldT, typename HashT, typename HashTreeT, typename snarkT, size_t TreeDepth>
-class zkmint_wrap : public zkpbase_wrap<ppT, FieldT, HashT, HashTreeT, snarkT,
+class zkmint_wrap : public zkpbase_wrap_hash<ppT, FieldT, HashT, HashTreeT, snarkT,
                                                 zkmint_gadget<FieldT, HashT, HashTreeT, TreeDepth>,
                                                 TreeDepth>
 {
@@ -131,7 +131,7 @@ using ZkpT =  zkmint_gadget<FieldT, HashT, HashTreeT, TreeDepth>;
 
 //====================================================================================
 template<typename ppT, typename FieldT, typename HashT, typename HashTreeT, typename snarkT, size_t TreeDepth>
-class zkconsent_wrap : public zkpbase_wrap<ppT, FieldT, HashT, HashTreeT, snarkT,
+class zkconsent_wrap : public zkpbase_wrap_hash<ppT, FieldT, HashT, HashTreeT, snarkT,
                                                 zkconsent_gadget<FieldT, HashT, HashTreeT, TreeDepth>,
                                                 TreeDepth>
 {
