@@ -67,15 +67,11 @@ zkconsent_gadget<FieldT,HashT,HashTreeT,TreeDepth>::zkconsent_gadget(
     //  unpacked_inputs[   <nf_id>] = nf_id_253-bits
     //  unpacked_inputs[   <nf_cn>] = nf_st_253-bits
     //  unpacked_inputs[    <hsig>] = hsig_253-bits
-    //  unpacked_inputs[<residual>] = hsig_003-bits || nf_st_003-bits || nf_id_003-bits || 
-    //                                               ...htag_003-bits || StudyId_064-bits || ChoiceIn_001bit || ChoiceOut_001bit
-    unpacked_inputs[PCK_INPUTS-1].emplace_back(choiceOut);
-    unpacked_inputs[PCK_INPUTS-1].emplace_back(choiceIn);
-    assign_public_value_to_residual_bits(studyid, unpacked_inputs[PCK_INPUTS-1]);
-    digest_variable_assign_to_field_element_and_residual(*htag,     unpacked_inputs[3], unpacked_inputs[PCK_INPUTS-1]);
-    digest_variable_assign_to_field_element_and_residual(*nf_id,    unpacked_inputs[0], unpacked_inputs[PCK_INPUTS-1]);
+    //  unpacked_inputs[<residual>] = hsig_003-bits || nf_st_003-bits || nf_id_003-bits || htag_003-bits 
+    digest_variable_assign_to_field_element_and_residual(*htag,       unpacked_inputs[3], unpacked_inputs[PCK_INPUTS-1]);
+    digest_variable_assign_to_field_element_and_residual(*nf_id,      unpacked_inputs[0], unpacked_inputs[PCK_INPUTS-1]);
     digest_variable_assign_to_field_element_and_residual(*nf_consent, unpacked_inputs[1], unpacked_inputs[PCK_INPUTS-1]);
-    digest_variable_assign_to_field_element_and_residual(*hsig,     unpacked_inputs[2], unpacked_inputs[PCK_INPUTS-1]);
+    digest_variable_assign_to_field_element_and_residual(*hsig,       unpacked_inputs[2], unpacked_inputs[PCK_INPUTS-1]);
 
     //The multipacking_gadget(s) packs our unpacked_inputs (bits) to our packed_inputs (field elements)
     packers[0].reset(new libsnark::multipacking_gadget<FieldT>(
