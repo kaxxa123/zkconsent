@@ -83,4 +83,4 @@ include_directories(.)
 
 add_subdirectory(depends)
 add_subdirectory(zkconsenthlp)
-add_subdirectory(test)
+add_subdirectory(zkconsent)

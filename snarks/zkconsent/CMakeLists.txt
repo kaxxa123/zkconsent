@@ -1,13 +1,13 @@
 include_directories(.)
 
 add_executable(
-  MYSNARK
+  zkconsent
 
   main.cpp
 )
 
 target_include_directories(
-  MYSNARK
+  zkconsent
 
   PUBLIC
   "${CMAKE_CURRENT_SOURCE_DIR}/../zkconsenthlp"
@@ -17,7 +17,7 @@ target_include_directories(
 )
 
 target_link_libraries(
-  MYSNARK
+  zkconsent
 
   snark
   zkconsenthlp

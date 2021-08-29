@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 #include <iostream>
 #include <memory>
 #include <vector>
@@ -362,7 +363,34 @@ void TestConfirm()
     if (!bVerified) throw "Unexpected: verification failed";
 }
 
-int main()
+void Heading()
+{
+    std::cout << std::endl;
+    std::cout << "========================================" << std::endl;
+    std::cout << "zk Consent Proof Generator" << std::endl;
+    std::cout << "========================================" << std::endl;
+    std::cout << std::endl;
+}
+void Usage()
+{
+    std::cout << "Usage: zkgen <option>" << std::endl;
+    std::cout << " help" << std::endl;
+    std::cout << "    - show help" << std::endl;
+    std::cout << std::endl;
+    std::cout << " test" << std::endl;
+    std::cout << "    - run all tests" << std::endl;
+    std::cout << std::endl;
+    std::cout << " setup <circuit> <filepath>" << std::endl;
+    std::cout << "    - trusted setup for <circuit> and store keys to <filepath>" << std::endl;
+    std::cout << "      <circuit> = terminate | mint | consent | confirm" << std::endl;
+    std::cout << std::endl;
+
+
+    // std::cout << " proof <filepath> - generate proof" << std::endl<< std::endl;
+    std::cout << std::endl;
+}
+
+void TestAll()
 {
     InitSnarks();
     TestPRFs();
@@ -376,5 +404,54 @@ int main()
     TestMint();
     TestChgConsent();
     TestConfirm();
+}
+
+void TrustedSetup(int argc, char** argv)
+{
+    //app.exe setup <circuit> <filepath>
+    if (argc != 4)
+    {
+        Usage();
+        std::cout << "FAILED: missing/too many parameters" << std::endl;
+        return;
+    }
+
+    char* circuit = argv[2];
+    char* outpath = argv[3];
+    if (strcmp(circuit, "terminate") == 0)
+    {}
+    else if (strcmp(circuit, "mint") == 0)
+    {}
+    else if (strcmp(circuit, "consent") == 0)
+    {}
+    else if (strcmp(circuit, "confirm") == 0)
+    {}
+    else
+    {
+        Usage();
+        std::cout << "FAILED: invalid ciruict name" << std::endl;
+    }
+}
+
+int main(int argc, char** argv)
+{
+    Heading();
+
+    if (argc <= 1)
+    {
+        Usage();
+        return 0;
+    }
+
+    if (strcmp(argv[1], "help") == 0)
+        Usage();
+
+    else if (strcmp(argv[1], "test") == 0)
+        TestAll();
+
+    else if (strcmp(argv[1], "setup") == 0)
+        TrustedSetup(argc, argv);
+    
+    else    std::cout << "Invalid option"  << std::endl;
     return 0;
 }
