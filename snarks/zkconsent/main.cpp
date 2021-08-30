@@ -4,6 +4,7 @@
 #include <vector>
 #include <boost/program_options.hpp>
 #include <boost/filesystem.hpp>
+//#include <boost/json/src.hpp>
 #include "zkc_interface.hpp"
 #include "clientdefs.hpp"
 
@@ -22,8 +23,8 @@ void Heading()
 CMDTYPS     GetCmd(std::string& sCmd)
 {
     if (sCmd == "test") return CMD_TEST;
-    if (sCmd == "prove") return CMD_PROVE;
     if (sCmd == "setup") return CMD_SETUP;
+    if (sCmd == "prove") return CMD_PROVE;
     return CMD_ERROR;
 }
 
@@ -229,6 +230,13 @@ int main(int argc, char** argv)
                 vk_output_file = GetDefPath(BASE_VK_FILE, BIN_EXT, typeCirc);
 
             TrustedSetup(typeCirc, keypair_file, pk_output_file, vk_output_file, r1cs_file); 
+            break;
+
+        case CMD_PROVE:
+            if (keypair_file.empty())
+                keypair_file = GetDefPath(BASE_KEYPAIR_FILE, BIN_EXT, typeCirc);
+
+            GenerateProve(typeCirc, keypair_file);
             break;
 
         default:

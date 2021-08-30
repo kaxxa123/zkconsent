@@ -29,11 +29,16 @@ enum    CMDTYPS {
 };
 
 void TestAll();
+
 void TrustedSetup(
     ZKCIRC type, 
     const boost::filesystem::path &keypair_file,
     const boost::filesystem::path &pk_file,
     const boost::filesystem::path &vk_file,
     const boost::filesystem::path &r1cs_file);
+
+void GenerateProve(
+    ZKCIRC type, 
+    const boost::filesystem::path &keypair_file);
 
 #endif // __CLIENTDEFS_HPP_

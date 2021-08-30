@@ -152,3 +152,41 @@ void TrustedSetup(
         break;
     }
 }
+
+template<typename zkpT>
+void ZKProve(const boost::filesystem::path &keypair_file)
+{
+    bool    bRunSetup = !boost::filesystem::exists(keypair_file);
+    zkpT    aZkp;
+
+    const typename SnarkT::keypair keys =  
+                bRunSetup ? aZkp.generate_trusted_setup() :
+                            load_keypair(keypair_file);
+
+    if (bRunSetup) 
+        write_keypair(keys, keypair_file);
+}
+
+void GenerateProve(
+    ZKCIRC type, 
+    const boost::filesystem::path &keypair_file)
+{
+    switch (type)
+    {
+    case ZK_TERMINATE:
+        ZKProve<zkterminateT>(keypair_file);
+        break;
+    case ZK_MINT:
+        ZKProve<zkmintT>(keypair_file);
+        break;
+    case ZK_CONSENT:
+        ZKProve<zkconsentT>(keypair_file);
+        break;
+    case ZK_CONFIRM:
+        ZKProve<zkconfirmT>(keypair_file);
+        break;
+    default:
+        std::cout << "FAILED: invalid ciruict name" << std::endl;
+        break;
+    }
+}
