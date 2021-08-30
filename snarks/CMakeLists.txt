@@ -2,6 +2,12 @@ cmake_minimum_required(VERSION 3.15)
 
 project(consent-snark)
 
+option(
+  DEBUG
+  "Enable/Disable debugging mode"
+  OFF
+)
+
 set(CURVE 
  "ALT_BN128" 
   CACHE  
@@ -68,6 +74,10 @@ endif()
 
 if("${MULTICORE}")
   add_definitions(-DMULTICORE=1)
+endif()
+
+if("${DEBUG}")
+  add_definitions(-DDEBUG=1)
 endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OPT_FLAGS}")
