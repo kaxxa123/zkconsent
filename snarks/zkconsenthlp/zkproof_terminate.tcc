@@ -22,23 +22,23 @@ zkterminate_gadget<FieldT,HashT,HashTreeT,TreeDepth>::zkterminate_gadget(
     // - [<start> + 4]    Residual field element(S)
 
     merkle_root.reset(new libsnark::pb_variable<FieldT>);
-    merkle_root->allocate(pb, FMT(" merkle_root"));
+    merkle_root->allocate(pb, FMT(this->annotation_prefix, " merkle_root"));
     
     //AlexZ: packed_inputs[4][1]   ========================================
-    packed_inputs[0].allocate(pb, 1, FMT(" in_nullifier"));
-    packed_inputs[1].allocate(pb, 1, FMT(" hsig"));
-    packed_inputs[2].allocate(pb, 1, FMT(" htag"));
-    packed_inputs[3].allocate(pb, 1, FMT(" residual_bits"));
+    packed_inputs[0].allocate(pb, 1, FMT(this->annotation_prefix, " in_nullifier"));
+    packed_inputs[1].allocate(pb, 1, FMT(this->annotation_prefix, " hsig"));
+    packed_inputs[2].allocate(pb, 1, FMT(this->annotation_prefix, " htag"));
+    packed_inputs[3].allocate(pb, 1, FMT(this->annotation_prefix, " residual_bits"));
     // ====================================================================
 
     // PRIVATE DATA:
     ZERO.allocate(pb, FMT(this->annotation_prefix, " ZERO"));
 
-    hsig.reset(new libsnark::digest_variable<FieldT>(pb, libzeth::ZETH_HSIG_SIZE, FMT(" hsig")));
-    input_nullifier.reset(new libsnark::digest_variable<FieldT>( pb, HashT::get_digest_len(), FMT(" input_nullifier")));
-    a_sk.reset(new libsnark::digest_variable<FieldT>(pb,libzeth::ZETH_A_SK_SIZE,FMT(" a_sk")));
-    a_pk.reset(new libsnark::digest_variable<FieldT>(pb,libzeth::ZETH_A_PK_SIZE,FMT(" a_pk")));
-    htag.reset(new libsnark::digest_variable<FieldT>(pb,HashT::get_digest_len(),FMT(" htag")));
+    hsig.reset(new libsnark::digest_variable<FieldT>(pb, libzeth::ZETH_HSIG_SIZE, FMT(this->annotation_prefix, " hsig")));
+    input_nullifier.reset(new libsnark::digest_variable<FieldT>( pb, HashT::get_digest_len(), FMT(this->annotation_prefix, " input_nullifier")));
+    a_sk.reset(new libsnark::digest_variable<FieldT>(pb,libzeth::ZETH_A_SK_SIZE,FMT(this->annotation_prefix, " a_sk")));
+    a_pk.reset(new libsnark::digest_variable<FieldT>(pb,libzeth::ZETH_A_PK_SIZE,FMT(this->annotation_prefix, " a_pk")));
+    htag.reset(new libsnark::digest_variable<FieldT>(pb,HashT::get_digest_len(),FMT(this->annotation_prefix, " htag")));
 
     // We already allocated varaibles on the protoboard for the various unpacked digests
     // We now want unpacked_inputs to bring together the allocation indexes of these variables
@@ -55,16 +55,16 @@ zkterminate_gadget<FieldT,HashT,HashTreeT,TreeDepth>::zkterminate_gadget(
 
     //The multipacking_gadget(s) packs our unpacked_inputs (bits) to our packed_inputs (field elements)
     packers[0].reset(new libsnark::multipacking_gadget<FieldT>(
-                pb,unpacked_inputs[0],packed_inputs[0],FieldT::capacity(),FMT(" packer_nullifier")));
+                pb,unpacked_inputs[0],packed_inputs[0],FieldT::capacity(),FMT(this->annotation_prefix, " packer_nullifier")));
 
     packers[1].reset(new libsnark::multipacking_gadget<FieldT>(
-                pb,unpacked_inputs[1],packed_inputs[1],FieldT::capacity(),FMT(" packer_hsig")));
+                pb,unpacked_inputs[1],packed_inputs[1],FieldT::capacity(),FMT(this->annotation_prefix, " packer_hsig")));
 
     packers[2].reset(new libsnark::multipacking_gadget<FieldT>(
-                pb,unpacked_inputs[2],packed_inputs[2],FieldT::capacity(),FMT(" packer_htag")));
+                pb,unpacked_inputs[2],packed_inputs[2],FieldT::capacity(),FMT(this->annotation_prefix, " packer_htag")));
 
     packers[3].reset(new libsnark::multipacking_gadget<FieldT>(
-                pb,unpacked_inputs[3], packed_inputs[3], FieldT::capacity(),FMT(" packer_residual_bits")));
+                pb,unpacked_inputs[3], packed_inputs[3], FieldT::capacity(),FMT(this->annotation_prefix, " packer_residual_bits")));
 
     a_pk_gag.reset(new libzeth::PRF_addr_a_pk_gadget<FieldT, HashT>(
                 pb, ZERO, a_sk->bits, a_pk));
@@ -77,7 +77,7 @@ zkterminate_gadget<FieldT,HashT,HashTreeT,TreeDepth>::zkterminate_gadget(
 template<typename FieldT, typename HashT, typename HashTreeT, size_t TreeDepth>
 void zkterminate_gadget<FieldT,HashT,HashTreeT,TreeDepth>::generate_r1cs_constraints()
 {
-    libsnark::generate_r1cs_equals_const_constraint<FieldT>(this->pb, ZERO, FieldT::zero(), FMT(" ZERO"));
+    libsnark::generate_r1cs_equals_const_constraint<FieldT>(this->pb, ZERO, FieldT::zero(), FMT(this->annotation_prefix, " ZERO"));
 
     // The `true` passed to `generate_r1cs_constraints` ensures that all
     // inputs are boolean strings

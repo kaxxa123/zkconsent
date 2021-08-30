@@ -113,9 +113,9 @@ std::string noteconsent_in_gadget<FieldT, HashT, HashTreeT, TreeDepth>::test(
 
     //=======================================================
     for (size_t i = 0; i < studyid.size(); i++)
-        libsnark::generate_boolean_r1cs_constraint<FieldT>(pb, studyid[i], FMT(" studyid[%zu]", i));
+        libsnark::generate_boolean_r1cs_constraint<FieldT>(pb, studyid[i], FMT("", " studyid[%zu]", i));
 
-    libsnark::generate_boolean_r1cs_constraint<FieldT>(pb, choice, FMT(" choice"));
+    libsnark::generate_boolean_r1cs_constraint<FieldT>(pb, choice, FMT("", " choice"));
     a_sk_digest->generate_r1cs_constraints();
     a_pk_digest->generate_r1cs_constraints();
     input_note_g.generate_r1cs_constraints();
@@ -221,9 +221,9 @@ std::string noteconsent_out_gadget<FieldT, HashT>::test(
 
     //=======================================================
     for (size_t i = 0; i < studyid.size(); i++)
-        libsnark::generate_boolean_r1cs_constraint<FieldT>(pb, studyid[i], FMT(" studyid[%zu]", i));
+        libsnark::generate_boolean_r1cs_constraint<FieldT>(pb, studyid[i], FMT("", " studyid[%zu]", i));
 
-    libsnark::generate_boolean_r1cs_constraint<FieldT>(pb, choice, FMT(" choice"));
+    libsnark::generate_boolean_r1cs_constraint<FieldT>(pb, choice, FMT("", " choice"));
     a_pk_digest->generate_r1cs_constraints();
     output_note_g.generate_r1cs_constraints();
     //=======================================================

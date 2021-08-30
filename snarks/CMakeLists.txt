@@ -5,7 +5,7 @@ project(consent-snark)
 option(
   DEBUG
   "Enable/Disable debugging mode"
-  OFF
+  ON
 )
 
 set(CURVE 
