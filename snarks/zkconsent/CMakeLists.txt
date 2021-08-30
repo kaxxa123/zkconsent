@@ -1,6 +1,6 @@
 include_directories(.)
 
-find_package(Boost REQUIRED COMPONENTS system filesystem program_options)
+find_package(Boost REQUIRED COMPONENTS system filesystem program_options json)
 include_directories(SYSTEM ${Boost_INCLUDE_DIR})
 
 add_executable(
@@ -9,6 +9,7 @@ add_executable(
   main.cpp
   cmd_test.cpp
   cmd_snark.cpp
+  zkjson.cpp
 )
 
 target_include_directories(
@@ -29,5 +30,6 @@ target_link_libraries(
   ${Boost_SYSTEM_LIBRARY}
   ${Boost_FILESYSTEM_LIBRARY}
   ${Boost_PROGRAM_OPTIONS_LIBRARY}
+  ${Boost_JSON_LIBRARY}
 )
 

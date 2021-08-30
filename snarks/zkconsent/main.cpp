@@ -4,12 +4,22 @@
 #include <vector>
 #include <boost/program_options.hpp>
 #include <boost/filesystem.hpp>
-//#include <boost/json/src.hpp>
+#include <boost/json.hpp>
 #include "zkc_interface.hpp"
+
 #include "clientdefs.hpp"
+#include "zkjson.hpp"
 
 using namespace libzkconsent;
 namespace po = boost::program_options;
+
+void JsonTest()
+{
+    boost::filesystem::path jsonfile = "/home/alex/zkconsent/samples/zkconfirm.json";
+    zkconfirm_json zkjson;
+
+    zkjson.set(jsonfile).trace();
+}
 
 void Heading()
 {
@@ -93,6 +103,8 @@ boost::filesystem::path GetDefPath(const char* szBaseFile, const char* szExt, ZK
 
 int main(int argc, char** argv)
 {
+    JsonTest();
+
     // Options
     po::options_description options("");
     options.add_options()
