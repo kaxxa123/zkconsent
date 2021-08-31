@@ -30,6 +30,14 @@ set(
   "Override C++ compiler optimization flags"
 )
 
+set(
+  OPT_FLAGS_DEBUG
+  ""
+  CACHE
+  STRING
+  "Override C++ compiler optimization flags"
+)
+
 option(
   MULTICORE
   "Enable parallelized execution, using OpenMP"
@@ -60,6 +68,10 @@ if(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   if("${OPT_FLAGS}" STREQUAL "")
     set(OPT_FLAGS "-ggdb3 -O2 -march=native -mtune=native")
   endif()
+
+  if("${OPT_FLAGS_DEBUG}" STREQUAL "")
+    set(OPT_FLAGS_DEBUG "-g -O0")
+  endif()
 endif()
 
 add_definitions(-DCURVE_${CURVE})
@@ -81,6 +93,8 @@ if("${DEBUG}")
 endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OPT_FLAGS}")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} ${OPT_FLAGS_DEBUG}")
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} ${OPT_FLAGS_DEBUG}")
 
 include(FindPkgConfig)
 if("${WITH_PROCPS}")

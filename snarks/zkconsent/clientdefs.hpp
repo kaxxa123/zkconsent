@@ -27,8 +27,9 @@ enum    ZKCIRC {
 
 enum    CMDTYPS {
     CMD_TEST,
-    CMD_PROVE,
     CMD_SETUP,
+    CMD_PROVE,
+    CMD_VERIFY,
     CMD_ERROR
 };
 
@@ -41,13 +42,19 @@ void TrustedSetup(
     const boost::filesystem::path &vk_file,
     const boost::filesystem::path &r1cs_file);
 
-void GenerateProve(
+void GenerateProof(
     ZKCIRC type, 
     const boost::filesystem::path &keypair_file,
-    const boost::filesystem::path &proof_in_file,
+    const boost::filesystem::path &witness_in_file,
     const boost::filesystem::path &exproof_out_file,
-    const boost::filesystem::path &proof_out_file,
-    const boost::filesystem::path &primary_out_file,
+    const boost::filesystem::path &proof_file,
+    const boost::filesystem::path &primary_file,
     const boost::filesystem::path &witness_out_file);
+
+void VerifyProof(
+    ZKCIRC type, 
+    const boost::filesystem::path &keypair_file,
+    const boost::filesystem::path &proof_file,
+    const boost::filesystem::path &primary_file);
 
 #endif // __CLIENTDEFS_HPP_

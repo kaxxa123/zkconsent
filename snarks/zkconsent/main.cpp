@@ -24,6 +24,7 @@ CMDTYPS     GetCmd(std::string& sCmd)
     if (sCmd == "test") return CMD_TEST;
     if (sCmd == "setup") return CMD_SETUP;
     if (sCmd == "prove") return CMD_PROVE;
+    if (sCmd == "verify") return CMD_VERIFY;
     return CMD_ERROR;
 }
 
@@ -101,7 +102,7 @@ int main(int argc, char** argv)
     options.add_options()
         ("cmd", 
         po::value<std::string>(),
-        "(REQUIRED) test | setup | prove");
+        "(REQUIRED) test | setup | prove | verify");
 
     options.add_options()
         ("zkterminate", "process user termination zkp");
@@ -113,9 +114,9 @@ int main(int argc, char** argv)
         ("zkconfirm",   "process consent confirm zkp");
 
     options.add_options()
-        ("proof-in,p",
+        ("witness-in,w",
         po::value<boost::filesystem::path>(),
-        "(REQUIRED for prove) Input file containing the proof parameters.");
+        "(REQUIRED for prove) Input file containing the witness for proof generation.");
 
     options.add_options()
         ("keypair,k",
@@ -140,9 +141,13 @@ int main(int argc, char** argv)
         po::value<boost::filesystem::path>(),
         "(prove) write extended proof JSON to file");
     options.add_options()(
-        "proof-out",
+        "proof",
         po::value<boost::filesystem::path>(),
-        "(prove) write raw proof to file");
+        "(prove | verify) read/write proof file");
+    options.add_options()(
+        "primary",
+        po::value<boost::filesystem::path>(),
+        "(prove | verify) read/write primary input file");
     options.add_options()(
         "witness-out",
         po::value<boost::filesystem::path>(),
@@ -173,10 +178,10 @@ int main(int argc, char** argv)
     boost::filesystem::path r1cs_file;
     boost::filesystem::path pk_out_file;
     boost::filesystem::path vk_out_file;
-    boost::filesystem::path proof_in_file;
+    boost::filesystem::path witness_in_file;
     boost::filesystem::path exproof_out_file;
-    boost::filesystem::path proof_out_file;
-    boost::filesystem::path primary_out_file;
+    boost::filesystem::path proof_file;
+    boost::filesystem::path primary_file;
     boost::filesystem::path witness_out_file;
 
     try {
@@ -226,17 +231,17 @@ int main(int argc, char** argv)
         if (vm.count("verification-key-out"))
             vk_out_file = vm["verification-key-out"].as<boost::filesystem::path>();
 
-        if (vm.count("proof-in"))
-            proof_in_file = vm["proof-in"].as<boost::filesystem::path>();
+        if (vm.count("witness-in"))
+            witness_in_file = vm["witness-in"].as<boost::filesystem::path>();
 
         if (vm.count("extproof-json-out"))
             exproof_out_file = vm["extproof-json-out"].as<boost::filesystem::path>();
 
-        if (vm.count("proof-out"))
-            proof_out_file = vm["proof-out"].as<boost::filesystem::path>();
+        if (vm.count("proof"))
+            proof_file = vm["proof"].as<boost::filesystem::path>();
 
-        if (vm.count("primary-out"))
-            primary_out_file = vm["primary-out"].as<boost::filesystem::path>();
+        if (vm.count("primary"))
+            primary_file = vm["primary"].as<boost::filesystem::path>();
 
         if (vm.count("witness-out"))
             witness_out_file = vm["witness-out"].as<boost::filesystem::path>();
@@ -275,9 +280,9 @@ int main(int argc, char** argv)
             break;
 
         case CMD_PROVE:
-            if (proof_in_file.empty())
+            if (witness_in_file.empty())
             {
-                std::cout << "Input proof parameters required. Specify proof parameter." << std::endl;
+                std::cout << "Input witness required. Specify witness-in parameter." << std::endl;
                 return 1;
             }
             
@@ -287,22 +292,38 @@ int main(int argc, char** argv)
             if (exproof_out_file.empty())
                 exproof_out_file = GetDefPath(BASE_EXPROOF_FILE, JSON_EXT, typeCirc);
 
-            if (proof_out_file.empty())
-                proof_out_file = GetDefPath(BASE_PROOF_FILE, BIN_EXT, typeCirc);
+            if (proof_file.empty())
+                proof_file = GetDefPath(BASE_PROOF_FILE, BIN_EXT, typeCirc);
 
-            if (primary_out_file.empty())
-                primary_out_file = GetDefPath(BASE_PRIMARY_FILE, BIN_EXT, typeCirc);
+            if (primary_file.empty())
+                primary_file = GetDefPath(BASE_PRIMARY_FILE, BIN_EXT, typeCirc);
 
             if (witness_out_file.empty())
                 witness_out_file = GetDefPath(BASE_WITNESS_FILE, BIN_EXT, typeCirc);
 
-            GenerateProve(  typeCirc, 
+            GenerateProof(  typeCirc, 
                             keypair_file, 
-                            proof_in_file, 
+                            witness_in_file, 
                             exproof_out_file, 
-                            proof_out_file, 
-                            primary_out_file, 
+                            proof_file, 
+                            primary_file, 
                             witness_out_file);
+            break;
+
+        case CMD_VERIFY:
+            if (keypair_file.empty())
+                keypair_file = GetDefPath(BASE_KEYPAIR_FILE, BIN_EXT, typeCirc);
+
+            if (proof_file.empty())
+                proof_file = GetDefPath(BASE_PROOF_FILE, BIN_EXT, typeCirc);
+
+            if (primary_file.empty())
+                primary_file = GetDefPath(BASE_PRIMARY_FILE, BIN_EXT, typeCirc);
+
+            VerifyProof(typeCirc, 
+                        keypair_file, 
+                        proof_file, 
+                        primary_file);
             break;
 
         default:
