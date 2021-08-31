@@ -197,13 +197,16 @@ void GenerateProve(
     switch (type)
     {
     case ZK_TERMINATE:
-        // ZKProve<zkterminateT>(keypair_file, proof_in_file);
+        ZKProve<zkterminate_json>(
+            keypair_file, proof_in_file, exproof_out_file, proof_out_file, primary_out_file ,witness_out_file);
         break;
     case ZK_MINT:
-        // ZKProve<zkmintT>(keypair_file, proof_in_file);
+        ZKProve<zkmint_json>(
+            keypair_file, proof_in_file, exproof_out_file, proof_out_file, primary_out_file ,witness_out_file);
         break;
     case ZK_CONSENT:
-        // ZKProve<zkconsentT>(keypair_file, proof_in_file);
+        ZKProve<zkconsent_json>(
+            keypair_file, proof_in_file, exproof_out_file, proof_out_file, primary_out_file ,witness_out_file);
         break;
     case ZK_CONFIRM:
         ZKProve<zkconfirm_json>(

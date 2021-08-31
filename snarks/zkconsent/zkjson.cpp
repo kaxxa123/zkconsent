@@ -37,13 +37,139 @@
 
 #include "zkjson.hpp"
 
+zkterminate_json& zkterminate_json::set(const boost::json::object& objJSON)
+{
+    extract(objJSON, a_sk, "a_sk");
+    extract(objJSON, mkaddrId, "mkaddrId");
+    extract(objJSON, rho, "rho");
+    extract(objJSON, hsig, "hsig");
+
+    return (*this);
+}
+
+void zkterminate_json::trace()
+{
+    std::cout <<  std::endl;
+    std::cout << " ------ zkterminate proof parameters ---------"  << std::endl;
+    std::cout << " a_sk:     " << a_sk << std::endl;
+    std::cout << " mkaddrId: " << mkaddrId << std::endl;
+    std::cout << " rho:      " << rho << std::endl;
+    std::cout << " hsig:     " << hsig << std::endl;
+    std::cout << " -------------------------------------------"  << std::endl;
+    std::cout <<  std::endl;
+}
+
+libzeth::extended_proof<ppT, SnarkT>    zkterminate_json::prove_test(circuitT& aZkp, const typename SnarkT::proving_key &proving_key) const
+{
+    std::vector<FieldT> out_public_data;
+    return aZkp.prove_test(a_sk, mkaddrId, rho, hsig, proving_key, out_public_data);
+}
+
+//========================================================================================
+zkmint_json& zkmint_json::set(const boost::json::object& objJSON)
+{
+    extract(objJSON, a_sk, "a_sk");
+    extract(objJSON, mkaddrStudy, "mkaddrStudy");
+    extract(objJSON, studyid, "studyid");
+    extract(objJSON, mkaddrId, "mkaddrId");
+    extract(objJSON, rhoId_in, "rhoId_in");
+    extract(objJSON, rhoId_out, "rhoId_out");
+    extract(objJSON, rhoConsent_out, "rhoConsent_out");
+    extract(objJSON, traprConsent_out, "traprConsent_out");
+    extract(objJSON, choice_out, "choice_out");
+    extract(objJSON, hsig, "hsig");
+
+    return (*this);
+}
+
+void zkmint_json::trace()
+{
+    std::cout <<  std::endl;
+    std::cout << " ------ zkconfirm proof parameters ---------"  << std::endl;
+    std::cout << " a_sk:             " << a_sk << std::endl;
+    std::cout << " mkaddrStudy:      " << mkaddrStudy << std::endl;
+    std::cout << " studyid:          " << studyid << std::endl;
+    std::cout << " mkaddrId:         " << mkaddrId << std::endl;
+    std::cout << " rhoId_in:         " << rhoId_in << std::endl;
+    std::cout << " rhoId_out:        " << rhoId_out << std::endl;
+    std::cout << " rhoConsent_out:   " << rhoConsent_out << std::endl;
+    std::cout << " traprConsent_out: " << traprConsent_out << std::endl;
+    std::cout << " choice_out:       " << choice_out << std::endl;
+    std::cout << " hsig:             " << hsig << std::endl;
+    std::cout << " -------------------------------------------"  << std::endl;
+    std::cout <<  std::endl;
+}
+
+libzeth::extended_proof<ppT, SnarkT>    zkmint_json::prove_test(circuitT& aZkp, const typename SnarkT::proving_key &proving_key) const
+{
+    std::vector<FieldT> out_public_data;
+    return aZkp.prove_test( a_sk, 
+                            mkaddrStudy, studyid, 
+                            mkaddrId, rhoId_in, rhoId_out, 
+                            rhoConsent_out, traprConsent_out, 
+                            choice_out, hsig, proving_key, out_public_data);
+}
+
+//========================================================================================
+zkconsent_json& zkconsent_json::set(const boost::json::object& objJSON)
+{
+    extract(objJSON, a_sk, "a_sk");
+    extract(objJSON, mkaddrStudy, "mkaddrStudy");
+    extract(objJSON, studyid, "studyid");
+    extract(objJSON, mkaddrId, "mkaddrId");
+    extract(objJSON, rhoId_in, "rhoId_in");
+    extract(objJSON, rhoId_out, "rhoId_out");
+    extract(objJSON, mkaddrConsent, "mkaddrConsent");
+    extract(objJSON, rhoConsent_in, "rhoConsent_in");
+    extract(objJSON, traprConsent_in, "traprConsent_in");
+    extract(objJSON, choice_in, "choice_in");
+    extract(objJSON, rhoConsent_out, "rhoConsent_out");
+    extract(objJSON, traprConsent_out, "traprConsent_out");
+    extract(objJSON, hsig, "hsig");
+
+    return (*this);
+}
+
+void zkconsent_json::trace()
+{
+    std::cout <<  std::endl;
+    std::cout << " ------ zkconsent proof parameters ---------"  << std::endl;
+    std::cout << " a_sk:             " << a_sk << std::endl;
+    std::cout << " mkaddrStudy:      " << mkaddrStudy << std::endl;
+    std::cout << " studyid:          " << studyid << std::endl;
+    std::cout << " mkaddrId:         " << mkaddrId << std::endl;
+    std::cout << " rhoId_in:         " << rhoId_in << std::endl;
+    std::cout << " rhoId_out:        " << rhoId_out << std::endl;
+    std::cout << " mkaddrConsent:    " << mkaddrConsent << std::endl;
+    std::cout << " rhoConsent_in:    " << rhoConsent_in << std::endl;
+    std::cout << " traprConsent_in:  " << traprConsent_in << std::endl;
+    std::cout << " choice_in:        " << choice_in << std::endl;
+    std::cout << " rhoConsent_out:   " << rhoConsent_out << std::endl;
+    std::cout << " traprConsent_out: " << traprConsent_out << std::endl;
+    std::cout << " hsig:             " << hsig << std::endl;
+    std::cout << " -------------------------------------------"  << std::endl;
+    std::cout <<  std::endl;
+}
+
+libzeth::extended_proof<ppT, SnarkT>    zkconsent_json::prove_test(circuitT& aZkp, const typename SnarkT::proving_key &proving_key) const
+{
+    std::vector<FieldT> out_public_data;
+    return aZkp.prove_test( a_sk, 
+                            mkaddrStudy, studyid, 
+                            mkaddrId, rhoId_in, rhoId_out, 
+                            mkaddrConsent, rhoConsent_in, traprConsent_in, choice_in,
+                            rhoConsent_out, traprConsent_out, 
+                            hsig, proving_key, out_public_data);
+}
+
+//========================================================================================
 zkconfirm_json& zkconfirm_json::set(const boost::json::object& objJSON)
 {
     extract(objJSON, a_pk, "a_pk");
     extract(objJSON, studyid, "studyid");
     extract(objJSON, rho, "rho");
     extract(objJSON, trapr, "trapr");
-    extract(objJSON, choice, "choice");;
+    extract(objJSON, choice, "choice");
 
     return (*this);
 }
