@@ -68,6 +68,7 @@
         "typeinfo": "cpp",
         "variant": "cpp",
         "*.ipp": "cpp",
-        "any": "cpp"
+        "any": "cpp",
+        "shared_mutex": "cpp"
     }
 }

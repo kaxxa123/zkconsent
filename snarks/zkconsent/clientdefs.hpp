@@ -10,6 +10,10 @@
 #define BASE_PK_FILE        "pk"
 #define BASE_VK_FILE        "vk"
 #define BASE_R1CS_FILE      "r1cs"
+#define BASE_EXPROOF_FILE   "exproof"
+#define BASE_PROOF_FILE     "proof"
+#define BASE_PRIMARY_FILE   "primary"
+#define BASE_WITNESS_FILE   "witness"
 #define BIN_EXT             ".bin"
 #define JSON_EXT            ".json"
 
@@ -39,6 +43,11 @@ void TrustedSetup(
 
 void GenerateProve(
     ZKCIRC type, 
-    const boost::filesystem::path &keypair_file);
+    const boost::filesystem::path &keypair_file,
+    const boost::filesystem::path &proof_in_file,
+    const boost::filesystem::path &exproof_out_file,
+    const boost::filesystem::path &proof_out_file,
+    const boost::filesystem::path &primary_out_file,
+    const boost::filesystem::path &witness_out_file);
 
 #endif // __CLIENTDEFS_HPP_

@@ -4,22 +4,11 @@
 #include <vector>
 #include <boost/program_options.hpp>
 #include <boost/filesystem.hpp>
-#include <boost/json.hpp>
 #include "zkc_interface.hpp"
-
 #include "clientdefs.hpp"
-#include "zkjson.hpp"
 
 using namespace libzkconsent;
 namespace po = boost::program_options;
-
-void JsonTest()
-{
-    boost::filesystem::path jsonfile = "/home/alex/zkconsent/samples/zkconfirm.json";
-    zkconfirm_json zkjson;
-
-    zkjson.set(jsonfile).trace();
-}
 
 void Heading()
 {
@@ -66,72 +55,53 @@ ZKCIRC      GetCircuit(bool bTerm, bool bMint, bool bConsent, bool bConfirm)
     return (iCnt == 1) ? retCirc : ZK_ERROR;
 }
 
-boost::filesystem::path GetBaseDir()
+const char*    GetCircuitTag(ZKCIRC type)
+{
+    switch (type)
+    {
+        case ZK_TERMINATE:  
+            return FILETAG_TERMINATE;
+        case ZK_MINT:
+            return FILETAG_MINT;
+        case ZK_CONSENT:
+            return FILETAG_CONSENT;
+        case ZK_CONFIRM:
+            return FILETAG_CONFIRM;
+        default:
+            break;
+    }
+
+    return "";
+}
+
+boost::filesystem::path GetBaseDir(ZKCIRC type)
 {
     const char *path = std::getenv("HOME");
     if (path == nullptr)
         throw "FAILED: on getting home dir";
 
-    return boost::filesystem::path(path) /  "zkconsent_setup";
+    return boost::filesystem::path(path) / "zkconsent_setup" / GetCircuitTag(type);
 }
 
 boost::filesystem::path GetDefPath(const char* szBaseFile, const char* szExt, ZKCIRC type)
 {
-    boost::filesystem::path     path = GetBaseDir();
+    boost::filesystem::path     path = GetBaseDir(type);
     std::string                 filename = szBaseFile;
 
-    switch (type)
-    {
-        case ZK_TERMINATE:  
-            filename += "_" FILETAG_TERMINATE;
-            break;
-        case ZK_MINT:
-            filename += "_" FILETAG_MINT;
-            break;
-        case ZK_CONSENT:
-            filename += "_" FILETAG_CONSENT;
-            break;
-        case ZK_CONFIRM:
-            filename += "_" FILETAG_CONFIRM;
-            break;
-        default:
-            break;
-    }
+    filename += "_";
+    filename += GetCircuitTag(type);
     filename += szExt;
     return path / filename;
 }
 
 int main(int argc, char** argv)
 {
-    JsonTest();
-
     // Options
     po::options_description options("");
     options.add_options()
         ("cmd", 
         po::value<std::string>(),
-        "test | setup | prove");
-    options.add_options()
-        ("help,h", "show help");
-
-    options.add_options()
-        ("keypair,k",
-        po::value<boost::filesystem::path>(),
-        "file to load keypair from. If it doesn't exist, a new keypair will be "
-        "generated and written to this file. (default: "
-        "~/zkconsent_setup/keypair_<circuit>.bin)");
-    options.add_options()(
-        "r1cs,r",
-        po::value<boost::filesystem::path>(),
-        "file in which to export the r1cs (in json format)");
-    options.add_options()(
-        "proving-key-output",
-        po::value<boost::filesystem::path>(),
-        "write proving key to file (if generated)");
-    options.add_options()(
-        "verification-key-output",
-        po::value<boost::filesystem::path>(),
-        "write verification key to file (if generated)");
+        "(REQUIRED) test | setup | prove");
 
     options.add_options()
         ("zkterminate", "process user termination zkp");
@@ -141,6 +111,46 @@ int main(int argc, char** argv)
         ("zkconsent",   "process consent change zkp");
     options.add_options()
         ("zkconfirm",   "process consent confirm zkp");
+
+    options.add_options()
+        ("proof-in,p",
+        po::value<boost::filesystem::path>(),
+        "(REQUIRED for prove) Input file containing the proof parameters.");
+
+    options.add_options()
+        ("keypair,k",
+        po::value<boost::filesystem::path>(),
+        "file to load keypair from. If it doesn't exist, a new "
+        "keypair will be generated under ~/zkconsent_setup");
+    options.add_options()(
+        "r1cs",
+        po::value<boost::filesystem::path>(),
+        "(setup) write r1cs to JSON file");
+    options.add_options()(
+        "proving-key-out",
+        po::value<boost::filesystem::path>(),
+        "(setup) write proving key to file");
+    options.add_options()(
+        "verification-key-out",
+        po::value<boost::filesystem::path>(),
+        "(setup) write verification key to file");
+
+    options.add_options()(
+        "extproof-json-out",
+        po::value<boost::filesystem::path>(),
+        "(prove) write extended proof JSON to file");
+    options.add_options()(
+        "proof-out",
+        po::value<boost::filesystem::path>(),
+        "(prove) write raw proof to file");
+    options.add_options()(
+        "witness-out",
+        po::value<boost::filesystem::path>(),
+        "(prove) write witness to file (INSECURE!)");
+
+    options.add_options()
+        ("help,h", "show help");
+
 
     po::positional_options_description pos_desc;
         pos_desc.add("cmd", 1);
@@ -161,8 +171,13 @@ int main(int argc, char** argv)
     std::string sCmd;
     boost::filesystem::path keypair_file;
     boost::filesystem::path r1cs_file;
-    boost::filesystem::path pk_output_file;
-    boost::filesystem::path vk_output_file;
+    boost::filesystem::path pk_out_file;
+    boost::filesystem::path vk_out_file;
+    boost::filesystem::path proof_in_file;
+    boost::filesystem::path exproof_out_file;
+    boost::filesystem::path proof_out_file;
+    boost::filesystem::path primary_out_file;
+    boost::filesystem::path witness_out_file;
 
     try {
         po::variables_map vm;
@@ -205,11 +220,26 @@ int main(int argc, char** argv)
         if (vm.count("r1cs"))
             r1cs_file = vm["r1cs"].as<boost::filesystem::path>();
 
-        if (vm.count("proving-key-output"))
-            pk_output_file = vm["proving-key-output"].as<boost::filesystem::path>();
+        if (vm.count("proving-key-out"))
+            pk_out_file = vm["proving-key-out"].as<boost::filesystem::path>();
 
-        if (vm.count("verification-key-output"))
-            vk_output_file = vm["verification-key-output"].as<boost::filesystem::path>();
+        if (vm.count("verification-key-out"))
+            vk_out_file = vm["verification-key-out"].as<boost::filesystem::path>();
+
+        if (vm.count("proof-in"))
+            proof_in_file = vm["proof-in"].as<boost::filesystem::path>();
+
+        if (vm.count("extproof-json-out"))
+            exproof_out_file = vm["extproof-json-out"].as<boost::filesystem::path>();
+
+        if (vm.count("proof-out"))
+            proof_out_file = vm["proof-out"].as<boost::filesystem::path>();
+
+        if (vm.count("primary-out"))
+            primary_out_file = vm["primary-out"].as<boost::filesystem::path>();
+
+        if (vm.count("witness-out"))
+            witness_out_file = vm["witness-out"].as<boost::filesystem::path>();
 
     } catch (po::error &error) {
         std::cerr << " ERROR: " << error.what() << std::endl;
@@ -219,7 +249,7 @@ int main(int argc, char** argv)
 
     InitSnarks();
 
-    boost::filesystem::path setup_dir = GetBaseDir();
+    boost::filesystem::path setup_dir = GetBaseDir(typeCirc);
     boost::filesystem::create_directories(setup_dir);
     
     switch(typeCmd)
@@ -235,20 +265,44 @@ int main(int argc, char** argv)
             if (r1cs_file.empty())
                 r1cs_file = GetDefPath(BASE_R1CS_FILE, JSON_EXT, typeCirc);
 
-            if (pk_output_file.empty())
-                pk_output_file = GetDefPath(BASE_PK_FILE, BIN_EXT, typeCirc);
+            if (pk_out_file.empty())
+                pk_out_file = GetDefPath(BASE_PK_FILE, BIN_EXT, typeCirc);
 
-            if (vk_output_file.empty())
-                vk_output_file = GetDefPath(BASE_VK_FILE, BIN_EXT, typeCirc);
+            if (vk_out_file.empty())
+                vk_out_file = GetDefPath(BASE_VK_FILE, BIN_EXT, typeCirc);
 
-            TrustedSetup(typeCirc, keypair_file, pk_output_file, vk_output_file, r1cs_file); 
+            TrustedSetup(typeCirc, keypair_file, pk_out_file, vk_out_file, r1cs_file); 
             break;
 
         case CMD_PROVE:
+            if (proof_in_file.empty())
+            {
+                std::cout << "Input proof parameters required. Specify proof parameter." << std::endl;
+                return 1;
+            }
+            
             if (keypair_file.empty())
                 keypair_file = GetDefPath(BASE_KEYPAIR_FILE, BIN_EXT, typeCirc);
 
-            GenerateProve(typeCirc, keypair_file);
+            if (exproof_out_file.empty())
+                exproof_out_file = GetDefPath(BASE_EXPROOF_FILE, JSON_EXT, typeCirc);
+
+            if (proof_out_file.empty())
+                proof_out_file = GetDefPath(BASE_PROOF_FILE, BIN_EXT, typeCirc);
+
+            if (primary_out_file.empty())
+                primary_out_file = GetDefPath(BASE_PRIMARY_FILE, BIN_EXT, typeCirc);
+
+            if (witness_out_file.empty())
+                witness_out_file = GetDefPath(BASE_WITNESS_FILE, BIN_EXT, typeCirc);
+
+            GenerateProve(  typeCirc, 
+                            keypair_file, 
+                            proof_in_file, 
+                            exproof_out_file, 
+                            proof_out_file, 
+                            primary_out_file, 
+                            witness_out_file);
             break;
 
         default:
