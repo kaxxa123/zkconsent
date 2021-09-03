@@ -114,44 +114,48 @@ int main(int argc, char** argv)
         ("zkconfirm",   "process consent confirm zkp");
 
     options.add_options()
-        ("witness-in,w",
+        ("witness,w",
         po::value<boost::filesystem::path>(),
-        "(REQUIRED for prove) Input file containing the witness for proof generation.");
+        "(REQUIRED for prove) read witness from JSON file for proof generation.");
 
     options.add_options()
         ("keypair,k",
         po::value<boost::filesystem::path>(),
-        "file to load keypair from. If it doesn't exist, a new "
-        "keypair will be generated under ~/zkconsent_setup");
+        "read/write keypair to BIN file. If it doesn't exist, a new "
+        "keypair is generated under ~/zkconsent_setup");
     options.add_options()(
-        "r1cs",
+        "r1cs-json",
         po::value<boost::filesystem::path>(),
         "(setup) write r1cs to JSON file");
     options.add_options()(
-        "proving-key-out",
+        "pk-bin",
         po::value<boost::filesystem::path>(),
-        "(setup) write proving key to file");
+        "(setup) write proving key to BIN file");
     options.add_options()(
-        "verification-key-out",
+        "vk-bin",
         po::value<boost::filesystem::path>(),
-        "(setup) write verification key to file");
+        "(setup) write verification key to BIN file");
+    options.add_options()(
+        "vk-txt",
+        po::value<boost::filesystem::path>(),
+        "(setup) write verification key to TXT file");
 
     options.add_options()(
-        "extproof-json-out",
+        "extproof-json",
         po::value<boost::filesystem::path>(),
-        "(prove) write extended proof JSON to file");
+        "(prove) write extended proof to JSON file");
     options.add_options()(
-        "proof",
+        "proof-bin",
         po::value<boost::filesystem::path>(),
-        "(prove | verify) read/write proof file");
+        "(prove | verify) read/write proof BIN file");
     options.add_options()(
-        "primary",
+        "primary-bin",
         po::value<boost::filesystem::path>(),
-        "(prove | verify) read/write primary input file");
+        "(prove | verify) read/write primary input BIN file");
     options.add_options()(
-        "witness-out",
+        "witness-bin",
         po::value<boost::filesystem::path>(),
-        "(prove) write witness to file (INSECURE!)");
+        "(prove) write witness to BIN file (INSECURE!)");
 
     options.add_options()
         ("help,h", "show help");
@@ -175,14 +179,15 @@ int main(int argc, char** argv)
 
     std::string sCmd;
     boost::filesystem::path keypair_file;
-    boost::filesystem::path r1cs_file;
-    boost::filesystem::path pk_out_file;
-    boost::filesystem::path vk_out_file;
-    boost::filesystem::path witness_in_file;
-    boost::filesystem::path exproof_out_file;
-    boost::filesystem::path proof_file;
-    boost::filesystem::path primary_file;
-    boost::filesystem::path witness_out_file;
+    boost::filesystem::path r1cs_json_file;
+    boost::filesystem::path pk_bin_file;
+    boost::filesystem::path vk_bin_file;
+    boost::filesystem::path vk_txt_file;
+    boost::filesystem::path witness_json_file;
+    boost::filesystem::path exproof_json_file;
+    boost::filesystem::path proof_bin_file;
+    boost::filesystem::path primary_bin_file;
+    boost::filesystem::path witness_bin_file;
 
     try {
         po::variables_map vm;
@@ -222,29 +227,32 @@ int main(int argc, char** argv)
         if (vm.count("keypair"))
             keypair_file = vm["keypair"].as<boost::filesystem::path>();
 
-        if (vm.count("r1cs"))
-            r1cs_file = vm["r1cs"].as<boost::filesystem::path>();
+        if (vm.count("r1cs-json"))
+            r1cs_json_file = vm["r1cs-json"].as<boost::filesystem::path>();
 
-        if (vm.count("proving-key-out"))
-            pk_out_file = vm["proving-key-out"].as<boost::filesystem::path>();
+        if (vm.count("pk-bin"))
+            pk_bin_file = vm["pk-bin"].as<boost::filesystem::path>();
 
-        if (vm.count("verification-key-out"))
-            vk_out_file = vm["verification-key-out"].as<boost::filesystem::path>();
+        if (vm.count("vk-bin"))
+            vk_bin_file = vm["vk-bin"].as<boost::filesystem::path>();
 
-        if (vm.count("witness-in"))
-            witness_in_file = vm["witness-in"].as<boost::filesystem::path>();
+        if (vm.count("vk-txt"))
+            vk_txt_file = vm["vk-txt"].as<boost::filesystem::path>();
 
-        if (vm.count("extproof-json-out"))
-            exproof_out_file = vm["extproof-json-out"].as<boost::filesystem::path>();
+        if (vm.count("witness"))
+            witness_json_file = vm["witness"].as<boost::filesystem::path>();
 
-        if (vm.count("proof"))
-            proof_file = vm["proof"].as<boost::filesystem::path>();
+        if (vm.count("extproof-json"))
+            exproof_json_file = vm["extproof-json"].as<boost::filesystem::path>();
 
-        if (vm.count("primary"))
-            primary_file = vm["primary"].as<boost::filesystem::path>();
+        if (vm.count("proof-bin"))
+            proof_bin_file = vm["proof-bin"].as<boost::filesystem::path>();
 
-        if (vm.count("witness-out"))
-            witness_out_file = vm["witness-out"].as<boost::filesystem::path>();
+        if (vm.count("primary-bin"))
+            primary_bin_file = vm["primary-bin"].as<boost::filesystem::path>();
+
+        if (vm.count("witness-bin"))
+            witness_bin_file = vm["witness-bin"].as<boost::filesystem::path>();
 
     } catch (po::error &error) {
         std::cerr << " ERROR: " << error.what() << std::endl;
@@ -267,63 +275,66 @@ int main(int argc, char** argv)
             if (keypair_file.empty())
                 keypair_file = GetDefPath(BASE_KEYPAIR_FILE, BIN_EXT, typeCirc);
 
-            if (r1cs_file.empty())
-                r1cs_file = GetDefPath(BASE_R1CS_FILE, JSON_EXT, typeCirc);
+            if (r1cs_json_file.empty())
+                r1cs_json_file = GetDefPath(BASE_R1CS_FILE, JSON_EXT, typeCirc);
 
-            if (pk_out_file.empty())
-                pk_out_file = GetDefPath(BASE_PK_FILE, BIN_EXT, typeCirc);
+            if (pk_bin_file.empty())
+                pk_bin_file = GetDefPath(BASE_PK_FILE, BIN_EXT, typeCirc);
 
-            if (vk_out_file.empty())
-                vk_out_file = GetDefPath(BASE_VK_FILE, BIN_EXT, typeCirc);
+            if (vk_bin_file.empty())
+                vk_bin_file = GetDefPath(BASE_VK_FILE, BIN_EXT, typeCirc);
 
-            TrustedSetup(typeCirc, keypair_file, pk_out_file, vk_out_file, r1cs_file); 
+            if (vk_txt_file.empty())
+                vk_txt_file = GetDefPath(BASE_VK_FILE, TXT_EXT, typeCirc);
+
+            TrustedSetup(typeCirc, keypair_file, pk_bin_file, vk_bin_file, vk_txt_file, r1cs_json_file); 
             break;
 
         case CMD_PROVE:
-            if (witness_in_file.empty())
+            if (witness_json_file.empty())
             {
-                std::cout << "Input witness required. Specify witness-in parameter." << std::endl;
+                std::cout << "Input witness required. Specify witness parameter." << std::endl;
                 return 1;
             }
             
             if (keypair_file.empty())
                 keypair_file = GetDefPath(BASE_KEYPAIR_FILE, BIN_EXT, typeCirc);
 
-            if (exproof_out_file.empty())
-                exproof_out_file = GetDefPath(BASE_EXPROOF_FILE, JSON_EXT, typeCirc);
+            if (exproof_json_file.empty())
+                exproof_json_file = GetDefPath(BASE_EXPROOF_FILE, JSON_EXT, typeCirc);
 
-            if (proof_file.empty())
-                proof_file = GetDefPath(BASE_PROOF_FILE, BIN_EXT, typeCirc);
+            if (proof_bin_file.empty())
+                proof_bin_file = GetDefPath(BASE_PROOF_FILE, BIN_EXT, typeCirc);
 
-            if (primary_file.empty())
-                primary_file = GetDefPath(BASE_PRIMARY_FILE, BIN_EXT, typeCirc);
+            if (primary_bin_file.empty())
+                primary_bin_file = GetDefPath(BASE_PRIMARY_FILE, BIN_EXT, typeCirc);
 
-            if (witness_out_file.empty())
-                witness_out_file = GetDefPath(BASE_WITNESS_FILE, BIN_EXT, typeCirc);
+            if (witness_bin_file.empty())
+                witness_bin_file = GetDefPath(BASE_WITNESS_FILE, BIN_EXT, typeCirc);
 
             GenerateProof(  typeCirc, 
                             keypair_file, 
-                            witness_in_file, 
-                            exproof_out_file, 
-                            proof_file, 
-                            primary_file, 
-                            witness_out_file);
+                            witness_json_file, 
+                            exproof_json_file, 
+                            proof_bin_file, 
+                            primary_bin_file, 
+                            witness_bin_file);
             break;
 
         case CMD_VERIFY:
             if (keypair_file.empty())
                 keypair_file = GetDefPath(BASE_KEYPAIR_FILE, BIN_EXT, typeCirc);
 
-            if (proof_file.empty())
-                proof_file = GetDefPath(BASE_PROOF_FILE, BIN_EXT, typeCirc);
+            if (proof_bin_file.empty())
+                proof_bin_file = GetDefPath(BASE_PROOF_FILE, BIN_EXT, typeCirc);
 
-            if (primary_file.empty())
-                primary_file = GetDefPath(BASE_PRIMARY_FILE, BIN_EXT, typeCirc);
+            if (primary_bin_file.empty())
+                primary_bin_file = GetDefPath(BASE_PRIMARY_FILE, BIN_EXT, typeCirc);
 
             VerifyProof(typeCirc, 
                         keypair_file, 
-                        proof_file, 
-                        primary_file);
+                        proof_bin_file, 
+                        primary_bin_file);
             break;
 
         default:
