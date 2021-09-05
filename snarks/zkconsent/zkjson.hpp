@@ -2,28 +2,25 @@
 #define __ZKJSON_HPP_
 
 using namespace libzkconsent;
-using zkterminateT  = zkterminate_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
-using zkmintT       = zkmint_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
-using zkconsentT    = zkconsent_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
-using zkconfirmT    = zkconfirm_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
 
 template<class jsonT>
 jsonT&  LoadZKJson(jsonT& zkjson, const boost::filesystem::path& jsonfile);
 
+template<typename snarkT>
 class zkterminate_json {
 public:
-using   circuitT = zkterminateT;
+using   circuitT = zkterminate_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, ZKC_TreeDepth>;        
 
     zkterminate_json() {}
     zkterminate_json(const boost::filesystem::path& jsonfile) { set(jsonfile);  }
     zkterminate_json(const boost::json::object& objJSON) { set(objJSON);  }
 
-    zkterminate_json& set(const boost::filesystem::path& jsonfile) {
+    zkterminate_json<snarkT>& set(const boost::filesystem::path& jsonfile) {
         return LoadZKJson(*this, jsonfile);
     }
-    zkterminate_json& set(const boost::json::object& objJSON);
+    zkterminate_json<snarkT>& set(const boost::json::object& objJSON);
 
-    libzeth::extended_proof<ppT, SnarkT>    prove_test(circuitT& aZkp, const typename SnarkT::proving_key &proving_key) const;
+    libzeth::extended_proof<ppT, snarkT>    prove_test(circuitT& aZkp, const typename snarkT::proving_key &proving_key) const;
 
     void trace();
 private:
@@ -33,20 +30,21 @@ private:
     std::string   hsig;
 };
 
+template<typename snarkT>
 class zkmint_json {
 public:
-using   circuitT = zkmintT;
+using   circuitT = zkmint_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, ZKC_TreeDepth>;        
 
     zkmint_json() {}
     zkmint_json(const boost::filesystem::path& jsonfile) { set(jsonfile);  }
     zkmint_json(const boost::json::object& objJSON) { set(objJSON);  }
 
-    zkmint_json& set(const boost::filesystem::path& jsonfile) {
+    zkmint_json<snarkT>& set(const boost::filesystem::path& jsonfile) {
         return LoadZKJson(*this, jsonfile);
     }
-    zkmint_json& set(const boost::json::object& objJSON);
+    zkmint_json<snarkT>& set(const boost::json::object& objJSON);
 
-    libzeth::extended_proof<ppT, SnarkT>    prove_test(circuitT& aZkp, const typename SnarkT::proving_key &proving_key) const;
+    libzeth::extended_proof<ppT, snarkT>    prove_test(circuitT& aZkp, const typename snarkT::proving_key &proving_key) const;
 
     void trace();
 private:
@@ -62,20 +60,21 @@ private:
         std::string     hsig;
 };
 
+template<typename snarkT>
 class zkconsent_json {
 public:
-using   circuitT = zkconsentT;
+using   circuitT = zkconsent_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, ZKC_TreeDepth>;        
 
     zkconsent_json() {}
     zkconsent_json(const boost::filesystem::path& jsonfile) { set(jsonfile);  }
     zkconsent_json(const boost::json::object& objJSON) { set(objJSON);  }
 
-    zkconsent_json& set(const boost::filesystem::path& jsonfile) {
+    zkconsent_json<snarkT>& set(const boost::filesystem::path& jsonfile) {
         return LoadZKJson(*this, jsonfile);
     }
-    zkconsent_json& set(const boost::json::object& objJSON);
+    zkconsent_json<snarkT>& set(const boost::json::object& objJSON);
 
-    libzeth::extended_proof<ppT, SnarkT>    prove_test(circuitT& aZkp, const typename SnarkT::proving_key &proving_key) const;
+    libzeth::extended_proof<ppT, snarkT>    prove_test(circuitT& aZkp, const typename snarkT::proving_key &proving_key) const;
 
     void trace();
 private:
@@ -94,20 +93,21 @@ private:
         std::string     hsig;
 };
 
+template<typename snarkT>
 class zkconfirm_json {
 public:
-using   circuitT = zkconfirmT;
+using   circuitT = zkconfirm_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, ZKC_TreeDepth>;        
 
     zkconfirm_json() {}
     zkconfirm_json(const boost::filesystem::path& jsonfile) { set(jsonfile);  }
     zkconfirm_json(const boost::json::object& objJSON) { set(objJSON);  }
 
-    zkconfirm_json& set(const boost::filesystem::path& jsonfile) {
+    zkconfirm_json<snarkT>& set(const boost::filesystem::path& jsonfile) {
         return LoadZKJson(*this, jsonfile);
     }
-    zkconfirm_json& set(const boost::json::object& objJSON);
+    zkconfirm_json<snarkT>& set(const boost::json::object& objJSON);
 
-    libzeth::extended_proof<ppT, SnarkT>    prove_test(circuitT& aZkp, const typename SnarkT::proving_key &proving_key) const;
+    libzeth::extended_proof<ppT, snarkT>    prove_test(circuitT& aZkp, const typename snarkT::proving_key &proving_key) const;
 
     void trace();
 
@@ -146,5 +146,7 @@ jsonT&  LoadZKJson(jsonT& zkjson, const boost::filesystem::path& jsonfile)
 
     return zkjson;
 }
+ 
+ #include "zkjson.tcc"
 
 #endif // __ZKJSON_HPP_

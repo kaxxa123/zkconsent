@@ -39,6 +39,14 @@
 #include "zkjson.hpp"
 // #include "zktext.hpp"
 
+using SnarkT        = libzeth::groth16_snark<libzkconsent::ppT>;
+
+using namespace libzkconsent;
+using zkterminateT  = zkterminate_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
+using zkmintT       = zkmint_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
+using zkconsentT    = zkconsent_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
+using zkconfirmT    = zkconfirm_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
+
 static SnarkT::keypair load_keypair(
     const boost::filesystem::path &keypair_file)
 {
@@ -223,19 +231,19 @@ void GenerateProof(
     switch (type)
     {
     case ZK_TERMINATE:
-        ZKProve<zkterminate_json>(
+        ZKProve<zkterminate_json<SnarkT>>(
             keypair_file, witness_json_file, exproof_json_file, proof_bin_file, primary_bin_file ,witness_bin_file);
         break;
     case ZK_MINT:
-        ZKProve<zkmint_json>(
+        ZKProve<zkmint_json<SnarkT>>(
             keypair_file, witness_json_file, exproof_json_file, proof_bin_file, primary_bin_file ,witness_bin_file);
         break;
     case ZK_CONSENT:
-        ZKProve<zkconsent_json>(
+        ZKProve<zkconsent_json<SnarkT>>(
             keypair_file, witness_json_file, exproof_json_file, proof_bin_file, primary_bin_file ,witness_bin_file);
         break;
     case ZK_CONFIRM:
-        ZKProve<zkconfirm_json>(
+        ZKProve<zkconfirm_json<SnarkT>>(
             keypair_file, witness_json_file, exproof_json_file, proof_bin_file, primary_bin_file ,witness_bin_file);
         break;
     default:

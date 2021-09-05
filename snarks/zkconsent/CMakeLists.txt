@@ -9,7 +9,6 @@ add_executable(
   main.cpp
   cmd_test.cpp
   cmd_snark.cpp
-  zkjson.cpp
 )
 
 target_include_directories(
