@@ -41,7 +41,7 @@ void TrustedSetup(
     const boost::filesystem::path &keypair_file,
     const boost::filesystem::path &pk_bin_file,
     const boost::filesystem::path &vk_bin_file,
-    const boost::filesystem::path &vk_txt_file, 
+    const boost::filesystem::path &vk_json_file, 
     const boost::filesystem::path &r1cs_json_file);
 
 void GenerateProof(

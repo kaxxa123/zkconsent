@@ -136,9 +136,9 @@ int main(int argc, char** argv)
         po::value<boost::filesystem::path>(),
         "(setup) write verification key to BIN file");
     options.add_options()(
-        "vk-txt",
+        "vk-json",
         po::value<boost::filesystem::path>(),
-        "(setup) write verification key to TXT file");
+        "(setup) write verification key to JSON file");
 
     options.add_options()(
         "extproof-json",
@@ -182,7 +182,7 @@ int main(int argc, char** argv)
     boost::filesystem::path r1cs_json_file;
     boost::filesystem::path pk_bin_file;
     boost::filesystem::path vk_bin_file;
-    boost::filesystem::path vk_txt_file;
+    boost::filesystem::path vk_json_file;
     boost::filesystem::path witness_json_file;
     boost::filesystem::path exproof_json_file;
     boost::filesystem::path proof_bin_file;
@@ -236,8 +236,8 @@ int main(int argc, char** argv)
         if (vm.count("vk-bin"))
             vk_bin_file = vm["vk-bin"].as<boost::filesystem::path>();
 
-        if (vm.count("vk-txt"))
-            vk_txt_file = vm["vk-txt"].as<boost::filesystem::path>();
+        if (vm.count("vk-json"))
+            vk_json_file = vm["vk-json"].as<boost::filesystem::path>();
 
         if (vm.count("witness"))
             witness_json_file = vm["witness"].as<boost::filesystem::path>();
@@ -284,10 +284,10 @@ int main(int argc, char** argv)
             if (vk_bin_file.empty())
                 vk_bin_file = GetDefPath(BASE_VK_FILE, BIN_EXT, typeCirc);
 
-            if (vk_txt_file.empty())
-                vk_txt_file = GetDefPath(BASE_VK_FILE, TXT_EXT, typeCirc);
+            if (vk_json_file.empty())
+                vk_json_file = GetDefPath(BASE_VK_FILE, JSON_EXT, typeCirc);
 
-            TrustedSetup(typeCirc, keypair_file, pk_bin_file, vk_bin_file, vk_txt_file, r1cs_json_file); 
+            TrustedSetup(typeCirc, keypair_file, pk_bin_file, vk_bin_file, vk_json_file, r1cs_json_file); 
             break;
 
         case CMD_PROVE:

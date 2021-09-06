@@ -14,6 +14,7 @@
 #include "libzeth/core/field_element_utils.hpp"
 #include "libzeth/zeth_constants.hpp"
 #include "libzeth/snarks/groth16/groth16_snark.hpp"
+#include "libzeth/snarks/pghr13/pghr13_snark.hpp"
 #include "libzeth/core/extended_proof.hpp"
 #include "libzeth/serialization/r1cs_variable_assignment_serialization.hpp"
 
@@ -37,9 +38,9 @@
 
 #include "clientdefs.hpp"
 #include "zkjson.hpp"
-// #include "zktext.hpp"
 
-using SnarkT        = libzeth::groth16_snark<libzkconsent::ppT>;
+// using SnarkT        = libzeth::groth16_snark<libzkconsent::ppT>;
+using SnarkT        = libzeth::pghr13_snark<libzkconsent::ppT>;
 
 using namespace libzkconsent;
 using zkterminateT  = zkterminate_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
@@ -106,12 +107,20 @@ static void write_verification_key(
     SnarkT::verification_key_write_bytes(vk, out_s);
 }
 
+static void write_verification_json(
+    const typename SnarkT::verification_key &vk,
+    const boost::filesystem::path &vk_json_file)
+{
+    std::ofstream out_s(vk_json_file.c_str(), std::ios_base::out);
+    SnarkT::verification_key_write_json(vk, out_s);
+}
+
 template<typename zkpT>
 static void write_constraint_system(
     const zkpT &prover, const boost::filesystem::path &r1cs_json_file)
 {
 #ifdef DEBUG
-    std::ofstream r1cs_stream(r1cs_json_file.c_str());
+    std::ofstream r1cs_stream(r1cs_json_file.c_str(), std::ios_base::out);
     libzeth::r1cs_write_json(prover.get_constraint_system(), r1cs_stream);
 #endif
 }
@@ -120,7 +129,7 @@ static void write_extproof_to_json_file(
     const libzeth::extended_proof<ppT, SnarkT> &ext_proof,
     const boost::filesystem::path &proof_path)
 {
-    std::ofstream out_s(proof_path.c_str());
+    std::ofstream out_s(proof_path.c_str(), std::ios_base::out);
     ext_proof.write_json(out_s);
 }
 
@@ -145,7 +154,7 @@ void ZKPSetup(
         const boost::filesystem::path &keypair_file,
         const boost::filesystem::path &pk_bin_file,
         const boost::filesystem::path &vk_bin_file,
-        const boost::filesystem::path &vk_txt_file, 
+        const boost::filesystem::path &vk_json_file, 
         const boost::filesystem::path &r1cs_json_file)
 {
     zkpT aZkp;
@@ -153,7 +162,7 @@ void ZKPSetup(
     write_keypair(keys, keypair_file);
     write_proving_key(keys.pk, pk_bin_file);
     write_verification_key(keys.vk, vk_bin_file);
-    // write_pghr13_vk_to_txt<ppT>(keys.vk, vk_txt_file);
+    write_verification_json(keys.vk, vk_json_file);
     write_constraint_system<zkpT>(aZkp, r1cs_json_file);
 }
 
@@ -162,22 +171,22 @@ void TrustedSetup(
         const boost::filesystem::path &keypair_file,
         const boost::filesystem::path &pk_bin_file,
         const boost::filesystem::path &vk_bin_file,
-        const boost::filesystem::path &vk_txt_file, 
+        const boost::filesystem::path &vk_json_file, 
         const boost::filesystem::path &r1cs_json_file)
 {
     switch (type)
     {
     case ZK_TERMINATE:
-        ZKPSetup<zkterminateT>(keypair_file, pk_bin_file, vk_bin_file, vk_txt_file, r1cs_json_file);
+        ZKPSetup<zkterminateT>(keypair_file, pk_bin_file, vk_bin_file, vk_json_file, r1cs_json_file);
         break;
     case ZK_MINT:
-        ZKPSetup<zkmintT>(keypair_file, pk_bin_file, vk_bin_file, vk_txt_file, r1cs_json_file);
+        ZKPSetup<zkmintT>(keypair_file, pk_bin_file, vk_bin_file, vk_json_file, r1cs_json_file);
         break;
     case ZK_CONSENT:
-        ZKPSetup<zkconsentT>(keypair_file, pk_bin_file, vk_bin_file, vk_txt_file, r1cs_json_file);
+        ZKPSetup<zkconsentT>(keypair_file, pk_bin_file, vk_bin_file, vk_json_file, r1cs_json_file);
         break;
     case ZK_CONFIRM:
-        ZKPSetup<zkconfirmT>(keypair_file, pk_bin_file, vk_bin_file, vk_txt_file, r1cs_json_file);
+        ZKPSetup<zkconfirmT>(keypair_file, pk_bin_file, vk_bin_file, vk_json_file, r1cs_json_file);
         break;
     default:
         std::cout << "FAILED: invalid ciruict name" << std::endl;
