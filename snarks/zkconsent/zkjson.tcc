@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LGPL-3.0+
 
 #ifndef __ZKJSON_TCC_
 #define __ZKJSON_TCC_

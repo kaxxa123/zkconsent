@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LGPL-3.0+
 
 #ifndef __ZKC_HELPERS_HPP_
 #define __ZKC_HELPERS_HPP_

@@ -1,5 +1,7 @@
 pragma solidity ^0.6.1;
 
+// SPDX-License-Identifier: LGPL-3.0+
+
 //
 //AlexZ: This code started off with  the Pairing library generaated by zokrates and the verifier 
 //       code provided by the github project.

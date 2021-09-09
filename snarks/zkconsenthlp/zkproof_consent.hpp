@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LGPL-3.0+
+
 #ifndef __ZKPROOF_CONSENT_HPP_
 #define __ZKPROOF_CONSENT_HPP_
 

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LGPL-3.0+
+
 #ifndef __ZKC_MKTREE_H_
 #define __ZKC_MKTREE_H_
 

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LGPL-3.0+
+
 #ifndef __ZKPROOF_WRAP_HASH_HPP_
 #define __ZKPROOF_WRAP_HASH_HPP_
 

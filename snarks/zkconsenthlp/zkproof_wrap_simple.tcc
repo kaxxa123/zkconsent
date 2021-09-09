@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LGPL-3.0+
+
 #ifndef __ZKPROOF_WRAP_SIMPLE_TCC_
 #define __ZKPROOF_WRAP_SIMPLE_TCC_
 

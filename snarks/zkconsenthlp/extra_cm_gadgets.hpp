@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LGPL-3.0+
+
 #ifndef __EXTRA_CM_GADGETS_HPP_
 #define __EXTRA_CM_GADGETS_HPP_
 

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LGPL-3.0+
+
 #ifndef __CLIENTDEFS_HPP_
 #define __CLIENTDEFS_HPP_
 

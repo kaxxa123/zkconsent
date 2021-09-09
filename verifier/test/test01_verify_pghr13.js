@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LGPL-3.0+
+
 const fs = require('fs');
 const Verifier = artifacts.require("VerifiyPGHR13");
 

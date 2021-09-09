@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LGPL-3.0+
+
 #ifndef __EXTRA_STUDY_GADGETS_TCC_
 #define __EXTRA_STUDY_GADGETS_TCC_
 

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LGPL-3.0+
+
 #ifndef __ZKC_INTERFACE_H_
 #define __ZKC_INTERFACE_H_
 
