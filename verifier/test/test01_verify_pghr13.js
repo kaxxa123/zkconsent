@@ -69,8 +69,8 @@ const parseG1Point = (pt) => {
 }
 
 const parseG2Point = (pt) => {
-    var X = [hexToDec(pt[0][0]), hexToDec(pt[0][1])];
-    var Y = [hexToDec(pt[1][0]), hexToDec(pt[1][1])];
+    var X = [hexToDec(pt[0][1]), hexToDec(pt[0][0])];
+    var Y = [hexToDec(pt[1][1]), hexToDec(pt[1][0])];
     return [X, Y];
 }
 
