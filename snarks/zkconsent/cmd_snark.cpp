@@ -40,118 +40,16 @@
 
 #include "clientdefs.hpp"
 #include "zkjson.hpp"
+#include "zksnarkstream.hpp"
 
-// using SnarkT        = libzeth::groth16_snark<libzkconsent::ppT>;
-using SnarkT        = libzeth::pghr13_snark<libzkconsent::ppT>;
+using G16SnarkT  = libzeth::groth16_snark<libzkconsent::ppT>;
+using P13SnarkT  = libzeth::pghr13_snark<libzkconsent::ppT>;
+using G16StreamT = zkSnarkStream<libzkconsent::ppT, G16SnarkT>;
+using P13StreamT = zkSnarkStream<libzkconsent::ppT, P13SnarkT>;
 
 using namespace libzkconsent;
-using zkterminateT  = zkterminate_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
-using zkmintT       = zkmint_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
-using zkconsentT    = zkconsent_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
-using zkconfirmT    = zkconfirm_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
 
-static SnarkT::keypair load_keypair(
-    const boost::filesystem::path &keypair_file)
-{
-    std::ifstream in_s(keypair_file.c_str(), std::ios_base::in | std::ios_base::binary);
-    in_s.exceptions(std::ios_base::eofbit | std::ios_base::badbit | std::ios_base::failbit);
-
-    SnarkT::keypair keypair;
-    SnarkT::keypair_read_bytes(keypair, in_s);
-    return keypair;
-}
-
-static SnarkT::proof load_proof(
-    const boost::filesystem::path &proof_path)
-{
-    std::ifstream in_s(proof_path.c_str(), std::ios_base::in | std::ios_base::binary);
-    in_s.exceptions(std::ios_base::eofbit | std::ios_base::badbit | std::ios_base::failbit);
-
-    SnarkT::proof proof;
-    SnarkT::proof_read_bytes(proof, in_s);
-    return proof;
-}
-
-static std::vector<FieldT> load_assignment(
-    const boost::filesystem::path &assignment_path)
-{
-    std::ifstream in_s(assignment_path.c_str(), std::ios_base::in | std::ios_base::binary);
-    in_s.exceptions(std::ios_base::eofbit | std::ios_base::badbit | std::ios_base::failbit);
-
-    std::vector<FieldT> assignment;
-    libzeth::r1cs_variable_assignment_read_bytes(assignment, in_s);
-    return assignment;
-}
-
-static void write_keypair(
-    const typename SnarkT::keypair &keypair,
-    const boost::filesystem::path &keypair_file)
-{
-    std::ofstream out_s(keypair_file.c_str(), std::ios_base::out | std::ios_base::binary);
-    SnarkT::keypair_write_bytes(keypair, out_s);
-}
-
-static void write_proving_key(
-    const typename SnarkT::proving_key &pk,
-    const boost::filesystem::path &pk_bin_file)
-{
-    std::ofstream out_s(
-        pk_bin_file.c_str(), std::ios_base::out | std::ios_base::binary);
-    SnarkT::proving_key_write_bytes(pk, out_s);
-}
-
-static void write_verification_key(
-    const typename SnarkT::verification_key &vk,
-    const boost::filesystem::path &vk_bin_file)
-{
-    std::ofstream out_s(
-        vk_bin_file.c_str(), std::ios_base::out | std::ios_base::binary);
-    SnarkT::verification_key_write_bytes(vk, out_s);
-}
-
-static void write_verification_json(
-    const typename SnarkT::verification_key &vk,
-    const boost::filesystem::path &vk_json_file)
-{
-    std::ofstream out_s(vk_json_file.c_str(), std::ios_base::out);
-    SnarkT::verification_key_write_json(vk, out_s);
-}
-
-template<typename zkpT>
-static void write_constraint_system(
-    const zkpT &prover, const boost::filesystem::path &r1cs_json_file)
-{
-#ifdef DEBUG
-    std::ofstream r1cs_stream(r1cs_json_file.c_str(), std::ios_base::out);
-    libzeth::r1cs_write_json(prover.get_constraint_system(), r1cs_stream);
-#endif
-}
-
-static void write_extproof_to_json_file(
-    const libzeth::extended_proof<ppT, SnarkT> &ext_proof,
-    const boost::filesystem::path &proof_path)
-{
-    std::ofstream out_s(proof_path.c_str(), std::ios_base::out);
-    ext_proof.write_json(out_s);
-}
-
-static void write_proof_to_file(
-    const typename SnarkT::proof &proof,
-    const boost::filesystem::path &proof_path)
-{
-    std::ofstream out_s(proof_path.c_str(), std::ios_base::out | std::ios_base::binary);
-    SnarkT::proof_write_bytes(proof, out_s);
-}
-
-static void write_assignment_to_file(
-    const std::vector<FieldT> &assignment,
-    const boost::filesystem::path &assignment_path)
-{
-    std::ofstream out_s(assignment_path.c_str(), std::ios_base::out | std::ios_base::binary);
-    libzeth::r1cs_variable_assignment_write_bytes(assignment, out_s);
-}
-
-template<typename zkpT>
+template<typename zkpT, typename SnarkT, typename ZKStreamT>
 void ZKPSetup(
         const boost::filesystem::path &keypair_file,
         const boost::filesystem::path &pk_bin_file,
@@ -161,13 +59,14 @@ void ZKPSetup(
 {
     zkpT aZkp;
     const typename SnarkT::keypair keys = aZkp.generate_trusted_setup();
-    write_keypair(keys, keypair_file);
-    write_proving_key(keys.pk, pk_bin_file);
-    write_verification_key(keys.vk, vk_bin_file);
-    write_verification_json(keys.vk, vk_json_file);
+    ZKStreamT::write_keypair(keys, keypair_file);
+    ZKStreamT::write_proving_key(keys.pk, pk_bin_file);
+    ZKStreamT::write_verification_key(keys.vk, vk_bin_file);
+    ZKStreamT::write_verification_json(keys.vk, vk_json_file);
     write_constraint_system<zkpT>(aZkp, r1cs_json_file);
 }
 
+template<typename SnarkT, typename ZKStreamT>
 void TrustedSetup(
         ZKCIRC type, 
         const boost::filesystem::path &keypair_file,
@@ -176,19 +75,24 @@ void TrustedSetup(
         const boost::filesystem::path &vk_json_file, 
         const boost::filesystem::path &r1cs_json_file)
 {
+    using zkterminateT  = zkterminate_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
+    using zkmintT       = zkmint_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
+    using zkconsentT    = zkconsent_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
+    using zkconfirmT    = zkconfirm_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
+
     switch (type)
     {
     case ZK_TERMINATE:
-        ZKPSetup<zkterminateT>(keypair_file, pk_bin_file, vk_bin_file, vk_json_file, r1cs_json_file);
+        ZKPSetup<zkterminateT, SnarkT, ZKStreamT>(keypair_file, pk_bin_file, vk_bin_file, vk_json_file, r1cs_json_file);
         break;
     case ZK_MINT:
-        ZKPSetup<zkmintT>(keypair_file, pk_bin_file, vk_bin_file, vk_json_file, r1cs_json_file);
+        ZKPSetup<zkmintT, SnarkT, ZKStreamT>(keypair_file, pk_bin_file, vk_bin_file, vk_json_file, r1cs_json_file);
         break;
     case ZK_CONSENT:
-        ZKPSetup<zkconsentT>(keypair_file, pk_bin_file, vk_bin_file, vk_json_file, r1cs_json_file);
+        ZKPSetup<zkconsentT, SnarkT, ZKStreamT>(keypair_file, pk_bin_file, vk_bin_file, vk_json_file, r1cs_json_file);
         break;
     case ZK_CONFIRM:
-        ZKPSetup<zkconfirmT>(keypair_file, pk_bin_file, vk_bin_file, vk_json_file, r1cs_json_file);
+        ZKPSetup<zkconfirmT, SnarkT, ZKStreamT>(keypair_file, pk_bin_file, vk_bin_file, vk_json_file, r1cs_json_file);
         break;
     default:
         std::cout << "FAILED: invalid ciruict name" << std::endl;
@@ -196,7 +100,22 @@ void TrustedSetup(
     }
 }
 
-template<typename jsonT>
+void TrustedSetup(
+    bool    bGroth16,
+    ZKCIRC  type, 
+    const boost::filesystem::path &keypair_file,
+    const boost::filesystem::path &pk_bin_file,
+    const boost::filesystem::path &vk_bin_file,
+    const boost::filesystem::path &vk_json_file, 
+    const boost::filesystem::path &r1cs_json_file)
+{
+    if (bGroth16)
+        TrustedSetup<G16SnarkT, G16StreamT>(type, keypair_file, pk_bin_file, vk_bin_file, vk_json_file,  r1cs_json_file);
+    else 
+        TrustedSetup<P13SnarkT, P13StreamT>(type, keypair_file, pk_bin_file, vk_bin_file, vk_json_file,  r1cs_json_file);
+}
+
+template<typename jsonT, typename SnarkT, typename ZKStreamT>
 void ZKProve(const boost::filesystem::path &keypair_file,
              const boost::filesystem::path &witness_json_file,
              const boost::filesystem::path &exproof_json_file,
@@ -211,10 +130,10 @@ void ZKProve(const boost::filesystem::path &keypair_file,
     bool bRunSetup = !boost::filesystem::exists(keypair_file);
     const typename SnarkT::keypair keys =  
                 bRunSetup ? aZkp.generate_trusted_setup() :
-                            load_keypair(keypair_file);
+                            ZKStreamT::load_keypair(keypair_file);
 
     if (bRunSetup) 
-        write_keypair(keys, keypair_file);
+        ZKStreamT::write_keypair(keys, keypair_file);
 
     //Load proof parameters
     jsonT zkjson(witness_json_file);
@@ -224,12 +143,13 @@ void ZKProve(const boost::filesystem::path &keypair_file,
     libzeth::extended_proof<ppT, SnarkT> ext_proof = 
         zkjson.prove_test(aZkp, keys.pk);
 
-    write_extproof_to_json_file(ext_proof, exproof_json_file);
-    write_proof_to_file(ext_proof.get_proof(), proof_bin_file);
-    write_assignment_to_file(ext_proof.get_primary_inputs(), primary_bin_file);
-    write_assignment_to_file(aZkp.get_last_assignment(), witness_bin_file);
+    ZKStreamT::write_extproof_to_json_file(ext_proof, exproof_json_file);
+    ZKStreamT::write_proof_to_file(ext_proof.get_proof(), proof_bin_file);
+    ZKStreamT::write_assignment_to_file(ext_proof.get_primary_inputs(), primary_bin_file);
+    ZKStreamT::write_assignment_to_file(aZkp.get_last_assignment(), witness_bin_file);
 }
 
+template<typename SnarkT, typename ZKStreamT>
 void GenerateProof(
     ZKCIRC type, 
     const boost::filesystem::path &keypair_file,
@@ -242,19 +162,19 @@ void GenerateProof(
     switch (type)
     {
     case ZK_TERMINATE:
-        ZKProve<zkterminate_json<SnarkT>>(
+        ZKProve<zkterminate_json<SnarkT>, SnarkT, ZKStreamT>(
             keypair_file, witness_json_file, exproof_json_file, proof_bin_file, primary_bin_file ,witness_bin_file);
         break;
     case ZK_MINT:
-        ZKProve<zkmint_json<SnarkT>>(
+        ZKProve<zkmint_json<SnarkT>, SnarkT, ZKStreamT>(
             keypair_file, witness_json_file, exproof_json_file, proof_bin_file, primary_bin_file ,witness_bin_file);
         break;
     case ZK_CONSENT:
-        ZKProve<zkconsent_json<SnarkT>>(
+        ZKProve<zkconsent_json<SnarkT>, SnarkT, ZKStreamT>(
             keypair_file, witness_json_file, exproof_json_file, proof_bin_file, primary_bin_file ,witness_bin_file);
         break;
     case ZK_CONFIRM:
-        ZKProve<zkconfirm_json<SnarkT>>(
+        ZKProve<zkconfirm_json<SnarkT>, SnarkT, ZKStreamT>(
             keypair_file, witness_json_file, exproof_json_file, proof_bin_file, primary_bin_file ,witness_bin_file);
         break;
     default:
@@ -263,10 +183,26 @@ void GenerateProof(
     }
 }
 
-template<typename zkpT>
+void GenerateProof(
+    bool    bGroth16,
+    ZKCIRC  type, 
+    const boost::filesystem::path &keypair_file,
+    const boost::filesystem::path &witness_json_file,
+    const boost::filesystem::path &exproof_json_file,
+    const boost::filesystem::path &proof_bin_file,
+    const boost::filesystem::path &primary_bin_file,
+    const boost::filesystem::path &witness_bin_file)
+{
+    if (bGroth16)
+        GenerateProof<G16SnarkT, G16StreamT>(type, keypair_file,witness_json_file,exproof_json_file,proof_bin_file,primary_bin_file,witness_bin_file);
+    else 
+        GenerateProof<P13SnarkT, P13StreamT>(type, keypair_file,witness_json_file,exproof_json_file,proof_bin_file,primary_bin_file,witness_bin_file);
+}
+
+template<typename zkpT, typename SnarkT, typename ZKStreamT>
 void ZKVerify(const boost::filesystem::path &keypair_file,
-             const boost::filesystem::path &proof_bin_file,
-             const boost::filesystem::path &primary_bin_file)
+              const boost::filesystem::path &proof_bin_file,
+              const boost::filesystem::path &primary_bin_file)
 {
     zkpT aZkp;
 
@@ -287,41 +223,61 @@ void ZKVerify(const boost::filesystem::path &keypair_file,
     bool bRunSetup = !boost::filesystem::exists(keypair_file);
     const typename SnarkT::keypair keys =  
                 bRunSetup ? aZkp.generate_trusted_setup() :
-                            load_keypair(keypair_file);
+                            ZKStreamT::load_keypair(keypair_file);
 
     if (bRunSetup) 
-        write_keypair(keys, keypair_file);
+        ZKStreamT::write_keypair(keys, keypair_file);
 
-    std::vector<FieldT> primary_in  = load_assignment(primary_bin_file); 
-    SnarkT::proof       proof       = load_proof(proof_bin_file);
+    std::vector<FieldT>     primary_in  = ZKStreamT::load_assignment(primary_bin_file); 
+    typename SnarkT::proof  proof       = ZKStreamT::load_proof(proof_bin_file);
 
     bool bVerify = SnarkT::verify(primary_in, proof, keys.vk);
     std::cout << std::endl;
     std::cout << "Proof Verification: " << (bVerify ? "OK" : "FAILED") << std::endl;
 }
 
+template<typename SnarkT, typename ZKStreamT>
 void VerifyProof(
     ZKCIRC type, 
     const boost::filesystem::path &keypair_file,
     const boost::filesystem::path &proof_bin_file,
     const boost::filesystem::path &primary_bin_file)
 {
+    using zkterminateT  = zkterminate_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
+    using zkmintT       = zkmint_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
+    using zkconsentT    = zkconsent_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
+    using zkconfirmT    = zkconfirm_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
+
     switch (type)
     {
     case ZK_TERMINATE:
-        ZKVerify<zkterminateT>(keypair_file, proof_bin_file, primary_bin_file);
+        ZKVerify<zkterminateT, SnarkT, ZKStreamT>(keypair_file, proof_bin_file, primary_bin_file);
         break;
     case ZK_MINT:
-        ZKVerify<zkmintT>(keypair_file, proof_bin_file, primary_bin_file);
+        ZKVerify<zkmintT, SnarkT, ZKStreamT>(keypair_file, proof_bin_file, primary_bin_file);
         break;
     case ZK_CONSENT:
-        ZKVerify<zkconsentT>(keypair_file, proof_bin_file, primary_bin_file);
+        ZKVerify<zkconsentT, SnarkT, ZKStreamT>(keypair_file, proof_bin_file, primary_bin_file);
         break;
     case ZK_CONFIRM:
-        ZKVerify<zkconfirmT>(keypair_file, proof_bin_file, primary_bin_file);
+        ZKVerify<zkconfirmT, SnarkT, ZKStreamT>(keypair_file, proof_bin_file, primary_bin_file);
         break;
     default:
         std::cout << "FAILED: invalid ciruict name" << std::endl;
         break;
     }
+}
+
+void VerifyProof(
+    bool    bGroth16,
+    ZKCIRC  type, 
+    const boost::filesystem::path &keypair_file,
+    const boost::filesystem::path &proof_bin_file,
+    const boost::filesystem::path &primary_bin_file)
+{
+    if (bGroth16)
+        VerifyProof<G16SnarkT, G16StreamT>(type, keypair_file, proof_bin_file, primary_bin_file);            
+    else 
+        VerifyProof<P13SnarkT, P13StreamT>(type, keypair_file, proof_bin_file, primary_bin_file);            
+
 }

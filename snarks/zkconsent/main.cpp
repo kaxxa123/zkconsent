@@ -77,18 +77,19 @@ const char*    GetCircuitTag(ZKCIRC type)
     return "";
 }
 
-boost::filesystem::path GetBaseDir(ZKCIRC type)
+boost::filesystem::path GetBaseDir(bool bGroth16, ZKCIRC type)
 {
-    const char *path = std::getenv("HOME");
+    const char *scheme = bGroth16 ? SCHEMEFLD_GROTH16 : SCHEMEFLD_PGHR13;
+    const char *path   = std::getenv("HOME");
     if (path == nullptr)
         throw "FAILED: on getting home dir";
 
-    return boost::filesystem::path(path) / "zkconsent_setup" / GetCircuitTag(type);
+    return boost::filesystem::path(path) / "zkconsent_setup" / scheme / GetCircuitTag(type);
 }
 
-boost::filesystem::path GetDefPath(const char* szBaseFile, const char* szExt, ZKCIRC type)
+boost::filesystem::path GetDefPath(bool bGroth16, const char* szBaseFile, const char* szExt, ZKCIRC type)
 {
-    boost::filesystem::path     path = GetBaseDir(type);
+    boost::filesystem::path     path = GetBaseDir(bGroth16, type);
     std::string                 filename = szBaseFile;
 
     filename += "_";
@@ -105,6 +106,11 @@ int main(int argc, char** argv)
         ("cmd", 
         po::value<std::string>(),
         "(REQUIRED) test | setup | prove | verify");
+
+    options.add_options()
+        ("groth16", "Run with Groth16 ZKP Scheme (default)");
+    options.add_options()
+        ("pghr13",  "Run with PGHR13 ZKP Scheme");
 
     options.add_options()
         ("zkterminate", "process user termination zkp");
@@ -178,6 +184,7 @@ int main(int argc, char** argv)
 
     ZKCIRC      typeCirc = ZK_ERROR;
     CMDTYPS     typeCmd  = CMD_ERROR;
+    bool        bGroth16 = true;
 
     std::string sCmd;
     boost::filesystem::path keypair_file;
@@ -226,6 +233,14 @@ int main(int argc, char** argv)
             }
         }
 
+        if (vm.count("groth16") && vm.count("pghr13"))
+        {
+            std::cout << " ERROR: Specify only ONE ZKP Scheme from"  << std::endl;
+            std::cout << "  groth16 | pghr13"  << std::endl;
+            return 1;
+        }
+        bGroth16 = vm.count("groth16") || !vm.count("pghr13");
+
         if (vm.count("keypair"))
             keypair_file = vm["keypair"].as<boost::filesystem::path>();
 
@@ -264,7 +279,7 @@ int main(int argc, char** argv)
 
     InitSnarks();
 
-    boost::filesystem::path setup_dir = GetBaseDir(typeCirc);
+    boost::filesystem::path setup_dir = GetBaseDir(bGroth16, typeCirc);
     boost::filesystem::create_directories(setup_dir);
     
     switch(typeCmd)
@@ -275,21 +290,21 @@ int main(int argc, char** argv)
 
         case CMD_SETUP: 
             if (keypair_file.empty())
-                keypair_file = GetDefPath(BASE_KEYPAIR_FILE, BIN_EXT, typeCirc);
+                keypair_file = GetDefPath(bGroth16, BASE_KEYPAIR_FILE, BIN_EXT, typeCirc);
 
             if (r1cs_json_file.empty())
-                r1cs_json_file = GetDefPath(BASE_R1CS_FILE, JSON_EXT, typeCirc);
+                r1cs_json_file = GetDefPath(bGroth16, BASE_R1CS_FILE, JSON_EXT, typeCirc);
 
             if (pk_bin_file.empty())
-                pk_bin_file = GetDefPath(BASE_PK_FILE, BIN_EXT, typeCirc);
+                pk_bin_file = GetDefPath(bGroth16, BASE_PK_FILE, BIN_EXT, typeCirc);
 
             if (vk_bin_file.empty())
-                vk_bin_file = GetDefPath(BASE_VK_FILE, BIN_EXT, typeCirc);
+                vk_bin_file = GetDefPath(bGroth16, BASE_VK_FILE, BIN_EXT, typeCirc);
 
             if (vk_json_file.empty())
-                vk_json_file = GetDefPath(BASE_VK_FILE, JSON_EXT, typeCirc);
+                vk_json_file = GetDefPath(bGroth16, BASE_VK_FILE, JSON_EXT, typeCirc);
 
-            TrustedSetup(typeCirc, keypair_file, pk_bin_file, vk_bin_file, vk_json_file, r1cs_json_file); 
+            TrustedSetup(bGroth16, typeCirc, keypair_file, pk_bin_file, vk_bin_file, vk_json_file, r1cs_json_file); 
             break;
 
         case CMD_PROVE:
@@ -300,21 +315,22 @@ int main(int argc, char** argv)
             }
             
             if (keypair_file.empty())
-                keypair_file = GetDefPath(BASE_KEYPAIR_FILE, BIN_EXT, typeCirc);
+                keypair_file = GetDefPath(bGroth16, BASE_KEYPAIR_FILE, BIN_EXT, typeCirc);
 
             if (exproof_json_file.empty())
-                exproof_json_file = GetDefPath(BASE_EXPROOF_FILE, JSON_EXT, typeCirc);
+                exproof_json_file = GetDefPath(bGroth16, BASE_EXPROOF_FILE, JSON_EXT, typeCirc);
 
             if (proof_bin_file.empty())
-                proof_bin_file = GetDefPath(BASE_PROOF_FILE, BIN_EXT, typeCirc);
+                proof_bin_file = GetDefPath(bGroth16, BASE_PROOF_FILE, BIN_EXT, typeCirc);
 
             if (primary_bin_file.empty())
-                primary_bin_file = GetDefPath(BASE_PRIMARY_FILE, BIN_EXT, typeCirc);
+                primary_bin_file = GetDefPath(bGroth16, BASE_PRIMARY_FILE, BIN_EXT, typeCirc);
 
             if (witness_bin_file.empty())
-                witness_bin_file = GetDefPath(BASE_WITNESS_FILE, BIN_EXT, typeCirc);
+                witness_bin_file = GetDefPath(bGroth16, BASE_WITNESS_FILE, BIN_EXT, typeCirc);
 
-            GenerateProof(  typeCirc, 
+            GenerateProof(  bGroth16,
+                            typeCirc, 
                             keypair_file, 
                             witness_json_file, 
                             exproof_json_file, 
@@ -325,15 +341,16 @@ int main(int argc, char** argv)
 
         case CMD_VERIFY:
             if (keypair_file.empty())
-                keypair_file = GetDefPath(BASE_KEYPAIR_FILE, BIN_EXT, typeCirc);
+                keypair_file = GetDefPath(bGroth16, BASE_KEYPAIR_FILE, BIN_EXT, typeCirc);
 
             if (proof_bin_file.empty())
-                proof_bin_file = GetDefPath(BASE_PROOF_FILE, BIN_EXT, typeCirc);
+                proof_bin_file = GetDefPath(bGroth16, BASE_PROOF_FILE, BIN_EXT, typeCirc);
 
             if (primary_bin_file.empty())
-                primary_bin_file = GetDefPath(BASE_PRIMARY_FILE, BIN_EXT, typeCirc);
+                primary_bin_file = GetDefPath(bGroth16, BASE_PRIMARY_FILE, BIN_EXT, typeCirc);
 
-            VerifyProof(typeCirc, 
+            VerifyProof(bGroth16, 
+                        typeCirc, 
                         keypair_file, 
                         proof_bin_file, 
                         primary_bin_file);

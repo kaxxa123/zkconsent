@@ -3,6 +3,9 @@
 #ifndef __CLIENTDEFS_HPP_
 #define __CLIENTDEFS_HPP_
 
+#define SCHEMEFLD_GROTH16   "groth16"
+#define SCHEMEFLD_PGHR13    "pghr13"
+
 #define FILETAG_MINT        "zkmint"
 #define FILETAG_CONSENT     "zkcons"
 #define FILETAG_CONFIRM     "zkconf"
@@ -39,7 +42,8 @@ enum    CMDTYPS {
 void TestAll();
 
 void TrustedSetup(
-    ZKCIRC type, 
+    bool    bGroth16,
+    ZKCIRC  type, 
     const boost::filesystem::path &keypair_file,
     const boost::filesystem::path &pk_bin_file,
     const boost::filesystem::path &vk_bin_file,
@@ -47,7 +51,8 @@ void TrustedSetup(
     const boost::filesystem::path &r1cs_json_file);
 
 void GenerateProof(
-    ZKCIRC type, 
+    bool    bGroth16,
+    ZKCIRC  type, 
     const boost::filesystem::path &keypair_file,
     const boost::filesystem::path &witness_json_file,
     const boost::filesystem::path &exproof_json_file,
@@ -56,7 +61,8 @@ void GenerateProof(
     const boost::filesystem::path &witness_bin_file);
 
 void VerifyProof(
-    ZKCIRC type, 
+    bool    bGroth16,
+    ZKCIRC  type, 
     const boost::filesystem::path &keypair_file,
     const boost::filesystem::path &proof_bin_file,
     const boost::filesystem::path &primary_bin_file);
