@@ -14,7 +14,6 @@ import "./BN128_Libraries.sol";
 //     by the latest zokrates build.
 
 contract VerifiyPGHR13 {
-    using Pairing for *;
     
     struct VerifyingKey {
         Pairing.G2Point A;
@@ -24,8 +23,7 @@ contract VerifiyPGHR13 {
         Pairing.G1Point gammaBeta1;
         Pairing.G2Point gammaBeta2;
         Pairing.G2Point Z;
-        Pairing.G1Point[5] IC;
-        uint IC_length;
+        Pairing.G1Point[] IC;
     }
 
     struct Proof {
@@ -42,8 +40,33 @@ contract VerifiyPGHR13 {
     bool public verifyingKeySet = false;
     VerifyingKey vk;
 
+    function setVerifyingKey(
+            uint[2][2] memory A,
+            uint[2] memory B,
+            uint[2][2] memory C,
+            uint[2][2] memory gamma,
+            uint[2] memory gamma_beta_1,
+            uint[2][2] memory gamma_beta_2,
+            uint[2][2] memory Z,
+            uint[2][] memory IC) public {
+    	require(!verifyingKeySet);
+
+        vk.A = Pairing.G2Point([A[0][0], A[0][1]], [A[1][0], A[1][1]]);
+        vk.B = Pairing.G1Point(B[0], B[1]);
+        vk.C = Pairing.G2Point([C[0][0], C[0][1]], [C[1][0], C[1][1]]);
+        vk.gamma = Pairing.G2Point([gamma[0][0], gamma[0][1]], [gamma[1][0], gamma[1][1]]);
+        vk.gammaBeta1 = Pairing.G1Point(gamma_beta_1[0], gamma_beta_1[1]);
+        vk.gammaBeta2 = Pairing.G2Point([gamma_beta_2[0][0], gamma_beta_2[0][1]], [gamma_beta_2[1][0], gamma_beta_2[1][1]]);
+        vk.Z = Pairing.G2Point([Z[0][0], Z[0][1]], [Z[1][0], Z[1][1]]);
+
+        for(uint iCnt = 0; iCnt < IC.length; iCnt++) {
+            vk.IC.push(Pairing.G1Point(IC[iCnt][0], IC[iCnt][1]));
+        }
+        verifyingKeySet = true;
+    }
+    
     function verify(uint[] memory input, Proof memory proof) internal view returns (uint) {
-        require(input.length + 1 == vk.IC_length);
+        require(input.length + 1 == vk.IC.length);
 
         // Compute the linear combination vk_x
         Pairing.G1Point memory vk_x = Pairing.G1Point(0, 0);
@@ -67,32 +90,6 @@ contract VerifiyPGHR13 {
         return 0;
     }
 
-    function setVerifyingKey(
-            uint[2][2] memory A,
-            uint[2] memory B,
-            uint[2][2] memory C,
-            uint[2][2] memory gamma,
-            uint[2] memory gamma_beta_1,
-            uint[2][2] memory gamma_beta_2,
-            uint[2][2] memory Z,
-            uint[2][] memory IC) public {
-    	require(!verifyingKeySet);
-        require(IC.length <= 5);
-
-        vk.A = Pairing.G2Point([A[0][0], A[0][1]], [A[1][0], A[1][1]]);
-        vk.B = Pairing.G1Point(B[0], B[1]);
-        vk.C = Pairing.G2Point([C[0][0], C[0][1]], [C[1][0], C[1][1]]);
-        vk.gamma = Pairing.G2Point([gamma[0][0], gamma[0][1]], [gamma[1][0], gamma[1][1]]);
-        vk.gammaBeta1 = Pairing.G1Point(gamma_beta_1[0], gamma_beta_1[1]);
-        vk.gammaBeta2 = Pairing.G2Point([gamma_beta_2[0][0], gamma_beta_2[0][1]], [gamma_beta_2[1][0], gamma_beta_2[1][1]]);
-        vk.Z = Pairing.G2Point([Z[0][0], Z[0][1]], [Z[1][0], Z[1][1]]);
-        vk.IC_length = IC.length;
-        for(uint i=0; i<vk.IC_length; i++) {
-            vk.IC[i] = Pairing.G1Point(IC[i][0], IC[i][1]);
-        }
-        verifyingKeySet = true;
-    }
-    
     function verifyTx(
             uint[2] memory a,
             uint[2] memory a_p,
