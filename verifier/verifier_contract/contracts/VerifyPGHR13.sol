@@ -13,7 +13,7 @@ import "./BN128_Libraries.sol";
 //     Updates to function names to use the BN128 libraries as generated 
 //     by the latest zokrates build.
 
-contract VerifiyPGHR13 {
+contract VerifyPGHR13 {
     
     struct VerifyingKey {
         Pairing.G2Point A;

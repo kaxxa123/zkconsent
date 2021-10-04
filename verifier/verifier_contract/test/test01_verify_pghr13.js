@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: LGPL-3.0+
 
 const fs = require('fs');
-const Verifier = artifacts.require("VerifiyPGHR13");
+const Verifier = artifacts.require("VerifyPGHR13");
 
 const zktermVK    = '/home/alex/zkconsent_setup/zkterm/vk_zkterm.json'
 const zktermProof = '/home/alex/zkconsent_setup/zkterm/exproof_zkterm.json'

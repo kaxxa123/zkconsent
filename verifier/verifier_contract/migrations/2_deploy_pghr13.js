@@ -1,4 +1,4 @@
-var Verifier = artifacts.require("VerifiyPGHR13");
+var Verifier = artifacts.require("VerifyPGHR13");
 
 module.exports = function(deployer) {
 	deployer.deploy(Verifier);
