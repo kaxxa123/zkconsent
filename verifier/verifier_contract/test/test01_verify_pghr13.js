@@ -3,14 +3,14 @@
 const fs = require('fs');
 const Verifier = artifacts.require("VerifyPGHR13");
 
-const zktermVK    = '/home/alex/zkconsent_setup/zkterm/vk_zkterm.json'
-const zktermProof = '/home/alex/zkconsent_setup/zkterm/exproof_zkterm.json'
-const zkmintVK    = '/home/alex/zkconsent_setup/zkmint/vk_zkmint.json'
-const zkmintProof = '/home/alex/zkconsent_setup/zkmint/exproof_zkmint.json'
-const zkconsVK    = '/home/alex/zkconsent_setup/zkcons/vk_zkcons.json'
-const zkconsProof = '/home/alex/zkconsent_setup/zkcons/exproof_zkcons.json'
-const zkconfVK    = '/home/alex/zkconsent_setup/zkconf/vk_zkconf.json'
-const zkconfProof = '/home/alex/zkconsent_setup/zkconf/exproof_zkconf.json'
+const zktermVK    = '/home/alex/zkconsent_setup/pghr13/zkterm/vk_zkterm.json'
+const zktermProof = '/home/alex/zkconsent_setup/pghr13/zkterm/exproof_zkterm.json'
+const zkmintVK    = '/home/alex/zkconsent_setup/pghr13/zkmint/vk_zkmint.json'
+const zkmintProof = '/home/alex/zkconsent_setup/pghr13/zkmint/exproof_zkmint.json'
+const zkconsVK    = '/home/alex/zkconsent_setup/pghr13/zkcons/vk_zkcons.json'
+const zkconsProof = '/home/alex/zkconsent_setup/pghr13/zkcons/exproof_zkcons.json'
+const zkconfVK    = '/home/alex/zkconsent_setup/pghr13/zkconf/vk_zkconf.json'
+const zkconfProof = '/home/alex/zkconsent_setup/pghr13/zkconf/exproof_zkconf.json'
 
 //VK======================
 var A, B, C;
