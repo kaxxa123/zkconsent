@@ -3,14 +3,15 @@
 const fs = require('fs');
 const Verifier = artifacts.require("VerifyPGHR13");
 
-const zktermVK    = '/home/alex/zkconsent_setup/pghr13/zkterm/vk_zkterm.json'
-const zktermProof = '/home/alex/zkconsent_setup/pghr13/zkterm/exproof_zkterm.json'
-const zkmintVK    = '/home/alex/zkconsent_setup/pghr13/zkmint/vk_zkmint.json'
-const zkmintProof = '/home/alex/zkconsent_setup/pghr13/zkmint/exproof_zkmint.json'
-const zkconsVK    = '/home/alex/zkconsent_setup/pghr13/zkcons/vk_zkcons.json'
-const zkconsProof = '/home/alex/zkconsent_setup/pghr13/zkcons/exproof_zkcons.json'
-const zkconfVK    = '/home/alex/zkconsent_setup/pghr13/zkconf/vk_zkconf.json'
-const zkconfProof = '/home/alex/zkconsent_setup/pghr13/zkconf/exproof_zkconf.json'
+const homedir = (process.platform === 'win32') ? process.env.HOMEPATH : process.env.HOME;
+const zktermVK    = homedir + '/zkconsent_setup/pghr13/zkterm/vk_zkterm.json'
+const zktermProof = homedir + '/zkconsent_setup/pghr13/zkterm/exproof_zkterm.json'
+const zkmintVK    = homedir + '/zkconsent_setup/pghr13/zkmint/vk_zkmint.json'
+const zkmintProof = homedir + '/zkconsent_setup/pghr13/zkmint/exproof_zkmint.json'
+const zkconsVK    = homedir + '/zkconsent_setup/pghr13/zkcons/vk_zkcons.json'
+const zkconsProof = homedir + '/zkconsent_setup/pghr13/zkcons/exproof_zkcons.json'
+const zkconfVK    = homedir + '/zkconsent_setup/pghr13/zkconf/vk_zkconf.json'
+const zkconfProof = homedir + '/zkconsent_setup/pghr13/zkconf/exproof_zkconf.json'
 
 //VK======================
 var A, B, C;
