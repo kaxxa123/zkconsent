@@ -99,7 +99,7 @@ contract VerifiyPGHR13 {
             uint[2] memory c_p,
             uint[2] memory h,
             uint[2] memory k,
-            uint[] memory input) public view returns (bool r) {
+            uint[] memory input) public view returns (bool) {
         require(verifyingKeySet);
         Proof memory proof;
         proof.A     = Pairing.G1Point(a[0], a[1]);
