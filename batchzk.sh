@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 
 echo "================================="
-echo "Generating Setup/Proofs zkConsent"
+echo "Generating Setup zkConsent"
 echo "================================="
 
 echo

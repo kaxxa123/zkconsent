@@ -95,7 +95,7 @@ void TrustedSetup(
         ZKPSetup<zkconfirmT, SnarkT, ZKStreamT>(keypair_file, pk_bin_file, vk_bin_file, vk_json_file, r1cs_json_file);
         break;
     default:
-        std::cout << "FAILED: invalid ciruict name" << std::endl;
+        std::cerr << "FAILED: invalid ciruict name" << std::endl;
         break;
     }
 }
@@ -178,7 +178,7 @@ void GenerateProof(
             keypair_file, witness_json_file, exproof_json_file, proof_bin_file, primary_bin_file ,witness_bin_file);
         break;
     default:
-        std::cout << "FAILED: invalid ciruict name" << std::endl;
+        std::cerr << "FAILED: invalid ciruict name" << std::endl;
         break;
     }
 }
@@ -208,13 +208,13 @@ void ZKVerify(const boost::filesystem::path &keypair_file,
 
     if (!boost::filesystem::exists(proof_bin_file))
     {
-        std::cout << "FAILED: Proof file not found: " << proof_bin_file << std::endl;
+        std::cerr << "FAILED: Proof file not found: " << proof_bin_file << std::endl;
         return;
     }
     
     if (!boost::filesystem::exists(primary_bin_file))
     {
-        std::cout << "FAILED: Primary input file not found: " << primary_bin_file << std::endl;
+        std::cerr << "FAILED: Primary input file not found: " << primary_bin_file << std::endl;
         return;
     }
 
@@ -263,7 +263,7 @@ void VerifyProof(
         ZKVerify<zkconfirmT, SnarkT, ZKStreamT>(keypair_file, proof_bin_file, primary_bin_file);
         break;
     default:
-        std::cout << "FAILED: invalid ciruict name" << std::endl;
+        std::cerr << "FAILED: invalid ciruict name" << std::endl;
         break;
     }
 }

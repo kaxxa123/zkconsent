@@ -98,6 +98,15 @@ boost::filesystem::path GetDefPath(bool bGroth16, const char* szBaseFile, const 
     return path / filename;
 }
 
+void CreatePath(boost::filesystem::path& path)
+{
+    boost::filesystem::path temp = path;
+
+    if (temp.has_filename())
+            boost::filesystem::create_directories(temp.remove_filename());
+    else    boost::filesystem::create_directories(temp);
+}
+
 int main(int argc, char** argv)
 {
     // Options
@@ -210,7 +219,7 @@ int main(int argc, char** argv)
 
         if (vm.count("cmd") != 1)
         {
-            std::cout << " ERROR: Command required"  << std::endl;
+            std::cerr << " ERROR: Command required"  << std::endl;
             return 1;
         }
 
@@ -218,7 +227,7 @@ int main(int argc, char** argv)
         typeCmd = GetCmd(sCmd);
         if (typeCmd == CMD_ERROR)
         {
-            std::cout << " ERROR: Unknown command: "  << sCmd << std::endl;
+            std::cerr << " ERROR: Unknown command: "  << sCmd << std::endl;
             return 1;
         }
 
@@ -227,16 +236,16 @@ int main(int argc, char** argv)
             typeCirc = GetCircuit(vm.count("zkterminate"), vm.count("zkmint"), vm.count("zkconsent"), vm.count("zkconfirm"));
             if (typeCirc == ZK_ERROR)
             {
-                std::cout << " ERROR: Specify ONE of the circuit selection flags"  << std::endl;
-                std::cout << "  zkterminate | zkmint | zkconsent | zkconfirm"  << std::endl;
+                std::cerr << " ERROR: Specify ONE of the circuit selection flags"  << std::endl;
+                std::cerr << "  zkterminate | zkmint | zkconsent | zkconfirm"  << std::endl;
                 return 1;
             }
         }
 
         if (vm.count("groth16") && vm.count("pghr13"))
         {
-            std::cout << " ERROR: Specify only ONE ZKP Scheme from"  << std::endl;
-            std::cout << "  groth16 | pghr13"  << std::endl;
+            std::cerr << " ERROR: Specify only ONE ZKP Scheme from"  << std::endl;
+            std::cerr << "  groth16 | pghr13"  << std::endl;
             return 1;
         }
         bGroth16 = vm.count("groth16") || !vm.count("pghr13");
@@ -279,9 +288,6 @@ int main(int argc, char** argv)
 
     InitSnarks();
 
-    boost::filesystem::path setup_dir = GetBaseDir(bGroth16, typeCirc);
-    boost::filesystem::create_directories(setup_dir);
-    
     switch(typeCmd)
     {
         case CMD_TEST: 
@@ -304,13 +310,34 @@ int main(int argc, char** argv)
             if (vk_json_file.empty())
                 vk_json_file = GetDefPath(bGroth16, BASE_VK_FILE, JSON_EXT, typeCirc);
 
+            if (!keypair_file.has_filename() || 
+                !r1cs_json_file.has_filename() || 
+                !pk_bin_file.has_filename() || 
+                !vk_bin_file.has_filename() || 
+                !vk_json_file.has_filename()) {
+                std::cerr << " ERROR: " << "Invalid Input filename" << std::endl;
+                return 1;
+            }
+
+            CreatePath(keypair_file);
+            CreatePath(r1cs_json_file);
+            CreatePath(pk_bin_file);
+            CreatePath(vk_bin_file);
+            CreatePath(vk_json_file);
+
+            std::cout << " KeyPair BIN: " << keypair_file << std::endl;
+            std::cout << " R1CS JSON:   " << r1cs_json_file << std::endl;
+            std::cout << " PK BIN:      " << pk_bin_file << std::endl;
+            std::cout << " VK BIN:      " << vk_bin_file << std::endl;
+            std::cout << " VK JSON:     " << vk_json_file << std::endl;
+
             TrustedSetup(bGroth16, typeCirc, keypair_file, pk_bin_file, vk_bin_file, vk_json_file, r1cs_json_file); 
             break;
 
         case CMD_PROVE:
             if (witness_json_file.empty())
             {
-                std::cout << "Input witness required. Specify witness parameter." << std::endl;
+                std::cerr << "Input witness required. Specify witness parameter." << std::endl;
                 return 1;
             }
             
@@ -328,6 +355,30 @@ int main(int argc, char** argv)
 
             if (witness_bin_file.empty())
                 witness_bin_file = GetDefPath(bGroth16, BASE_WITNESS_FILE, BIN_EXT, typeCirc);
+
+            if (!witness_json_file.has_filename() || 
+                !keypair_file.has_filename() || 
+                !exproof_json_file.has_filename() || 
+                !proof_bin_file.has_filename() || 
+                !primary_bin_file.has_filename() || 
+                !witness_bin_file.has_filename() ) {
+                std::cerr << " ERROR: " << "Invalid Input filename" << std::endl;
+                return 1;
+            }
+
+            CreatePath(witness_json_file);
+            CreatePath(keypair_file);
+            CreatePath(exproof_json_file);
+            CreatePath(proof_bin_file);
+            CreatePath(primary_bin_file);
+            CreatePath(witness_bin_file);
+
+            std::cout << " Witness Input: " << witness_json_file << std::endl;
+            std::cout << " KeyPair BIN:   " << keypair_file << std::endl;
+            std::cout << " ExProof JSON:  " << exproof_json_file << std::endl;
+            std::cout << " Proof BIN:     " << proof_bin_file << std::endl;
+            std::cout << " Primary BIN:   " << primary_bin_file << std::endl;
+            std::cout << " Witness BIN:   " << witness_bin_file << std::endl;
 
             GenerateProof(  bGroth16,
                             typeCirc, 
@@ -349,6 +400,21 @@ int main(int argc, char** argv)
             if (primary_bin_file.empty())
                 primary_bin_file = GetDefPath(bGroth16, BASE_PRIMARY_FILE, BIN_EXT, typeCirc);
 
+            if (!keypair_file.has_filename() || 
+                !proof_bin_file.has_filename() || 
+                !primary_bin_file.has_filename()) {
+                std::cerr << " ERROR: " << "Invalid Input filename" << std::endl;
+                return 1;
+            }
+
+            CreatePath(keypair_file);
+            CreatePath(proof_bin_file);
+            CreatePath(primary_bin_file);
+
+            std::cout << " KeyPair BIN: " << keypair_file << std::endl;
+            std::cout << " Proof BIN:   " << proof_bin_file << std::endl;
+            std::cout << " Primary BIN: " << primary_bin_file << std::endl;
+
             VerifyProof(bGroth16, 
                         typeCirc, 
                         keypair_file, 
@@ -357,7 +423,7 @@ int main(int argc, char** argv)
             break;
 
         default:
-            std::cout << "UNEXPECTED: Unknown command" << std::endl;
+            std::cerr << "UNEXPECTED: Unknown command" << std::endl;
     }
 
     return 0;
