@@ -390,7 +390,7 @@ int main(int argc, char** argv)
                             witness_bin_file);
             break;
 
-        case CMD_VERIFY:
+        case CMD_VERIFY: 
             if (keypair_file.empty())
                 keypair_file = GetDefPath(bGroth16, BASE_KEYPAIR_FILE, BIN_EXT, typeCirc);
 
