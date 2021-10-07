@@ -230,7 +230,7 @@ void ZKVerify(const boost::filesystem::path &keypair_file,
 
     std::vector<FieldT>     primary_in  = ZKStreamT::load_assignment(primary_bin_file); 
     typename SnarkT::proof  proof       = ZKStreamT::load_proof(proof_bin_file);
-
+ 
     bool bVerify = SnarkT::verify(primary_in, proof, keys.vk);
     std::cout << std::endl;
     std::cout << "Proof Verification: " << (bVerify ? "OK" : "FAILED") << std::endl;
