@@ -6,7 +6,7 @@ echo "================================="
 
 echo
 echo ">> Cleanup setup dir"
-rm ~/zkconsent_setup/* -rf
+rm ~/zkconsent_setup/pghr13/* -rf
 
 echo
 echo ">> SNARKs Setup"
