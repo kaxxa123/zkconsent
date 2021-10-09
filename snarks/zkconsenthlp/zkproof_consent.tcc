@@ -131,9 +131,7 @@ void zkconsent_gadget<FieldT,HashT,HashTreeT,TreeDepth>::generate_r1cs_constrain
     noteIdIn_gag->generate_r1cs_constraints();
     noteIdOut_gag->generate_r1cs_constraints();
     
-    //ZKP is failing because of this:
     noteConsentIn_gag->generate_r1cs_constraints();
-
     noteConsentOut_gag->generate_r1cs_constraints();
     htag_gag->generate_r1cs_constraints();
 }
