@@ -4,27 +4,21 @@ const fs = require('fs');
 const Verifier = artifacts.require("VerifyPGHR13");
 
 const homedir = (process.platform === 'win32') ? process.env.HOMEPATH : process.env.HOME;
-const zktermVK    = homedir + '/zkconsent_setup/pghr13/zkterm/vk_zkterm.json'
-const zktermProof = homedir + '/zkconsent_setup/pghr13/zkterm/exproof_zkterm.json'
-const zkmintVK    = homedir + '/zkconsent_setup/pghr13/zkmint/vk_zkmint.json'
-const zkmintProof = homedir + '/zkconsent_setup/pghr13/zkmint/exproof_zkmint.json'
-const zkconsVK    = homedir + '/zkconsent_setup/pghr13/zkcons/vk_zkcons.json'
-const zkconsProof = homedir + '/zkconsent_setup/pghr13/zkcons/exproof_zkcons.json'
-const zkconfVK    = homedir + '/zkconsent_setup/pghr13/zkconf/vk_zkconf.json'
-const zkconfProof = homedir + '/zkconsent_setup/pghr13/zkconf/exproof_zkconf.json'
+const zktermVK     = homedir + '/zkconsent_setup/pghr13/zkterm/vk_zkterm.json'
+const zktermProof  = homedir + '/zkconsent_setup/pghr13/zkterm/exproof_zkterm.json'
+const zktermProof2 = homedir + '/zkconsent_setup/pghr13/other/zkterm/exproof_zkterm.json'
 
-//VK======================
-var A, B, C;
-var gamma, gamma_beta_1, gamma_beta_2;
-var Z;
-var IC = [];
+const zkmintVK     = homedir + '/zkconsent_setup/pghr13/zkmint/vk_zkmint.json'
+const zkmintProof  = homedir + '/zkconsent_setup/pghr13/zkmint/exproof_zkmint.json'
+const zkmintProof2 = homedir + '/zkconsent_setup/pghr13/other/zkmint/exproof_zkmint.json'
 
-//Proof===================
-var A_g, A_h, B_g, B_h, C_g, C_h;
-var H, K;
+const zkconsVK     = homedir + '/zkconsent_setup/pghr13/zkcons/vk_zkcons.json'
+const zkconsProof  = homedir + '/zkconsent_setup/pghr13/zkcons/exproof_zkcons.json'
+const zkconsProof2 = homedir + '/zkconsent_setup/pghr13/other/zkcons/exproof_zkcons.json'
 
-//Public Input============
-var pubIn = [];
+const zkconfVK     = homedir + '/zkconsent_setup/pghr13/zkconf/vk_zkconf.json'
+const zkconfProof  = homedir + '/zkconsent_setup/pghr13/zkconf/exproof_zkconf.json'
+const zkconfProof2 = homedir + '/zkconsent_setup/pghr13/other/zkconf/exproof_zkconf.json'
 
 var verifier; 
 
@@ -76,18 +70,20 @@ const parseG2Point = (pt) => {
 }
 
 const loadVK = (jsonFile) => {
-    let vk = loadJSON(jsonFile)
+    let jvk = loadJSON(jsonFile)
     
-    A = parseG2Point(vk.a);
-    B = parseG1Point(vk.b);
-    C = parseG2Point(vk.c);
-    gamma = parseG2Point(vk.g);
-    gamma_beta_1 = parseG1Point(vk.gb1);
-    gamma_beta_2 = parseG2Point(vk.gb2);
-    Z = parseG2Point(vk.z);
+    let A = parseG2Point(jvk.a);
+    let B = parseG1Point(jvk.b);
+    let C = parseG2Point(jvk.c);
+    let gamma = parseG2Point(jvk.g);
+    let gamma_beta_1 = parseG1Point(jvk.gb1);
+    let gamma_beta_2 = parseG2Point(jvk.gb2);
+    let Z = parseG2Point(jvk.z);
 
-    IC = [];
-    vk.IC.forEach( pt => IC.push(parseG1Point(pt)));
+    let IC = [];
+    jvk.IC.forEach( pt => IC.push(parseG1Point(pt)));
+
+    return {A, B, C, gamma, gamma_beta_1, gamma_beta_2, Z, IC}
 }
 
 const loadProof = (jsonFile) => {
@@ -101,97 +97,97 @@ const loadProof = (jsonFile) => {
     C_h = parseG1Point(proof.proof.c_p);
     H = parseG1Point(proof.proof.h);
     K = parseG1Point(proof.proof.k);
+
+    return {A_g, A_h, B_g, B_h, C_g, C_h, H, K};
 }
 
 const loadInput = (jsonFile) => {
     let proof = loadJSON(jsonFile)
     
-    pubIn = [];
-    proof.inputs.forEach( val => pubIn.push(hexToDec(val)));
+    let pubInput = [];
+    proof.inputs.forEach( val => pubInput.push(hexToDec(val)));
+    return pubInput;
 }
 
 contract('Verifier', function(accounts) 
 {
-    const setkeyTest = async (jsonVK, jsonProof) => {
-        if (!fs.existsSync(jsonVK))        console.log(`Skipping - File not found: ${jsonVK}`)
-        if (!fs.existsSync(jsonProof))     console.log(`Skipping - File not found: ${jsonProof}`)
-
-        if (!fs.existsSync(jsonVK) || !fs.existsSync(jsonProof))
-            return;
+    const setkeyTest = async (jsonVK) => {
+        assert (fs.existsSync(jsonVK), `File not found: ${jsonVK}`);
 
 		verifier = await Verifier.new();
 		
         console.log("Loading VK...")
-        loadVK(jsonVK)
+        let vk = loadVK(jsonVK)
 
         console.log("Setting VK at verifier...")
-		await verifier.setVerifyingKey(A, B, C, gamma, gamma_beta_1, gamma_beta_2, Z,IC);
+		await verifier.setVerifyingKey(vk.A, vk.B, vk.C, vk.gamma, vk.gamma_beta_1, vk.gamma_beta_2, vk.Z, vk.IC);
 
         let vkSet = await verifier.verifyingKeySet();
         assert(vkSet, "Verification key not set")
     }
 
-    const verifyOkTest = async (jsonVK, jsonProof) => {
-        if (!fs.existsSync(jsonVK) || !fs.existsSync(jsonProof))
+    const verifyOkTest = async (jsonVK, jsonProof, jsonInputs) => {
+        assert (fs.existsSync(jsonVK), `File not found: ${jsonVK}`);
+        assert (fs.existsSync(jsonProof), `File not found: ${jsonProof}`);
+        assert (fs.existsSync(jsonInputs), `File not found: ${jsonInputs}`);
+
+        console.log("Loading Proof...")
+        let pi = loadProof(jsonProof)
+
+        console.log("Loading Public Input...")
+        let pubIn = loadInput(jsonInputs)
+
+        console.log("Verifing...")
+        let res = await verifier.verifyTx.call(pi.A_g, pi.A_h, pi.B_g, pi.B_h, pi.C_g, pi.C_h,
+                                                pi.H, pi.K, pubIn);
+
+        assert(res,"ERROR: Correct Proof NOT Verified!")
+    }
+
+    const verifyWrong = async (jsonVK, jsonProof, jsonInputs) => {
+        assert (fs.existsSync(jsonVK), `File not found: ${jsonVK}`);
+        assert (fs.existsSync(jsonProof), `File not found: ${jsonProof}`);
+        assert (fs.existsSync(jsonInputs), `File not found: ${jsonInputs}`);
+
+        if (!fs.existsSync(jsonVK) || !fs.existsSync(jsonProof) || !fs.existsSync(jsonInputs))
             return;
 
         console.log("Loading Proof...")
-        loadProof(jsonProof)
+        let pi = loadProof(jsonProof)
 
         console.log("Loading Public Input...")
-        loadInput(jsonProof)
+        let pubIn = loadInput(jsonInputs)
+    
+        console.log("Verifiying Incorrect Proof/Input...")
+        let res = await verifier.verifyTx.call(pi.A_g, pi.A_h, pi.B_g, pi.B_h, pi.C_g, pi.C_h,
+            pi.H, pi.K, pubIn);
 
-        console.log("Verifing...")
-        let res = await verifier.verifyTx.call(A_g, A_h, B_g, B_h, C_g, C_h,
-                                        H, K, pubIn);
-
-        assert(res, "Correct Proof verified OK")
+        assert(!res,"ERROR: Incorrect Proof/Input Verified!")
     }
 
-    const verifyWrongProof = async (jsonVK, jsonProof) => {
-        if (!fs.existsSync(jsonVK) || !fs.existsSync(jsonProof))
-            return;
+	it("zkterm: should set verifying key",          async () => await setkeyTest(zktermVK));
+	it("zkterm: should verify correct proof",       async () => await verifyOkTest(zktermVK, zktermProof, zktermProof));
+	it("zkterm: should verify correct proof2",      async () => await verifyOkTest(zktermVK, zktermProof2, zktermProof2));
+	it("zkterm: shouldn't verify incorrect proof",  async () => await verifyWrong(zktermVK, zktermProof2, zktermProof));
+	it("zkterm: shouldn't verify incorrect input",  async () => await verifyWrong(zktermVK, zktermProof, zktermProof2));
 
-        console.log("Verifiying Incorrect Proof...")
-        var wrongA_g = [...A_h];
-        let res = await verifier.verifyTx.call(wrongA_g, A_h, B_g, B_h, C_g, C_h,
-                                        H, K, pubIn);
-        assert(!res, "Incorrect Proof Not verified OK")
-    }
+    it("zkmint: should set verifying key",          async () => await setkeyTest(zkmintVK));
+	it("zkmint: should verify correct proof",       async () => await verifyOkTest(zkmintVK, zkmintProof, zkmintProof));
+	it("zkmint: should verify correct proof2",      async () => await verifyOkTest(zkmintVK, zkmintProof2, zkmintProof2));
+	it("zkmint: shouldn't verify incorrect proof",  async () => await verifyWrong(zkmintVK, zkmintProof2, zkmintProof));
+	it("zkmint: shouldn't verify incorrect input",  async () => await verifyWrong(zkmintVK, zkmintProof, zkmintProof2));
 
-    const verifyWrongInput = async (jsonVK, jsonProof) => {
-        if (!fs.existsSync(jsonVK) || !fs.existsSync(jsonProof))
-            return;
+    it("zkcons: should set verifying key",          async () => await setkeyTest(zkconsVK));
+	it("zkcons: should verify correct proof",       async () => await verifyOkTest(zkconsVK, zkconsProof, zkconsProof));
+	it("zkcons: should verify correct proof2",      async () => await verifyOkTest(zkconsVK, zkconsProof2, zkconsProof2));
+	it("zkcons: shouldn't verify incorrect proof",  async () => await verifyWrong(zkconsVK, zkconsProof2, zkconsProof));
+	it("zkcons: shouldn't verify incorrect input",  async () => await verifyWrong(zkconsVK, zkconsProof, zkconsProof2));
 
-        console.log("Verifiying Incorrect Input...")
-        var wrongInput = [...pubIn];
-        if (wrongInput[0] != 0)
-                wrongInput[0] = 0;
-        else    wrongInput[0] = 1;
-        let res = await verifier.verifyTx.call(A_g, A_h, B_g, B_h, C_g, C_h,
-                                        H, K, wrongInput);
-        assert(!res, "Incorrect Input Not verified OK")
-    }    
-
-	it("zkterm: should set verifying key",          async () => await setkeyTest(zktermVK, zktermProof));
-	it("zkterm: should verify correct proof",       async () => await verifyOkTest(zktermVK, zktermProof));
-	it("zkterm: shouldn't verify incorrect proof",  async () => await verifyWrongProof(zktermVK, zktermProof));
-	it("zkterm: shouldn't verify incorrect input",  async () => await verifyWrongInput(zktermVK, zktermProof));
-
-	it("zkmint: should set verifying key",          async () => await setkeyTest(zkmintVK, zkmintProof));
-	it("zkmint: should verify correct proof",       async () => await verifyOkTest(zkmintVK, zkmintProof));
-	it("zkmint: shouldn't verify incorrect proof",  async () => await verifyWrongProof(zkmintVK, zkmintProof));
-	it("zkmint: shouldn't verify incorrect input",  async () => await verifyWrongInput(zkmintVK, zkmintProof));
-
-	it("zkcons: should set verifying key",          async () => await setkeyTest(zkconsVK, zkconsProof));
-	it("zkcons: should verify correct proof",       async () => await verifyOkTest(zkconsVK, zkconsProof));
-	it("zkcons: shouldn't verify incorrect proof",  async () => await verifyWrongProof(zkconsVK, zkconsProof));
-	it("zkcons: shouldn't verify incorrect input",  async () => await verifyWrongInput(zkconsVK, zkconsProof));
-
-	it("zkconf: should set verifying key",          async () => await setkeyTest(zkconfVK, zkconfProof));
-	it("zkconf: should verify correct proof",       async () => await verifyOkTest(zkconfVK, zkconfProof));
-	it("zkconf: shouldn't verify incorrect proof",  async () => await verifyWrongProof(zkconfVK, zkconfProof));
-	it("zkconf: shouldn't verify incorrect input",  async () => await verifyWrongInput(zkconfVK, zkconfProof));
+    it("zkconf: should set verifying key",          async () => await setkeyTest(zkconfVK));
+	it("zkconf: should verify correct proof",       async () => await verifyOkTest(zkconfVK, zkconfProof, zkconfProof));
+	it("zkconf: should verify correct proof2",      async () => await verifyOkTest(zkconfVK, zkconfProof2, zkconfProof2));
+	it("zkconf: shouldn't verify incorrect proof",  async () => await verifyWrong(zkconfVK, zkconfProof2, zkconfProof));
+	it("zkconf: shouldn't verify incorrect input",  async () => await verifyWrong(zkconfVK, zkconfProof, zkconfProof2));
 });
 
 // console.log(pubIn)
