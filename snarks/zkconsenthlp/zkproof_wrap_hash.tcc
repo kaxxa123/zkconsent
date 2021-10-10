@@ -122,11 +122,12 @@ libzeth::extended_proof<ppT, snarkT> zkterminate_wrap<ppT, FieldT, HashT, HashTr
                                 const std::vector<FieldT>   &mkpathId,
                                 const libzeth::bits_addr<TreeDepth> &mkaddrId,
                                 const libzeth::bits256      &rhoId_in,
+                                const libzeth::bits256      &rhoId_out,
                                 const libzeth::bits256      &hsig_in,
                                 const typename snarkT::proving_key &proving_key,
                                 std::vector<FieldT> &out_public_data) const
 {
-    this->inner_zkp->generate_r1cs_witness(ask_in, mkrootId, mkpathId, mkaddrId, rhoId_in, hsig_in);
+    this->inner_zkp->generate_r1cs_witness(ask_in, mkrootId, mkpathId, mkaddrId, rhoId_in, rhoId_out, hsig_in);
     return this->outer_prove(proving_key, out_public_data);
 }
 
@@ -134,12 +135,13 @@ template<typename ppT, typename FieldT, typename HashT, typename HashTreeT, type
 libzeth::extended_proof<ppT, snarkT> zkterminate_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, TreeDepth>
                         ::prove_test(const std::string  &s_ask,
                                     size_t              mkaddrId, 
-                                    const std::string   &s_rhoId,
+                                    const std::string   &s_rhoId_in,
+                                    const std::string   &s_rhoId_out,
                                     const std::string   &s_hsig,
                                     const typename snarkT::proving_key &proving_key,
                                     std::vector<FieldT> &out_public_data) const
 {
-    this->inner_zkp->generate_r1cs_witness_test(s_ask, mkaddrId, s_rhoId, s_hsig);
+    this->inner_zkp->generate_r1cs_witness_test(s_ask, mkaddrId, s_rhoId_in, s_rhoId_out, s_hsig);
     return this->outer_prove(proving_key, out_public_data);
 }
 
@@ -147,7 +149,8 @@ template<typename ppT, typename FieldT, typename HashT, typename HashTreeT, type
 bool zkterminate_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, TreeDepth>::test(
                                     const std::string   &s_ask,
                                     size_t              mkaddrId, 
-                                    const std::string   &s_rhoId,
+                                    const std::string   &s_rhoId_in,
+                                    const std::string   &s_rhoId_out,
                                     const std::string   &s_hsig)
 {
     zkterminate_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, TreeDepth>    aZkp;
@@ -158,7 +161,8 @@ bool zkterminate_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, TreeDepth>::test(
     libzeth::extended_proof<ppT, snarkT>    res =
                 aZkp.prove_test(s_ask,
                                 mkaddrId, 
-                                s_rhoId,
+                                s_rhoId_in,
+                                s_rhoId_out,
                                 s_hsig,
                                 keys.pk,
                                 out_public_data);

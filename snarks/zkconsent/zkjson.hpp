@@ -28,7 +28,8 @@ using   circuitT = zkterminate_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, ZKC_T
 private:
     std::string   a_sk;
     size_t        mkaddrId;
-    std::string   rho;
+    std::string   rhoId_in;
+    std::string   rhoId_out;
     std::string   hsig;
 };
 

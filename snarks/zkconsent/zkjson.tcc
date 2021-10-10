@@ -8,7 +8,8 @@ zkterminate_json<snarkT>& zkterminate_json<snarkT>::set(const boost::json::objec
 {
     extract(objJSON, a_sk, "a_sk");
     extract(objJSON, mkaddrId, "mkaddrId");
-    extract(objJSON, rho, "rho");
+    extract(objJSON, rhoId_in, "rhoId_in");
+    extract(objJSON, rhoId_out, "rhoId_out");
     extract(objJSON, hsig, "hsig");
 
     return (*this);
@@ -19,10 +20,11 @@ void zkterminate_json<snarkT>::trace()
 {
     std::cout <<  std::endl;
     std::cout << " ------ zkterminate proof parameters ---------"  << std::endl;
-    std::cout << " a_sk:     " << a_sk << std::endl;
-    std::cout << " mkaddrId: " << mkaddrId << std::endl;
-    std::cout << " rho:      " << rho << std::endl;
-    std::cout << " hsig:     " << hsig << std::endl;
+    std::cout << " a_sk:        " << a_sk << std::endl;
+    std::cout << " mkaddrId:    " << mkaddrId << std::endl;
+    std::cout << " rhoId_in:    " << rhoId_in << std::endl;
+    std::cout << " rhoId_out:   " << rhoId_out << std::endl;
+    std::cout << " hsig:        " << hsig << std::endl;
     std::cout << " -------------------------------------------"  << std::endl;
     std::cout <<  std::endl;
 }
@@ -31,7 +33,9 @@ template<typename snarkT>
 libzeth::extended_proof<ppT, snarkT>    zkterminate_json<snarkT>::prove_test(circuitT& aZkp, const typename snarkT::proving_key &proving_key) const
 {
     std::vector<FieldT> out_public_data;
-    return aZkp.prove_test(a_sk, mkaddrId, rho, hsig, proving_key, out_public_data);
+    return aZkp.prove_test( a_sk,                             
+                            mkaddrId, rhoId_in, rhoId_out, 
+                            hsig, proving_key, out_public_data);
 }
 
 //========================================================================================

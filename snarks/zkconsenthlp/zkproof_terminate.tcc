@@ -17,17 +17,19 @@ zkterminate_gadget<FieldT,HashT,HashTreeT,TreeDepth>::zkterminate_gadget(
     // (with the protoboard owner determining whether these are primary
     // or auxiliary inputs to the circuit):
     //     PB Index       Field
-    // - [<start> + 0]    Root
-    // - [<start> + 1]    NullifierS
-    // - [<start> + 2]    hsig
-    // - [<start> + 3]    htag
-    // - [<start> + 4]    Residual field element(S)
+    // - [<start> + 0]    Root Id
+    // - [<start> + 1]    cm Id
+    // - [<start> + 2]    Nullifier Id
+    // - [<start> + 3]    hsig
+    // - [<start> + 4]    htag
+    // - [<start> + 5]    Residual field element(S)
 
-    merkle_root.reset(new libsnark::pb_variable<FieldT>);
-    merkle_root->allocate(pb, FMT(this->annotation_prefix, " merkle_root"));
+    mkroot_id.reset(new libsnark::pb_variable<FieldT>);
+    mkroot_id->allocate(pb, FMT(this->annotation_prefix, " mkroot_id"));
+    cm_id.allocate(pb, FMT(this->annotation_prefix, " cm_id"));
     
     //AlexZ: packed_inputs[4][1]   ========================================
-    packed_inputs[0].allocate(pb, 1, FMT(this->annotation_prefix, " in_nullifier"));
+    packed_inputs[0].allocate(pb, 1, FMT(this->annotation_prefix, " in_nf"));
     packed_inputs[1].allocate(pb, 1, FMT(this->annotation_prefix, " hsig"));
     packed_inputs[2].allocate(pb, 1, FMT(this->annotation_prefix, " htag"));
     packed_inputs[3].allocate(pb, 1, FMT(this->annotation_prefix, " residual_bits"));
@@ -36,11 +38,11 @@ zkterminate_gadget<FieldT,HashT,HashTreeT,TreeDepth>::zkterminate_gadget(
     // PRIVATE DATA:
     ZERO.allocate(pb, FMT(this->annotation_prefix, " ZERO"));
 
+    nf_id.reset(new libsnark::digest_variable<FieldT>( pb, HashT::get_digest_len(), FMT(this->annotation_prefix, " nf_id")));
     hsig.reset(new libsnark::digest_variable<FieldT>(pb, libzeth::ZETH_HSIG_SIZE, FMT(this->annotation_prefix, " hsig")));
-    input_nullifier.reset(new libsnark::digest_variable<FieldT>( pb, HashT::get_digest_len(), FMT(this->annotation_prefix, " input_nullifier")));
+    htag.reset(new libsnark::digest_variable<FieldT>(pb,HashT::get_digest_len(),FMT(this->annotation_prefix, " htag")));
     a_sk.reset(new libsnark::digest_variable<FieldT>(pb,libzeth::ZETH_A_SK_SIZE,FMT(this->annotation_prefix, " a_sk")));
     a_pk.reset(new libsnark::digest_variable<FieldT>(pb,libzeth::ZETH_A_PK_SIZE,FMT(this->annotation_prefix, " a_pk")));
-    htag.reset(new libsnark::digest_variable<FieldT>(pb,HashT::get_digest_len(),FMT(this->annotation_prefix, " htag")));
 
     // We already allocated varaibles on the protoboard for the various unpacked digests
     // We now want unpacked_inputs to bring together the allocation indexes of these variables
@@ -48,12 +50,12 @@ zkterminate_gadget<FieldT,HashT,HashTreeT,TreeDepth>::zkterminate_gadget(
     // Now we want unpacked_inputs to reference 
     // the individual bits as follows:
     //  unpacked_inputs[    <htag>] = htag_253-bits
-    //  unpacked_inputs[      <nf>] = nf_253-bits
+    //  unpacked_inputs[   <nf_id>] = nf_id_253-bits
     //  unpacked_inputs[    <hsig>] = hsig_253-bits
     //  unpacked_inputs[<residual>] = hsig_003-bits || nf_003-bits || htag_003-bits
-    digest_variable_assign_to_field_element_and_residual(*htag,             unpacked_inputs[2], unpacked_inputs[PCK_INPUTS-1]);
-    digest_variable_assign_to_field_element_and_residual(*input_nullifier,  unpacked_inputs[0], unpacked_inputs[PCK_INPUTS-1]);
-    digest_variable_assign_to_field_element_and_residual(*hsig,             unpacked_inputs[1], unpacked_inputs[PCK_INPUTS-1]);
+    digest_variable_assign_to_field_element_and_residual(*htag,   unpacked_inputs[2], unpacked_inputs[PCK_INPUTS-1]);
+    digest_variable_assign_to_field_element_and_residual(*nf_id,  unpacked_inputs[0], unpacked_inputs[PCK_INPUTS-1]);
+    digest_variable_assign_to_field_element_and_residual(*hsig,   unpacked_inputs[1], unpacked_inputs[PCK_INPUTS-1]);
 
     //The multipacking_gadget(s) packs our unpacked_inputs (bits) to our packed_inputs (field elements)
     packers[0].reset(new libsnark::multipacking_gadget<FieldT>(
@@ -70,10 +72,12 @@ zkterminate_gadget<FieldT,HashT,HashTreeT,TreeDepth>::zkterminate_gadget(
 
     a_pk_gag.reset(new libzeth::PRF_addr_a_pk_gadget<FieldT, HashT>(
                 pb, ZERO, a_sk->bits, a_pk));
-    input_notes.reset(new noteid_in_gadget<FieldT, HashT, HashTreeT, TreeDepth>(
-            pb, ZERO, *merkle_root, a_sk, a_pk, input_nullifier));
+    noteIdIn_gag.reset(new noteid_in_gadget<FieldT, HashT, HashTreeT, TreeDepth>(
+                pb, ZERO, *mkroot_id, a_sk, a_pk, nf_id));
+    noteIdOut_gag.reset(new noteid_out_gadget<FieldT, HashT>(
+                pb, a_pk, cm_id));
     htag_gadget.reset(new libzeth::PRF_pk_gadget<FieldT, HashT>(
-            pb, ZERO, a_sk->bits, hsig->bits, 0, htag));
+                pb, ZERO, a_sk->bits, hsig->bits, 0, htag));
 }
 
 template<typename FieldT, typename HashT, typename HashTreeT, size_t TreeDepth>
@@ -88,7 +92,8 @@ void zkterminate_gadget<FieldT,HashT,HashTreeT,TreeDepth>::generate_r1cs_constra
 
     a_sk->generate_r1cs_constraints();
     a_pk_gag->generate_r1cs_constraints();
-    input_notes->generate_r1cs_constraints();
+    noteIdIn_gag->generate_r1cs_constraints();
+    noteIdOut_gag->generate_r1cs_constraints();
     htag_gadget->generate_r1cs_constraints();
 }
 
@@ -99,6 +104,7 @@ void zkterminate_gadget<FieldT,HashT,HashTreeT,TreeDepth>::generate_r1cs_witness
         const std::vector<FieldT>   &mkpathId,
         const libzeth::bits_addr<TreeDepth> &mkaddrId,
         const libzeth::bits256      &rhoId_in,
+        const libzeth::bits256      &rhoId_out,
         const libzeth::bits256      &hsig_in)
 {
     //All boolean inputs are verified for "booleaness" as follows: 
@@ -111,6 +117,8 @@ void zkterminate_gadget<FieldT,HashT,HashTreeT,TreeDepth>::generate_r1cs_witness
     //
     //  rhoId_in    in noteid_in_gadget::generate_r1cs_constraints()
     //
+    //  rhoId_out   in noteid_out_gadget::generate_r1cs_constraints()
+    //
     //  hsig_in     in zkterminate_gadget::generate_r1cs_constraints()
     //                  packers[<hsig>>]->generate_r1cs_constraints(true);
 
@@ -119,8 +127,11 @@ void zkterminate_gadget<FieldT,HashT,HashTreeT,TreeDepth>::generate_r1cs_witness
     a_pk_gag->generate_r1cs_witness();
 
     //Id Input
-    this->pb.val(*merkle_root) = mkrootId;
-    input_notes->generate_r1cs_witness(mkpathId, mkaddrId, rhoId_in);
+    this->pb.val(*mkroot_id) = mkrootId;
+    noteIdIn_gag->generate_r1cs_witness(mkpathId, mkaddrId, rhoId_in);
+
+    //Id Output
+    noteIdOut_gag->generate_r1cs_witness(rhoId_out);
 
     //Malleability
     hsig->generate_r1cs_witness(hsig_in.to_vector());
@@ -136,33 +147,35 @@ template<typename FieldT, typename HashT, typename HashTreeT, size_t TreeDepth>
 void zkterminate_gadget<FieldT,HashT,HashTreeT,TreeDepth>::generate_r1cs_witness_test(
         const std::string&  s_ask,
         size_t              mkaddrId, 
-        const std::string&  s_rhoId,
+        const std::string&  s_rhoId_in,
+        const std::string&  s_rhoId_out,
         const std::string&  s_hsig)
 {
     //Compute the cm (mk leaf) from the given ask and rho
     std::string s_apk = PRF_1input<FieldT, HashT, libzeth::PRF_addr_a_pk_gadget<FieldT, HashT>>(s_ask);
-    std::string s_cm  = comm_id_gadget<FieldT, HashT>::get_cm(s_apk, s_rhoId);
-    FieldT cm_field   = FieldT(s_cm.c_str());
+
+    //Id Input
+    std::string s_cmId  = comm_id_gadget<FieldT, HashT>::get_cm(s_apk, s_rhoId_in);
+    FieldT cmId         = FieldT(s_cmId.c_str());
 
     //...and the Merkle Tree values 
-    libzeth::merkle_tree_field<FieldT, HashTreeT> test_merkle_tree(TreeDepth);
-    libzeth::bits_addr<TreeDepth> mkaddress = libzeth::bits_addr<TreeDepth>::from_size_t(mkaddrId);
+    libzeth::merkle_tree_field<FieldT, HashTreeT> test_mktreeId(TreeDepth);
+    libzeth::bits_addr<TreeDepth> mkaddress_Id = libzeth::bits_addr<TreeDepth>::from_size_t(mkaddrId);
 
-    test_merkle_tree.set_value(mkaddrId, cm_field);
-    FieldT merkle_root = test_merkle_tree.get_root();
-    std::vector<FieldT> mkpath  = test_merkle_tree.get_path(mkaddrId);
+    test_mktreeId.set_value(mkaddrId, cmId);
+    FieldT merkle_root_Id = test_mktreeId.get_root();
+    std::vector<FieldT> mkpath_Id  = test_mktreeId.get_path(mkaddrId);
 
     //We now have all the necessary values to run zkterminate_gadget
-    libzeth::bits256 a_sk_bits256   = libzeth::bits256::from_hex(s_ask);
-    libzeth::bits256 rho_bits256    = libzeth::bits256::from_hex(s_rhoId);
-    libzeth::bits256 hsig_bits256   = libzeth::bits256::from_hex(s_hsig);
+    libzeth::bits256 a_sk_bits256       = libzeth::bits256::from_hex(s_ask);
+    libzeth::bits256 rhoId_In_bits256   = libzeth::bits256::from_hex(s_rhoId_in);
+    libzeth::bits256 rhoId_Out_bits256  = libzeth::bits256::from_hex(s_rhoId_out);
+    libzeth::bits256 hsig_bits256       = libzeth::bits256::from_hex(s_hsig);
 
     generate_r1cs_witness(
             a_sk_bits256, 
-            merkle_root, 
-            std::move(mkpath), 
-            mkaddress,
-            rho_bits256, 
+            merkle_root_Id,     std::move(mkpath_Id),       mkaddress_Id,       rhoId_In_bits256,
+            rhoId_Out_bits256, 
             hsig_bits256);
 }
 
@@ -170,17 +183,21 @@ template<typename FieldT, typename HashT, typename HashTreeT, size_t TreeDepth>
 bool zkterminate_gadget<FieldT,HashT,HashTreeT,TreeDepth>::test(
         const std::string&  s_ask,
         size_t              mkaddrId, 
-        const std::string&  s_rhoId,
+        const std::string&  s_rhoId_in,
+        const std::string&  s_rhoId_out,
         const std::string&  s_hsig)
 {
     libsnark::protoboard<FieldT> pb;
     zkterminate_gadget<FieldT, HashT, HashTreeT, TreeDepth> term_gag(pb);
 
     term_gag.generate_r1cs_constraints();
-    term_gag.generate_r1cs_witness_test(s_ask, mkaddrId, s_rhoId, s_hsig);
+    term_gag.generate_r1cs_witness_test(
+                        s_ask,
+                        mkaddrId, s_rhoId_in, s_rhoId_out,
+                        s_hsig);
+
     return pb.is_satisfied();    
 }
-
 
 }
 

@@ -57,6 +57,7 @@ using ZkpT =  zkterminate_gadget<FieldT, HashT, HashTreeT, TreeDepth>;
         const std::vector<FieldT>   &mkpathId,
         const libzeth::bits_addr<TreeDepth> &mkaddrId,
         const libzeth::bits256      &rhoId_in,
+        const libzeth::bits256      &rhoId_out,
         const libzeth::bits256      &hsig_in,
         const typename snarkT::proving_key &proving_key,
         std::vector<FieldT> &out_public_data) const;
@@ -64,15 +65,17 @@ using ZkpT =  zkterminate_gadget<FieldT, HashT, HashTreeT, TreeDepth>;
     libzeth::extended_proof<ppT, snarkT> prove_test(
         const std::string   &s_ask,
         size_t              mkaddrId, 
-        const std::string   &s_rhoId,
+        const std::string   &s_rhoId_in,
+        const std::string   &s_rhoId_out,
         const std::string   &s_hsig,
-        const typename snarkT::proving_key &proving_key,
+        const typename snarkT::proving_key  &proving_key,
         std::vector<FieldT> &out_public_data) const;
 
     static bool test(
         const std::string   &s_ask,
         size_t              mkaddrId, 
-        const std::string   &s_rhoId,
+        const std::string   &s_rhoId_in,
+        const std::string   &s_rhoId_out,
         const std::string   &s_hsig);
 };
 

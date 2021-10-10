@@ -151,14 +151,21 @@ std::string      Test_Study_Input(
 
 bool            Test_UserTerminate(
                     const std::string&  s_ask,
-                    size_t              mkAddr, 
-                    const std::string&  s_rho,
+                    size_t              mkaddrId, 
+                    const std::string&  s_rhoId_in,
+                    const std::string&  s_rhoId_out,
                     const std::string&  s_hsig)
 {
     return zkterminate_gadget<FieldT,HashT,HashTreeT,ZKC_TreeDepth>::test(
-                s_ask, mkAddr, s_rho, s_hsig);
+                    s_ask,
+                    mkaddrId,  s_rhoId_in,
+                    s_rhoId_out,
+                    s_hsig);        
     // return zkterminate_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, ZKC_TreeDepth>::test(
-    //                 s_ask, mkAddr, s_rho, s_hsig);
+    //                 s_ask,
+    //                 mkaddrId,  s_rhoId_in,
+    //                 s_rhoId_out,
+    //                 s_hsig);
 }
 
 bool            Test_ConsentMint(

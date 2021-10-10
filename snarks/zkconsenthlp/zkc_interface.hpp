@@ -54,8 +54,9 @@ std::string      Test_Study_Input(
 
 bool            Test_UserTerminate(
                     const std::string&  s_ask,
-                    size_t              mkAddr, 
-                    const std::string&  s_rho,
+                    size_t              mkaddrId, 
+                    const std::string&  s_rhoId_in,
+                    const std::string&  s_rhoId_out,
                     const std::string&  s_hsig);
                     
 bool            Test_ConsentMint(
