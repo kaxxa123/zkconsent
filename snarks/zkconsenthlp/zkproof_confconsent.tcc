@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: LGPL-3.0+
 
-#ifndef __ZKPROOF_CONFIRM_TCC_
-#define __ZKPROOF_CONFIRM_TCC_
+#ifndef __ZKPROOF_CONFCONSENT_TCC_
+#define __ZKPROOF_CONFCONSENT_TCC_
 
 namespace libzkconsent
 {
 
 template<typename FieldT, typename HashT, typename HashTreeT, size_t TreeDepth>
-zkconfirm_gadget<FieldT,HashT,HashTreeT,TreeDepth>::zkconfirm_gadget(
+zkconfconsent_gadget<FieldT,HashT,HashTreeT,TreeDepth>::zkconfconsent_gadget(
         libsnark::protoboard<FieldT> &pb, const std::string &annotation_prefix)
         : libsnark::gadget<FieldT>(pb, annotation_prefix)
 {
@@ -31,7 +31,7 @@ zkconfirm_gadget<FieldT,HashT,HashTreeT,TreeDepth>::zkconfirm_gadget(
 }
 
 template<typename FieldT, typename HashT, typename HashTreeT, size_t TreeDepth>
-void zkconfirm_gadget<FieldT,HashT,HashTreeT,TreeDepth>::generate_r1cs_constraints()
+void zkconfconsent_gadget<FieldT,HashT,HashTreeT,TreeDepth>::generate_r1cs_constraints()
 {
     libsnark::generate_r1cs_equals_const_constraint<FieldT>(this->pb, ZERO, FieldT::zero(), FMT(this->annotation_prefix, " ZERO"));
     libsnark::generate_boolean_r1cs_constraint<FieldT>(this->pb, choice, FMT(this->annotation_prefix, " choice"));
@@ -47,7 +47,7 @@ void zkconfirm_gadget<FieldT,HashT,HashTreeT,TreeDepth>::generate_r1cs_constrain
 }
 
 template<typename FieldT, typename HashT, typename HashTreeT, size_t TreeDepth>
-void zkconfirm_gadget<FieldT,HashT,HashTreeT,TreeDepth>::generate_r1cs_witness(
+void zkconfconsent_gadget<FieldT,HashT,HashTreeT,TreeDepth>::generate_r1cs_witness(
     const libzeth::bits256      &apk_in,
     const libzeth::bits64       &study_in,
     const libzeth::bits256      &rho_in,
@@ -55,15 +55,15 @@ void zkconfirm_gadget<FieldT,HashT,HashTreeT,TreeDepth>::generate_r1cs_witness(
     bool                        choice_in)
 {
     //All boolean inputs are verified for "booleaness" as follows: 
-    //  apk_in              in zkconfirm_gadget::generate_r1cs_constraints()
+    //  apk_in              in zkconfconsent_gadget::generate_r1cs_constraints()
     // 
-    //  study_in            in zkconfirm_gadget::generate_r1cs_constraints()
+    //  study_in            in zkconfconsent_gadget::generate_r1cs_constraints()
     // 
     //  rho_in              in noteconsent_out_gadget::generate_r1cs_constraints()
     // 
     //  trapr_in            in noteconsent_out_gadget::generate_r1cs_constraints()
     // 
-    //  choice_in           in zkconfirm_gadget::generate_r1cs_constraints()
+    //  choice_in           in zkconfconsent_gadget::generate_r1cs_constraints()
 
     this->pb.val(ZERO) = FieldT::zero();
     a_pk->generate_r1cs_witness(apk_in.to_vector());
@@ -77,7 +77,7 @@ void zkconfirm_gadget<FieldT,HashT,HashTreeT,TreeDepth>::generate_r1cs_witness(
 }
 
 template<typename FieldT, typename HashT, typename HashTreeT, size_t TreeDepth>
-void zkconfirm_gadget<FieldT,HashT,HashTreeT,TreeDepth>::generate_r1cs_witness_test(
+void zkconfconsent_gadget<FieldT,HashT,HashTreeT,TreeDepth>::generate_r1cs_witness_test(
     const std::string&  s_apk,
     const std::string&  s_studyid,
     const std::string&  s_rho,
@@ -93,7 +93,7 @@ void zkconfirm_gadget<FieldT,HashT,HashTreeT,TreeDepth>::generate_r1cs_witness_t
 }
 
 template<typename FieldT, typename HashT, typename HashTreeT, size_t TreeDepth>
-bool zkconfirm_gadget<FieldT,HashT,HashTreeT,TreeDepth>::test(
+bool zkconfconsent_gadget<FieldT,HashT,HashTreeT,TreeDepth>::test(
         const std::string&  s_apk,
         const std::string&  s_studyid,
         const std::string&  s_rho,
@@ -101,10 +101,10 @@ bool zkconfirm_gadget<FieldT,HashT,HashTreeT,TreeDepth>::test(
         bool                choice)
 {
     libsnark::protoboard<FieldT> pb;
-    zkconfirm_gadget<FieldT,HashT,HashTreeT,TreeDepth> confirm_gag(pb);
+    zkconfconsent_gadget<FieldT,HashT,HashTreeT,TreeDepth> confconsent_gag(pb);
 
-    confirm_gag.generate_r1cs_constraints();
-    confirm_gag.generate_r1cs_witness_test(s_apk, s_studyid, s_rho, s_trapr, choice);
+    confconsent_gag.generate_r1cs_constraints();
+    confconsent_gag.generate_r1cs_witness_test(s_apk, s_studyid, s_rho, s_trapr, choice);
 
     return pb.is_satisfied();    
 }
@@ -112,4 +112,4 @@ bool zkconfirm_gadget<FieldT,HashT,HashTreeT,TreeDepth>::test(
 }
 
 
-#endif //__ZKPROOF_CONFIRM_TCC_
+#endif //__ZKPROOF_CONFCONSENT_TCC_

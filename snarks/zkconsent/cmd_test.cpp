@@ -346,7 +346,7 @@ void TestChgConsent()
     if (!bVerified) throw "Unexpected: verification failed";
 }
 
-void TestConfirm()
+void TestConfConsent()
 {
     std::string a_pk    = "f172d7299ac8ac974ea59413e4a87691826df038ba24a2b52d5c5d15c2cc8c49";
     std::string rho     = "FFFF000000000000000000000000000000000000000000000000000000009009";
@@ -377,5 +377,5 @@ void TestAll()
     TestTerminate();
     TestMint();
     TestChgConsent();
-    TestConfirm();
+    TestConfConsent();
 }

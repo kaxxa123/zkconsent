@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: LGPL-3.0+
 
-#ifndef __ZKPROOF_CONFIRM_HPP_
-#define __ZKPROOF_CONFIRM_HPP_
+#ifndef __ZKPROOF_CONFCONSENT_HPP_
+#define __ZKPROOF_CONFCONSENT_HPP_
 
 namespace libzkconsent
 {
 
 template<typename FieldT, typename HashT, typename HashTreeT, size_t TreeDepth>
-class zkconfirm_gadget : libsnark::gadget<FieldT>
+class zkconfconsent_gadget : libsnark::gadget<FieldT>
 {
 private:
     //Public
@@ -26,8 +26,8 @@ private:
     std::shared_ptr<noteconsent_out_gadget<FieldT, HashT>>  noteConsentOut_gag;
 
 public:
-    explicit zkconfirm_gadget(
-        libsnark::protoboard<FieldT> &pb, const std::string &annotation_prefix = " zkconfirm_gadget");
+    explicit zkconfconsent_gadget(
+        libsnark::protoboard<FieldT> &pb, const std::string &annotation_prefix = " zkconfconsent_gadget");
 
     void generate_r1cs_constraints();
     void generate_r1cs_witness(
@@ -55,6 +55,6 @@ public:
 
 }
 
-#include "zkproof_confirm.tcc"
+#include "zkproof_confconsent.tcc"
 
-#endif //__ZKPROOF_CONFIRM_HPP_
+#endif //__ZKPROOF_CONFCONSENT_HPP_

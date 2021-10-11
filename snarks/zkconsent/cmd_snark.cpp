@@ -33,7 +33,7 @@
 #include "zkproof_terminate.hpp"
 #include "zkproof_mint.hpp"
 #include "zkproof_consent.hpp"
-#include "zkproof_confirm.hpp"
+#include "zkproof_confconsent.hpp"
 #include "zkproof_wrap_hash.hpp"
 #include "zkproof_wrap_simple.hpp"
 #include "zkc_interface.hpp"
@@ -75,10 +75,10 @@ void TrustedSetup(
         const boost::filesystem::path &vk_json_file, 
         const boost::filesystem::path &r1cs_json_file)
 {
-    using zkterminateT  = zkterminate_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
-    using zkmintT       = zkmint_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
-    using zkconsentT    = zkconsent_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
-    using zkconfirmT    = zkconfirm_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
+    using zkterminateT   = zkterminate_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
+    using zkmintT        = zkmint_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
+    using zkconsentT     = zkconsent_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
+    using zkconfconsentT = zkconfconsent_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
 
     switch (type)
     {
@@ -91,8 +91,8 @@ void TrustedSetup(
     case ZK_CONSENT:
         ZKPSetup<zkconsentT, SnarkT, ZKStreamT>(keypair_file, pk_bin_file, vk_bin_file, vk_json_file, r1cs_json_file);
         break;
-    case ZK_CONFIRM:
-        ZKPSetup<zkconfirmT, SnarkT, ZKStreamT>(keypair_file, pk_bin_file, vk_bin_file, vk_json_file, r1cs_json_file);
+    case ZK_CONFCONS:
+        ZKPSetup<zkconfconsentT, SnarkT, ZKStreamT>(keypair_file, pk_bin_file, vk_bin_file, vk_json_file, r1cs_json_file);
         break;
     default:
         std::cerr << "FAILED: invalid ciruict name" << std::endl;
@@ -173,8 +173,8 @@ void GenerateProof(
         ZKProve<zkconsent_json<SnarkT>, SnarkT, ZKStreamT>(
             keypair_file, witness_json_file, exproof_json_file, proof_bin_file, primary_bin_file ,witness_bin_file);
         break;
-    case ZK_CONFIRM:
-        ZKProve<zkconfirm_json<SnarkT>, SnarkT, ZKStreamT>(
+    case ZK_CONFCONS:
+        ZKProve<zkconfconsent_json<SnarkT>, SnarkT, ZKStreamT>(
             keypair_file, witness_json_file, exproof_json_file, proof_bin_file, primary_bin_file ,witness_bin_file);
         break;
     default:
@@ -243,10 +243,10 @@ void VerifyProof(
     const boost::filesystem::path &proof_bin_file,
     const boost::filesystem::path &primary_bin_file)
 {
-    using zkterminateT  = zkterminate_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
-    using zkmintT       = zkmint_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
-    using zkconsentT    = zkconsent_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
-    using zkconfirmT    = zkconfirm_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
+    using zkterminateT   = zkterminate_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
+    using zkmintT        = zkmint_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
+    using zkconsentT     = zkconsent_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
+    using zkconfconsentT = zkconfconsent_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
 
     switch (type)
     {
@@ -259,8 +259,8 @@ void VerifyProof(
     case ZK_CONSENT:
         ZKVerify<zkconsentT, SnarkT, ZKStreamT>(keypair_file, proof_bin_file, primary_bin_file);
         break;
-    case ZK_CONFIRM:
-        ZKVerify<zkconfirmT, SnarkT, ZKStreamT>(keypair_file, proof_bin_file, primary_bin_file);
+    case ZK_CONFCONS:
+        ZKVerify<zkconfconsentT, SnarkT, ZKStreamT>(keypair_file, proof_bin_file, primary_bin_file);
         break;
     default:
         std::cerr << "FAILED: invalid ciruict name" << std::endl;

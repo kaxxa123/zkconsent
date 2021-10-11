@@ -22,11 +22,11 @@ const zkconsInputs  = homedir + '/zkconsent_setup/groth16/zkcons/exproof_zkcons.
 const zkconsProof2  = homedir + '/zkconsent_setup/groth16/other/zkcons/exproof_zkcons_params.json'
 const zkconsInputs2 = homedir + '/zkconsent_setup/groth16/other/zkcons/exproof_zkcons.json'
 
-const zkconfVK      = homedir + '/zkconsent_setup/groth16/zkconf/vk_zkconf_params.json'
-const zkconfProof   = homedir + '/zkconsent_setup/groth16/zkconf/exproof_zkconf_params.json'
-const zkconfInputs  = homedir + '/zkconsent_setup/groth16/zkconf/exproof_zkconf.json'
-const zkconfProof2  = homedir + '/zkconsent_setup/groth16/other/zkconf/exproof_zkconf_params.json'
-const zkconfInputs2 = homedir + '/zkconsent_setup/groth16/other/zkconf/exproof_zkconf.json'
+const zkconfconsVK      = homedir + '/zkconsent_setup/groth16/zkconfcons/vk_zkconfcons_params.json'
+const zkconfconsProof   = homedir + '/zkconsent_setup/groth16/zkconfcons/exproof_zkconfcons_params.json'
+const zkconfconsInputs  = homedir + '/zkconsent_setup/groth16/zkconfcons/exproof_zkconfcons.json'
+const zkconfconsProof2  = homedir + '/zkconsent_setup/groth16/other/zkconfcons/exproof_zkconfcons_params.json'
+const zkconfconsInputs2 = homedir + '/zkconsent_setup/groth16/other/zkconfcons/exproof_zkconfcons.json'
 
 var verifier; 
 
@@ -154,9 +154,9 @@ contract('Verifier', function(accounts)
 	it("zkcons: shouldn't verify incorrect proof",  async () => await verifyWrong(zkconsVK, zkconsProof2, zkconsInputs));
 	it("zkcons: shouldn't verify incorrect input",  async () => await verifyWrong(zkconsVK, zkconsProof, zkconsInputs2));
 
-    it("zkconf: should set verifying key",          async () => await setkeyTest(zkconfVK));
-	it("zkconf: should verify correct proof",       async () => await verifyOkTest(zkconfVK, zkconfProof, zkconfInputs));
-	it("zkconf: should verify correct proof2",      async () => await verifyOkTest(zkconfVK, zkconfProof2, zkconfInputs2));
-	it("zkconf: shouldn't verify incorrect proof",  async () => await verifyWrong(zkconfVK, zkconfProof2, zkconfInputs));
-	it("zkconf: shouldn't verify incorrect input",  async () => await verifyWrong(zkconfVK, zkconfProof, zkconfInputs2));
+    it("zkconfcons: should set verifying key",          async () => await setkeyTest(zkconfconsVK));
+	it("zkconfcons: should verify correct proof",       async () => await verifyOkTest(zkconfconsVK, zkconfconsProof, zkconfconsInputs));
+	it("zkconfcons: should verify correct proof2",      async () => await verifyOkTest(zkconfconsVK, zkconfconsProof2, zkconfconsInputs2));
+	it("zkconfcons: shouldn't verify incorrect proof",  async () => await verifyWrong(zkconfconsVK, zkconfconsProof2, zkconfconsInputs));
+	it("zkconfcons: shouldn't verify incorrect input",  async () => await verifyWrong(zkconfconsVK, zkconfconsProof, zkconfconsInputs2));
 });

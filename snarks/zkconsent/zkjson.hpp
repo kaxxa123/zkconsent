@@ -97,18 +97,18 @@ private:
 };
 
 template<typename snarkT>
-class zkconfirm_json {
+class zkconfconsent_json {
 public:
-using   circuitT = zkconfirm_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, ZKC_TreeDepth>;        
+using   circuitT = zkconfconsent_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, ZKC_TreeDepth>;        
 
-    zkconfirm_json() {}
-    zkconfirm_json(const boost::filesystem::path& jsonfile) { set(jsonfile);  }
-    zkconfirm_json(const boost::json::object& objJSON) { set(objJSON);  }
+    zkconfconsent_json() {}
+    zkconfconsent_json(const boost::filesystem::path& jsonfile) { set(jsonfile);  }
+    zkconfconsent_json(const boost::json::object& objJSON) { set(objJSON);  }
 
-    zkconfirm_json<snarkT>& set(const boost::filesystem::path& jsonfile) {
+    zkconfconsent_json<snarkT>& set(const boost::filesystem::path& jsonfile) {
         return LoadZKJson(*this, jsonfile);
     }
-    zkconfirm_json<snarkT>& set(const boost::json::object& objJSON);
+    zkconfconsent_json<snarkT>& set(const boost::json::object& objJSON);
 
     libzeth::extended_proof<ppT, snarkT>    prove_test(circuitT& aZkp, const typename snarkT::proving_key &proving_key) const;
 

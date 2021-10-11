@@ -7,7 +7,7 @@ namespace libzkconsent
 {
 
 template<typename ppT, typename FieldT, typename HashT,  typename HashTreeT, typename snarkT, size_t TreeDepth>
-zkconfirm_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, TreeDepth>::zkconfirm_wrap()
+zkconfconsent_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, TreeDepth>::zkconfconsent_wrap()
 {
     inner_zkp = std::make_shared<ZkpT>(pb);
     pb.set_input_sizes(1);
@@ -17,7 +17,7 @@ zkconfirm_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, TreeDepth>::zkconfirm_wrap
 }
 
 template<typename ppT, typename FieldT, typename HashT,  typename HashTreeT, typename snarkT, size_t TreeDepth>
-typename snarkT::keypair zkconfirm_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, TreeDepth>
+typename snarkT::keypair zkconfconsent_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, TreeDepth>
                             ::generate_trusted_setup() const
 {
     // Generate a verification and proving key (trusted setup) 
@@ -25,21 +25,21 @@ typename snarkT::keypair zkconfirm_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, T
 }
 
 template<typename ppT, typename FieldT, typename HashT,  typename HashTreeT, typename snarkT, size_t TreeDepth>
-const libsnark::r1cs_constraint_system<FieldT> &zkconfirm_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, TreeDepth>
+const libsnark::r1cs_constraint_system<FieldT> &zkconfconsent_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, TreeDepth>
                             ::get_constraint_system() const
 {
     return pb.get_constraint_system();
 }
 
 template<typename ppT, typename FieldT, typename HashT,  typename HashTreeT, typename snarkT, size_t TreeDepth>
-const std::vector<FieldT> &zkconfirm_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, TreeDepth>
+const std::vector<FieldT> &zkconfconsent_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, TreeDepth>
                             ::get_last_assignment() const
 {
     return pb.full_variable_assignment();
 }
 
 template<typename ppT, typename FieldT, typename HashT,  typename HashTreeT, typename snarkT, size_t TreeDepth>
-libzeth::extended_proof<ppT, snarkT> zkconfirm_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, TreeDepth>
+libzeth::extended_proof<ppT, snarkT> zkconfconsent_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, TreeDepth>
                             ::prove(const libzeth::bits256      &apk_in,
                                     const libzeth::bits64       &study_in,
                                     const libzeth::bits256      &rho_in,
@@ -58,7 +58,7 @@ libzeth::extended_proof<ppT, snarkT> zkconfirm_wrap<ppT, FieldT, HashT, HashTree
 }
 
 template<typename ppT, typename FieldT, typename HashT,  typename HashTreeT, typename snarkT, size_t TreeDepth>
-libzeth::extended_proof<ppT, snarkT> zkconfirm_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, TreeDepth>
+libzeth::extended_proof<ppT, snarkT> zkconfconsent_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, TreeDepth>
                             ::prove_test(const std::string&  s_apk,
                                         const std::string&  s_studyid,
                                         const std::string&  s_rho,
@@ -77,14 +77,14 @@ libzeth::extended_proof<ppT, snarkT> zkconfirm_wrap<ppT, FieldT, HashT, HashTree
 }
 
 template<typename ppT, typename FieldT, typename HashT,  typename HashTreeT, typename snarkT, size_t TreeDepth>
-bool zkconfirm_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, TreeDepth>
+bool zkconfconsent_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, TreeDepth>
                             ::test(const std::string&  s_apk,
                                     const std::string&  s_studyid,
                                     const std::string&  s_rho,
                                     const std::string&  s_trapr,
                                     bool                choice)
 {
-    zkconfirm_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, TreeDepth>    aZkp;
+    zkconfconsent_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, TreeDepth>    aZkp;
     const typename snarkT::keypair &keys = aZkp.generate_trusted_setup();
 
     libzeth::extended_proof<ppT, snarkT>    res =

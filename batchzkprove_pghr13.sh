@@ -7,10 +7,10 @@ echo "=================================="
 
 echo
 echo ">> SNARKs Prove"
-./snarks/build/zkconsent/zkconsent prove --pghr13 --zkterminate -w ./samples/zkterminate.json
-./snarks/build/zkconsent/zkconsent prove --pghr13 --zkmint      -w ./samples/zkmint.json
-./snarks/build/zkconsent/zkconsent prove --pghr13 --zkconsent   -w ./samples/zkconsent.json
-./snarks/build/zkconsent/zkconsent prove --pghr13 --zkconfirm   -w ./samples/zkconfirm.json
+./snarks/build/zkconsent/zkconsent prove --pghr13 --zkterminate   -w ./samples/zkterminate.json
+./snarks/build/zkconsent/zkconsent prove --pghr13 --zkmint        -w ./samples/zkmint.json
+./snarks/build/zkconsent/zkconsent prove --pghr13 --zkconsent     -w ./samples/zkconsent.json
+./snarks/build/zkconsent/zkconsent prove --pghr13 --zkconfconsent -w ./samples/zkconfconsent.json
 
 ./snarks/build/zkconsent/zkconsent prove --pghr13 --zkterminate -w ./samples/zkterminate_other.json \
             --extproof-json $HOME/zkconsent_setup/pghr13/other/zkterm/exproof_zkterm.json \
@@ -30,8 +30,8 @@ echo ">> SNARKs Prove"
             --primary-bin   $HOME/zkconsent_setup/pghr13/other/zkcons/primary_zkcons.bin \
             --witness-bin   $HOME/zkconsent_setup/pghr13/other/zkcons/witness_zkcons.bin
 
-./snarks/build/zkconsent/zkconsent prove --pghr13 --zkconfirm   -w ./samples/zkconfirm_other.json \
-            --extproof-json $HOME/zkconsent_setup/pghr13/other/zkconf/exproof_zkconf.json \
-            --proof-bin     $HOME/zkconsent_setup/pghr13/other/zkconf/proof_zkconf.bin \
-            --primary-bin   $HOME/zkconsent_setup/pghr13/other/zkconf/primary_zkconf.bin \
-            --witness-bin   $HOME/zkconsent_setup/pghr13/other/zkconf/witness_zkconf.bin
+./snarks/build/zkconsent/zkconsent prove --pghr13 --zkconfconsent   -w ./samples/zkconfconsent_other.json \
+            --extproof-json $HOME/zkconsent_setup/pghr13/other/zkconfcons/exproof_zkconfcons.json \
+            --proof-bin     $HOME/zkconsent_setup/pghr13/other/zkconfcons/proof_zkconfcons.bin \
+            --primary-bin   $HOME/zkconsent_setup/pghr13/other/zkconfcons/primary_zkconfcons.bin \
+            --witness-bin   $HOME/zkconsent_setup/pghr13/other/zkconfcons/witness_zkconfcons.bin

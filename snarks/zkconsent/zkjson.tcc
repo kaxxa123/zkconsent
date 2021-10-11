@@ -60,7 +60,7 @@ template<typename snarkT>
 void zkmint_json<snarkT>::trace()
 {
     std::cout <<  std::endl;
-    std::cout << " ------ zkconfirm proof parameters ---------"  << std::endl;
+    std::cout << " ------ zkconfconsent proof parameters ---------"  << std::endl;
     std::cout << " a_sk:             " << a_sk << std::endl;
     std::cout << " mkaddrStudy:      " << mkaddrStudy << std::endl;
     std::cout << " studyid:          " << studyid << std::endl;
@@ -143,7 +143,7 @@ libzeth::extended_proof<ppT, snarkT>    zkconsent_json<snarkT>::prove_test(circu
 
 //========================================================================================
 template<typename snarkT>
-zkconfirm_json<snarkT>& zkconfirm_json<snarkT>::set(const boost::json::object& objJSON)
+zkconfconsent_json<snarkT>& zkconfconsent_json<snarkT>::set(const boost::json::object& objJSON)
 {
     extract(objJSON, a_pk, "a_pk");
     extract(objJSON, studyid, "studyid");
@@ -155,10 +155,10 @@ zkconfirm_json<snarkT>& zkconfirm_json<snarkT>::set(const boost::json::object& o
 }
 
 template<typename snarkT>
-void zkconfirm_json<snarkT>::trace()
+void zkconfconsent_json<snarkT>::trace()
 {
     std::cout <<  std::endl;
-    std::cout << " ------ zkconfirm proof parameters ---------"  << std::endl;
+    std::cout << " ------ zkconfconsent proof parameters ---------"  << std::endl;
     std::cout << " a_pk:    " << a_pk << std::endl;
     std::cout << " studyid: " << studyid << std::endl;
     std::cout << " rho:     " << rho << std::endl;
@@ -169,7 +169,7 @@ void zkconfirm_json<snarkT>::trace()
 }
 
 template<typename snarkT>
-libzeth::extended_proof<ppT, snarkT>    zkconfirm_json<snarkT>::prove_test(circuitT& aZkp, const typename snarkT::proving_key &proving_key) const
+libzeth::extended_proof<ppT, snarkT>    zkconfconsent_json<snarkT>::prove_test(circuitT& aZkp, const typename snarkT::proving_key &proving_key) const
 {
     return aZkp.prove_test(a_pk, studyid, rho, trapr, choice, proving_key);
 }

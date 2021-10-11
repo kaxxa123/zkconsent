@@ -8,7 +8,7 @@
 
 #define FILETAG_MINT        "zkmint"
 #define FILETAG_CONSENT     "zkcons"
-#define FILETAG_CONFIRM     "zkconf"
+#define FILETAG_CONFCONS    "zkconfcons"
 #define FILETAG_TERMINATE   "zkterm"
 
 #define BASE_KEYPAIR_FILE   "keypair"
@@ -27,7 +27,7 @@ enum    ZKCIRC {
     ZK_TERMINATE,
     ZK_MINT,
     ZK_CONSENT,
-    ZK_CONFIRM,
+    ZK_CONFCONS,
     ZK_ERROR
 };
 

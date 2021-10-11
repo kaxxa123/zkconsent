@@ -30,7 +30,7 @@ CMDTYPS     GetCmd(std::string& sCmd)
     return CMD_ERROR;
 }
 
-ZKCIRC      GetCircuit(bool bTerm, bool bMint, bool bConsent, bool bConfirm)
+ZKCIRC      GetCircuit(bool bTerm, bool bMint, bool bConsent, bool bConfCons)
 {
     int     iCnt    = 0;
     ZKCIRC  retCirc = ZK_ERROR;
@@ -50,8 +50,8 @@ ZKCIRC      GetCircuit(bool bTerm, bool bMint, bool bConsent, bool bConfirm)
         ++iCnt;
     }
 
-    if (bConfirm) {
-        retCirc = ZK_CONFIRM;
+    if (bConfCons) {
+        retCirc = ZK_CONFCONS;
         ++iCnt;
     }        
 
@@ -68,8 +68,8 @@ const char*    GetCircuitTag(ZKCIRC type)
             return FILETAG_MINT;
         case ZK_CONSENT:
             return FILETAG_CONSENT;
-        case ZK_CONFIRM:
-            return FILETAG_CONFIRM;
+        case ZK_CONFCONS:
+            return FILETAG_CONFCONS;
         default:
             break;
     }
@@ -128,7 +128,7 @@ int main(int argc, char** argv)
     options.add_options()
         ("zkconsent",   "process consent change zkp");
     options.add_options()
-        ("zkconfirm",   "process consent confirm zkp");
+        ("zkconfconsent",   "process consent confirm zkp");
 
     options.add_options()
         ("witness,w",
@@ -233,11 +233,11 @@ int main(int argc, char** argv)
 
         if (typeCmd != CMD_TEST)
         {
-            typeCirc = GetCircuit(vm.count("zkterminate"), vm.count("zkmint"), vm.count("zkconsent"), vm.count("zkconfirm"));
+            typeCirc = GetCircuit(vm.count("zkterminate"), vm.count("zkmint"), vm.count("zkconsent"), vm.count("zkconfconsent"));
             if (typeCirc == ZK_ERROR)
             {
                 std::cerr << " ERROR: Specify ONE of the circuit selection flags"  << std::endl;
-                std::cerr << "  zkterminate | zkmint | zkconsent | zkconfirm"  << std::endl;
+                std::cerr << "  zkterminate | zkmint | zkconsent | zkconfconsent"  << std::endl;
                 return 1;
             }
         }

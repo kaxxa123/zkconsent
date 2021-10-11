@@ -13,14 +13,14 @@ template<typename   ppT,
          typename   HashTreeT,
          typename   snarkT,
          size_t     TreeDepth>
-class zkconfirm_wrap
+class zkconfconsent_wrap
 {
 public:
-using ZkpT =  zkconfirm_gadget<FieldT, HashT, HashTreeT, TreeDepth>;
+using ZkpT =  zkconfconsent_gadget<FieldT, HashT, HashTreeT, TreeDepth>;
 
-    zkconfirm_wrap();
-    zkconfirm_wrap(const zkconfirm_wrap &) = delete;
-    zkconfirm_wrap &operator=(const zkconfirm_wrap &) = delete;
+    zkconfconsent_wrap();
+    zkconfconsent_wrap(const zkconfconsent_wrap &) = delete;
+    zkconfconsent_wrap &operator=(const zkconfconsent_wrap &) = delete;
 
     typename snarkT::keypair        generate_trusted_setup() const;
     const libsnark::r1cs_constraint_system<FieldT>  

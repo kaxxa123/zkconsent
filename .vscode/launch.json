@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "/home/alex/zkconsent/snarks/build/zkconsent/zkconsent",
-            "args": ["setup", "--zkconfirm"],
+            "args": ["setup", "--zkconfconsent"],
             "stopAtEntry": true,
             "cwd": "${fileDirname}",
             "environment": [],
