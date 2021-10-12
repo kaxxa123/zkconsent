@@ -30,6 +30,7 @@
 #include "zkproof_mint.hpp"
 #include "zkproof_consent.hpp"
 #include "zkproof_confconsent.hpp"
+#include "zkproof_confterminate.hpp"
 #include "zkproof_wrap_hash.hpp"
 #include "zkproof_wrap_simple.hpp"
 #include "zkc_interface.hpp"
@@ -243,6 +244,17 @@ bool            Test_ConsentConfirm(
 
     // return zkconfconsent_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, ZKC_TreeDepth>::test(
     //                 s_apk, s_studyid, s_rho, s_trapr, choice);
+}
+
+bool            Test_TerminateConfirm(
+                    const std::string&  s_apk,
+                    const std::string&  s_rho)
+{
+    return zkconfterminate_gadget<FieldT,HashT,HashTreeT,ZKC_TreeDepth>::test(
+                    s_apk, s_rho);
+
+    // return zkconfterminate_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, ZKC_TreeDepth>::test(
+    //                 s_apk, s_rho);
 }
 
 }

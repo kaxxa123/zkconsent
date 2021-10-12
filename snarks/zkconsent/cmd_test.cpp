@@ -365,6 +365,19 @@ void TestConfConsent()
     if (!bVerified) throw "Unexpected: verification failed";
 }
 
+void TestConfTerminate()
+{
+    std::string a_pk    = "f172d7299ac8ac974ea59413e4a87691826df038ba24a2b52d5c5d15c2cc8c49";
+    std::string rho     = "FFFF000000000000000000000000000000000000000000000000000000009009";
+
+    std::cout << std::endl;
+    std::cout << "=== Testing computation of Terminate Confirmation ===" << std::endl;
+
+    bool bVerified = Test_TerminateConfirm(a_pk, rho);
+    std::cout << "Verified: " << bVerified << std::endl << std::endl;
+    if (!bVerified) throw "Unexpected: verification failed";
+}
+
 void TestAll()
 {
     TestPRFs();
@@ -378,4 +391,5 @@ void TestAll()
     TestMint();
     TestChgConsent();
     TestConfConsent();
+    TestConfTerminate();
 }

@@ -122,6 +122,29 @@ private:
     bool choice;
 };
 
+template<typename snarkT>
+class zkconfterminate_json {
+public:
+using   circuitT = zkconfterminate_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, ZKC_TreeDepth>;        
+
+    zkconfterminate_json() {}
+    zkconfterminate_json(const boost::filesystem::path& jsonfile) { set(jsonfile);  }
+    zkconfterminate_json(const boost::json::object& objJSON) { set(objJSON);  }
+
+    zkconfterminate_json<snarkT>& set(const boost::filesystem::path& jsonfile) {
+        return LoadZKJson(*this, jsonfile);
+    }
+    zkconfterminate_json<snarkT>& set(const boost::json::object& objJSON);
+
+    libzeth::extended_proof<ppT, snarkT>    prove_test(circuitT& aZkp, const typename snarkT::proving_key &proving_key) const;
+
+    void trace();
+
+private:
+    std::string a_pk;
+    std::string rho;
+};
+
 template<class jsonT>
 void    extract(boost::json::object const& objJson, jsonT& typ, boost::json::string_view key)
 {

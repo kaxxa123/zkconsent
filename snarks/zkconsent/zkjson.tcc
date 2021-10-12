@@ -60,7 +60,7 @@ template<typename snarkT>
 void zkmint_json<snarkT>::trace()
 {
     std::cout <<  std::endl;
-    std::cout << " ------ zkconfconsent proof parameters ---------"  << std::endl;
+    std::cout << " ------ zkmint proof parameters ---------"  << std::endl;
     std::cout << " a_sk:             " << a_sk << std::endl;
     std::cout << " mkaddrStudy:      " << mkaddrStudy << std::endl;
     std::cout << " studyid:          " << studyid << std::endl;
@@ -172,6 +172,33 @@ template<typename snarkT>
 libzeth::extended_proof<ppT, snarkT>    zkconfconsent_json<snarkT>::prove_test(circuitT& aZkp, const typename snarkT::proving_key &proving_key) const
 {
     return aZkp.prove_test(a_pk, studyid, rho, trapr, choice, proving_key);
+}
+
+//========================================================================================
+template<typename snarkT>
+zkconfterminate_json<snarkT>& zkconfterminate_json<snarkT>::set(const boost::json::object& objJSON)
+{
+    extract(objJSON, a_pk, "a_pk");
+    extract(objJSON, rho, "rho");
+
+    return (*this);
+}
+
+template<typename snarkT>
+void zkconfterminate_json<snarkT>::trace()
+{
+    std::cout <<  std::endl;
+    std::cout << " ------ zkconfterminate proof parameters ---------"  << std::endl;
+    std::cout << " a_pk:    " << a_pk << std::endl;
+    std::cout << " rho:     " << rho << std::endl;
+    std::cout << " -------------------------------------------"  << std::endl;
+    std::cout <<  std::endl;
+}
+
+template<typename snarkT>
+libzeth::extended_proof<ppT, snarkT>    zkconfterminate_json<snarkT>::prove_test(circuitT& aZkp, const typename snarkT::proving_key &proving_key) const
+{
+    return aZkp.prove_test(a_pk, rho, proving_key);
 }
 
 #endif // __ZKJSON_TCC_

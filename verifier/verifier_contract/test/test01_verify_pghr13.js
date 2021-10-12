@@ -20,6 +20,10 @@ const zkconfconsVK     = homedir + '/zkconsent_setup/pghr13/zkconfcons/vk_zkconf
 const zkconfconsProof  = homedir + '/zkconsent_setup/pghr13/zkconfcons/exproof_zkconfcons.json'
 const zkconfconsProof2 = homedir + '/zkconsent_setup/pghr13/other/zkconfcons/exproof_zkconfcons.json'
 
+const zkconftermVK     = homedir + '/zkconsent_setup/pghr13/zkconfterm/vk_zkconfterm.json'
+const zkconftermProof  = homedir + '/zkconsent_setup/pghr13/zkconfterm/exproof_zkconfterm.json'
+const zkconftermProof2 = homedir + '/zkconsent_setup/pghr13/other/zkconfterm/exproof_zkconfterm.json'
+
 var verifier; 
 
 //https://stackoverflow.com/questions/21667377/javascript-hexadecimal-string-to-decimal-string
@@ -188,6 +192,12 @@ contract('Verifier', function(accounts)
 	it("zkconfcons: should verify correct proof2",      async () => await verifyOkTest(zkconfconsVK, zkconfconsProof2, zkconfconsProof2));
 	it("zkconfcons: shouldn't verify incorrect proof",  async () => await verifyWrong(zkconfconsVK, zkconfconsProof2, zkconfconsProof));
 	it("zkconfcons: shouldn't verify incorrect input",  async () => await verifyWrong(zkconfconsVK, zkconfconsProof, zkconfconsProof2));
+    
+    it("zkconfterm: should set verifying key",          async () => await setkeyTest(zkconftermVK));
+	it("zkconfterm: should verify correct proof",       async () => await verifyOkTest(zkconftermVK, zkconftermProof, zkconftermProof));
+	it("zkconfterm: should verify correct proof2",      async () => await verifyOkTest(zkconftermVK, zkconftermProof2, zkconftermProof2));
+	it("zkconfterm: shouldn't verify incorrect proof",  async () => await verifyWrong(zkconftermVK, zkconftermProof2, zkconftermProof));
+	it("zkconfterm: shouldn't verify incorrect input",  async () => await verifyWrong(zkconftermVK, zkconftermProof, zkconftermProof2));
 });
 
 // console.log(pubIn)

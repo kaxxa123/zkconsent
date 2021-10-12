@@ -28,6 +28,12 @@ const zkconfconsInputs  = homedir + '/zkconsent_setup/groth16/zkconfcons/exproof
 const zkconfconsProof2  = homedir + '/zkconsent_setup/groth16/other/zkconfcons/exproof_zkconfcons_params.json'
 const zkconfconsInputs2 = homedir + '/zkconsent_setup/groth16/other/zkconfcons/exproof_zkconfcons.json'
 
+const zkconftermVK      = homedir + '/zkconsent_setup/groth16/zkconfterm/vk_zkconfterm_params.json'
+const zkconftermProof   = homedir + '/zkconsent_setup/groth16/zkconfterm/exproof_zkconfterm_params.json'
+const zkconftermInputs  = homedir + '/zkconsent_setup/groth16/zkconfterm/exproof_zkconfterm.json'
+const zkconftermProof2  = homedir + '/zkconsent_setup/groth16/other/zkconfterm/exproof_zkconfterm_params.json'
+const zkconftermInputs2 = homedir + '/zkconsent_setup/groth16/other/zkconfterm/exproof_zkconfterm.json'
+
 var verifier; 
 
 //https://stackoverflow.com/questions/21667377/javascript-hexadecimal-string-to-decimal-string
@@ -159,4 +165,10 @@ contract('Verifier', function(accounts)
 	it("zkconfcons: should verify correct proof2",      async () => await verifyOkTest(zkconfconsVK, zkconfconsProof2, zkconfconsInputs2));
 	it("zkconfcons: shouldn't verify incorrect proof",  async () => await verifyWrong(zkconfconsVK, zkconfconsProof2, zkconfconsInputs));
 	it("zkconfcons: shouldn't verify incorrect input",  async () => await verifyWrong(zkconfconsVK, zkconfconsProof, zkconfconsInputs2));
+
+    it("zkconfterm: should set verifying key",          async () => await setkeyTest(zkconftermVK));
+	it("zkconfterm: should verify correct proof",       async () => await verifyOkTest(zkconftermVK, zkconftermProof, zkconftermInputs));
+	it("zkconfterm: should verify correct proof2",      async () => await verifyOkTest(zkconftermVK, zkconftermProof2, zkconftermInputs2));
+	it("zkconfterm: shouldn't verify incorrect proof",  async () => await verifyWrong(zkconftermVK, zkconftermProof2, zkconftermInputs));
+	it("zkconfterm: shouldn't verify incorrect input",  async () => await verifyWrong(zkconftermVK, zkconftermProof, zkconftermInputs2));
 });

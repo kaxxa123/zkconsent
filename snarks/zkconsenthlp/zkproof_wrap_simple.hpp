@@ -55,6 +55,51 @@ protected:
     std::shared_ptr<ZkpT>               inner_zkp;
 };
 
+//================================================================================
+//================================================================================
+//================================================================================
+//================================================================================
+
+/// Wrapper around a zkp, for streaming proof/keys
+template<typename   ppT,
+         typename   FieldT,
+         typename   HashT, 
+         typename   HashTreeT,
+         typename   snarkT,
+         size_t     TreeDepth>
+class zkconfterminate_wrap
+{
+public:
+using ZkpT =  zkconfterminate_gadget<FieldT, HashT, HashTreeT, TreeDepth>;
+
+    zkconfterminate_wrap();
+    zkconfterminate_wrap(const zkconfterminate_wrap &) = delete;
+    zkconfterminate_wrap &operator=(const zkconfterminate_wrap &) = delete;
+
+    typename snarkT::keypair        generate_trusted_setup() const;
+    const libsnark::r1cs_constraint_system<FieldT>  
+                                    &get_constraint_system() const;
+    const std::vector<FieldT>       &get_last_assignment() const;
+
+    libzeth::extended_proof<ppT, snarkT> prove(
+        const libzeth::bits256      &apk_in,
+        const libzeth::bits256      &rho_in,
+        const typename snarkT::proving_key &proving_key) const;
+
+    libzeth::extended_proof<ppT, snarkT> prove_test(
+        const std::string&  s_apk,
+        const std::string&  s_rho,
+        const typename snarkT::proving_key &proving_key) const;
+
+    static bool test(
+        const std::string&  s_apk,
+        const std::string&  s_rho);
+
+protected:
+    libsnark::protoboard<FieldT>        pb;
+    std::shared_ptr<ZkpT>               inner_zkp;
+};
+
 }
 
 #include "zkproof_wrap_simple.tcc"

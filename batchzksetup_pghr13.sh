@@ -14,3 +14,4 @@ echo ">> SNARKs Setup"
 ./snarks/build/zkconsent/zkconsent setup --pghr13 --zkmint
 ./snarks/build/zkconsent/zkconsent setup --pghr13 --zkconsent
 ./snarks/build/zkconsent/zkconsent setup --pghr13 --zkconfconsent
+./snarks/build/zkconsent/zkconsent setup --pghr13 --zkconfterminate

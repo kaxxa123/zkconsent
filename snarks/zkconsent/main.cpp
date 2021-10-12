@@ -30,7 +30,7 @@ CMDTYPS     GetCmd(std::string& sCmd)
     return CMD_ERROR;
 }
 
-ZKCIRC      GetCircuit(bool bTerm, bool bMint, bool bConsent, bool bConfCons)
+ZKCIRC      GetCircuit(bool bTerm, bool bMint, bool bConsent, bool bConfCons, bool bConfTerm)
 {
     int     iCnt    = 0;
     ZKCIRC  retCirc = ZK_ERROR;
@@ -53,7 +53,12 @@ ZKCIRC      GetCircuit(bool bTerm, bool bMint, bool bConsent, bool bConfCons)
     if (bConfCons) {
         retCirc = ZK_CONFCONS;
         ++iCnt;
-    }        
+    }
+
+    if (bConfTerm) {
+        retCirc = ZK_CONFTERM;
+        ++iCnt;
+    }            
 
     return (iCnt == 1) ? retCirc : ZK_ERROR;
 }
@@ -70,6 +75,8 @@ const char*    GetCircuitTag(ZKCIRC type)
             return FILETAG_CONSENT;
         case ZK_CONFCONS:
             return FILETAG_CONFCONS;
+        case ZK_CONFTERM:
+            return FILETAG_CONFTERM;
         default:
             break;
     }
@@ -129,7 +136,9 @@ int main(int argc, char** argv)
         ("zkconsent",   "process consent change zkp");
     options.add_options()
         ("zkconfconsent",   "process consent confirm zkp");
-
+    options.add_options()
+        ("zkconfterminate", "process terminate confirm zkp");
+        
     options.add_options()
         ("witness,w",
         po::value<boost::filesystem::path>(),
@@ -233,11 +242,11 @@ int main(int argc, char** argv)
 
         if (typeCmd != CMD_TEST)
         {
-            typeCirc = GetCircuit(vm.count("zkterminate"), vm.count("zkmint"), vm.count("zkconsent"), vm.count("zkconfconsent"));
+            typeCirc = GetCircuit(vm.count("zkterminate"), vm.count("zkmint"), vm.count("zkconsent"), vm.count("zkconfconsent"), vm.count("zkconfterminate"));
             if (typeCirc == ZK_ERROR)
             {
                 std::cerr << " ERROR: Specify ONE of the circuit selection flags"  << std::endl;
-                std::cerr << "  zkterminate | zkmint | zkconsent | zkconfconsent"  << std::endl;
+                std::cerr << "  zkterminate | zkmint | zkconsent | zkconfconsent | zkconfterminate"  << std::endl;
                 return 1;
             }
         }

@@ -93,5 +93,9 @@ bool            Test_ConsentConfirm(
                     const std::string&  s_trapr,
                     bool                choice);
 
+bool            Test_TerminateConfirm(
+                    const std::string&  s_apk,
+                    const std::string&  s_rho);
+                    
 }
 #endif //__ZKC_INTERFACE_H_

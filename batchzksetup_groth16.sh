@@ -14,3 +14,4 @@ echo ">> SNARKs Setup"
 ./snarks/build/zkconsent/zkconsent setup --groth16 --zkmint
 ./snarks/build/zkconsent/zkconsent setup --groth16 --zkconsent
 ./snarks/build/zkconsent/zkconsent setup --groth16 --zkconfconsent
+./snarks/build/zkconsent/zkconsent setup --groth16 --zkconfterminate
