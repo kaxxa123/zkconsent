@@ -7,11 +7,21 @@ echo "=================================="
 
 echo
 echo ">> SNARKs Prove"
-./snarks/build/zkconsent/zkconsent prove --pghr13 --zkterminate     -w ./samples/zkterminate.json
-./snarks/build/zkconsent/zkconsent prove --pghr13 --zkmint          -w ./samples/zkmint.json
-./snarks/build/zkconsent/zkconsent prove --pghr13 --zkconsent       -w ./samples/zkconsent.json
-./snarks/build/zkconsent/zkconsent prove --pghr13 --zkconfconsent   -w ./samples/zkconfconsent.json
-./snarks/build/zkconsent/zkconsent prove --pghr13 --zkconfterminate -w ./samples/zkconfterminate.json
+./snarks/build/zkconsent/zkconsent prove --pghr13 --zkterminate     -w ./samples/zkterminate.json \
+            | tee $HOME/zkconsent_logs/pghr13/zkterm_proof.log
+
+./snarks/build/zkconsent/zkconsent prove --pghr13 --zkmint          -w ./samples/zkmint.json \
+            | tee $HOME/zkconsent_logs/pghr13/zkmint_proof.log
+
+./snarks/build/zkconsent/zkconsent prove --pghr13 --zkconsent       -w ./samples/zkconsent.json \
+            | tee $HOME/zkconsent_logs/pghr13/zkcons_proof.log
+
+./snarks/build/zkconsent/zkconsent prove --pghr13 --zkconfconsent   -w ./samples/zkconfconsent.json \
+            | tee $HOME/zkconsent_logs/pghr13/zkconsconf_proof.log
+
+./snarks/build/zkconsent/zkconsent prove --pghr13 --zkconfterminate -w ./samples/zkconfterminate.json \
+            | tee $HOME/zkconsent_logs/pghr13/zktermconf_proof.log
+
 
 ./snarks/build/zkconsent/zkconsent prove --pghr13 --zkterminate -w ./samples/zkterminate_other.json \
             --extproof-json $HOME/zkconsent_setup/pghr13/other/zkterm/exproof_zkterm.json \

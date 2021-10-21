@@ -5,11 +5,21 @@ echo "Generating Groth16 Proofs zkConsent"
 echo "======================================"
 
 echo
-./snarks/build/zkconsent/zkconsent prove --groth16 --zkterminate     -w ./samples/zkterminate.json
-./snarks/build/zkconsent/zkconsent prove --groth16 --zkmint          -w ./samples/zkmint.json
-./snarks/build/zkconsent/zkconsent prove --groth16 --zkconsent       -w ./samples/zkconsent.json
-./snarks/build/zkconsent/zkconsent prove --groth16 --zkconfconsent   -w ./samples/zkconfconsent.json
-./snarks/build/zkconsent/zkconsent prove --groth16 --zkconfterminate -w ./samples/zkconfterminate.json
+./snarks/build/zkconsent/zkconsent prove --groth16 --zkterminate     -w ./samples/zkterminate.json \
+            | tee $HOME/zkconsent_logs/groth16/zkterm_proof.log
+
+./snarks/build/zkconsent/zkconsent prove --groth16 --zkmint          -w ./samples/zkmint.json \
+            | tee $HOME/zkconsent_logs/groth16/zkmint_proof.log
+
+./snarks/build/zkconsent/zkconsent prove --groth16 --zkconsent       -w ./samples/zkconsent.json \
+            | tee $HOME/zkconsent_logs/groth16/zkcons_proof.log
+
+./snarks/build/zkconsent/zkconsent prove --groth16 --zkconfconsent   -w ./samples/zkconfconsent.json \
+            | tee $HOME/zkconsent_logs/groth16/zkconsconf_proof.log
+
+./snarks/build/zkconsent/zkconsent prove --groth16 --zkconfterminate -w ./samples/zkconfterminate.json \
+            | tee $HOME/zkconsent_logs/groth16/zktermconf_proof.log
+
 
 ./snarks/build/zkconsent/zkconsent prove --groth16 --zkterminate -w ./samples/zkterminate_other.json \
             --extproof-json $HOME/zkconsent_setup/groth16/other/zkterm/exproof_zkterm.json \
