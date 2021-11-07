@@ -120,6 +120,9 @@ contract('Verifier', function(accounts)
         console.log("Loading Public Input...")
         let pubIn = loadInput(jsonInputs)
 
+        let gasEst = await verifier.verifyTx.estimateGas(proofIn, pubIn);
+        console.log(`GAS: verifyTx: ${gasEst}`);
+
         console.log("Verifing...")
         let res = await verifier.verifyTx.call(proofIn, pubIn);
 
