@@ -9,6 +9,10 @@ namespace libzkconsent
 template<typename FieldT, typename HashT, typename HashTreeT, size_t TreeDepth>
 class zkconfconsent_gadget : libsnark::gadget<FieldT>
 {
+public:
+    //Public Inputs: cm
+    static const size_t PUB_INPUTS = 1;
+
 private:
     //Public
     libsnark::pb_variable<FieldT>                           cm_consent;

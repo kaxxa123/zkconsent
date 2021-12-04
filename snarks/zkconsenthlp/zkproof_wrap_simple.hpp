@@ -12,20 +12,41 @@ template<typename   ppT,
          typename   HashT, 
          typename   HashTreeT,
          typename   snarkT,
+         typename   ZkpT,
          size_t     TreeDepth>
-class zkconfconsent_wrap
+class zkpbase_wrap_simp
+{
+public:
+    zkpbase_wrap_simp();
+    zkpbase_wrap_simp(const zkpbase_wrap_simp &) = delete;
+    zkpbase_wrap_simp &operator=(const zkpbase_wrap_simp &) = delete;
+
+    typename snarkT::keypair        generate_trusted_setup()    const;
+    const libsnark::r1cs_constraint_system<FieldT>  
+                                    &get_constraint_system()    const;
+    const std::vector<FieldT>       &get_last_assignment()      const;
+    
+protected:
+    libzeth::extended_proof<ppT, snarkT> complete_prove(
+                        const typename snarkT::proving_key &proving_key) const;
+
+    libsnark::protoboard<FieldT>        pb;
+    std::shared_ptr<ZkpT>               inner_zkp;
+};
+
+//====================================================================================
+template<typename   ppT, 
+         typename   FieldT, 
+         typename   HashT, 
+         typename   HashTreeT, 
+         typename   snarkT, 
+         size_t     TreeDepth>
+class zkconfconsent_wrap : public zkpbase_wrap_simp<ppT, FieldT, HashT, HashTreeT, snarkT,
+                                                zkconfconsent_gadget<FieldT, HashT, HashTreeT, TreeDepth>,
+                                                TreeDepth>
 {
 public:
 using ZkpT =  zkconfconsent_gadget<FieldT, HashT, HashTreeT, TreeDepth>;
-
-    zkconfconsent_wrap();
-    zkconfconsent_wrap(const zkconfconsent_wrap &) = delete;
-    zkconfconsent_wrap &operator=(const zkconfconsent_wrap &) = delete;
-
-    typename snarkT::keypair        generate_trusted_setup() const;
-    const libsnark::r1cs_constraint_system<FieldT>  
-                                    &get_constraint_system() const;
-    const std::vector<FieldT>       &get_last_assignment() const;
 
     libzeth::extended_proof<ppT, snarkT> prove(
         const libzeth::bits256      &apk_in,
@@ -49,37 +70,21 @@ using ZkpT =  zkconfconsent_gadget<FieldT, HashT, HashTreeT, TreeDepth>;
         const std::string&  s_rho,
         const std::string&  s_trapr,
         bool                choice);
-
-protected:
-    libsnark::protoboard<FieldT>        pb;
-    std::shared_ptr<ZkpT>               inner_zkp;
 };
 
 //================================================================================
-//================================================================================
-//================================================================================
-//================================================================================
-
-/// Wrapper around a zkp, for streaming proof/keys
-template<typename   ppT,
-         typename   FieldT,
+template<typename   ppT, 
+         typename   FieldT, 
          typename   HashT, 
-         typename   HashTreeT,
-         typename   snarkT,
+         typename   HashTreeT, 
+         typename   snarkT, 
          size_t     TreeDepth>
-class zkconfterminate_wrap
+class zkconfterminate_wrap : public zkpbase_wrap_simp<ppT, FieldT, HashT, HashTreeT, snarkT,
+                                                zkconfterminate_gadget<FieldT, HashT, HashTreeT, TreeDepth>,
+                                                TreeDepth>
 {
 public:
 using ZkpT =  zkconfterminate_gadget<FieldT, HashT, HashTreeT, TreeDepth>;
-
-    zkconfterminate_wrap();
-    zkconfterminate_wrap(const zkconfterminate_wrap &) = delete;
-    zkconfterminate_wrap &operator=(const zkconfterminate_wrap &) = delete;
-
-    typename snarkT::keypair        generate_trusted_setup() const;
-    const libsnark::r1cs_constraint_system<FieldT>  
-                                    &get_constraint_system() const;
-    const std::vector<FieldT>       &get_last_assignment() const;
 
     libzeth::extended_proof<ppT, snarkT> prove(
         const libzeth::bits256      &apk_in,
@@ -94,10 +99,6 @@ using ZkpT =  zkconfterminate_gadget<FieldT, HashT, HashTreeT, TreeDepth>;
     static bool test(
         const std::string&  s_apk,
         const std::string&  s_rho);
-
-protected:
-    libsnark::protoboard<FieldT>        pb;
-    std::shared_ptr<ZkpT>               inner_zkp;
 };
 
 }
