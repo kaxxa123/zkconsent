@@ -18,3 +18,8 @@ echo ">> SNARKs Setup"
 ./snarks/build/zkconsent/zkconsent setup --pghr13 --zkconsent           | tee $HOME/zkconsent_logs/pghr13/zkcons_setup.log
 ./snarks/build/zkconsent/zkconsent setup --pghr13 --zkconfconsent       | tee $HOME/zkconsent_logs/pghr13/zkconsconf_setup.log
 ./snarks/build/zkconsent/zkconsent setup --pghr13 --zkconfterminate     | tee $HOME/zkconsent_logs/pghr13/zktermconf_setup.log
+./snarks/build/zkconsent/zkconsent setup --pghr13 --zkterminatesimp     | tee $HOME/zkconsent_logs/pghr13/zksimpterm_setup.log
+./snarks/build/zkconsent/zkconsent setup --pghr13 --zkmintsimp          | tee $HOME/zkconsent_logs/pghr13/zksimpmint_setup.log
+./snarks/build/zkconsent/zkconsent setup --pghr13 --zkconsentsimp       | tee $HOME/zkconsent_logs/pghr13/zksimpcons_setup.log
+
+

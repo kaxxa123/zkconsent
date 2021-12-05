@@ -4,7 +4,7 @@
 #define __ZKJSON_TCC_
 
 template<typename snarkT>
-zkterminate_json<snarkT>& zkterminate_json<snarkT>::set(const boost::json::object& objJSON)
+zkterminate_base_json<snarkT>& zkterminate_base_json<snarkT>::set(const boost::json::object& objJSON)
 {
     extract(objJSON, a_sk, "a_sk");
     extract(objJSON, mkaddrId, "mkaddrId");
@@ -16,7 +16,7 @@ zkterminate_json<snarkT>& zkterminate_json<snarkT>::set(const boost::json::objec
 }
 
 template<typename snarkT>
-void zkterminate_json<snarkT>::trace()
+void zkterminate_base_json<snarkT>::trace()
 {
     std::cout <<  std::endl;
     std::cout << " ------ zkterminate proof parameters ---------"  << std::endl;
@@ -33,14 +33,22 @@ template<typename snarkT>
 libzeth::extended_proof<ppT, snarkT>    zkterminate_json<snarkT>::prove_test(circuitT& aZkp, const typename snarkT::proving_key &proving_key) const
 {
     std::vector<FieldT> out_public_data;
-    return aZkp.prove_test( a_sk,                             
-                            mkaddrId, rhoId_in, rhoId_out, 
-                            hsig, proving_key, out_public_data);
+    return aZkp.prove_test( this->a_sk,                             
+                            this->mkaddrId, this->rhoId_in, this->rhoId_out, 
+                            this->hsig, proving_key, out_public_data);
+}
+
+template<typename snarkT>
+libzeth::extended_proof<ppT, snarkT>    zkterminate_simp_json<snarkT>::prove_test(circuitT& aZkp, const typename snarkT::proving_key &proving_key) const
+{
+    return aZkp.prove_test( this->a_sk,                             
+                            this->mkaddrId, this->rhoId_in, this->rhoId_out, 
+                            this->hsig, proving_key);
 }
 
 //========================================================================================
 template<typename snarkT>
-zkmint_json<snarkT>& zkmint_json<snarkT>::set(const boost::json::object& objJSON)
+zkmint_base_json<snarkT>& zkmint_base_json<snarkT>::set(const boost::json::object& objJSON)
 {
     extract(objJSON, a_sk, "a_sk");
     extract(objJSON, mkaddrStudy, "mkaddrStudy");
@@ -57,7 +65,7 @@ zkmint_json<snarkT>& zkmint_json<snarkT>::set(const boost::json::object& objJSON
 }
 
 template<typename snarkT>
-void zkmint_json<snarkT>::trace()
+void zkmint_base_json<snarkT>::trace()
 {
     std::cout <<  std::endl;
     std::cout << " ------ zkmint proof parameters ---------"  << std::endl;
@@ -79,16 +87,26 @@ template<typename snarkT>
 libzeth::extended_proof<ppT, snarkT>    zkmint_json<snarkT>::prove_test(circuitT& aZkp, const typename snarkT::proving_key &proving_key) const
 {
     std::vector<FieldT> out_public_data;
-    return aZkp.prove_test( a_sk, 
-                            mkaddrStudy, studyid, 
-                            mkaddrId, rhoId_in, rhoId_out, 
-                            rhoConsent_out, traprConsent_out, 
-                            choice_out, hsig, proving_key, out_public_data);
+    return aZkp.prove_test( this->a_sk, 
+                            this->mkaddrStudy, this->studyid, 
+                            this->mkaddrId, this->rhoId_in, this->rhoId_out, 
+                            this->rhoConsent_out, this->traprConsent_out, 
+                            this->choice_out, this->hsig, proving_key, out_public_data);
+}
+
+template<typename snarkT>
+libzeth::extended_proof<ppT, snarkT>    zkmint_simp_json<snarkT>::prove_test(circuitT& aZkp, const typename snarkT::proving_key &proving_key) const
+{
+    return aZkp.prove_test( this->a_sk, 
+                            this->mkaddrStudy, this->studyid, 
+                            this->mkaddrId, this->rhoId_in, this->rhoId_out, 
+                            this->rhoConsent_out, this->traprConsent_out, 
+                            this->choice_out, this->hsig, proving_key);
 }
 
 //========================================================================================
 template<typename snarkT>
-zkconsent_json<snarkT>& zkconsent_json<snarkT>::set(const boost::json::object& objJSON)
+zkconsent_base_json<snarkT>& zkconsent_base_json<snarkT>::set(const boost::json::object& objJSON)
 {
     extract(objJSON, a_sk, "a_sk");
     extract(objJSON, mkaddrStudy, "mkaddrStudy");
@@ -108,7 +126,7 @@ zkconsent_json<snarkT>& zkconsent_json<snarkT>::set(const boost::json::object& o
 }
 
 template<typename snarkT>
-void zkconsent_json<snarkT>::trace()
+void zkconsent_base_json<snarkT>::trace()
 {
     std::cout <<  std::endl;
     std::cout << " ------ zkconsent proof parameters ---------"  << std::endl;
@@ -133,12 +151,23 @@ template<typename snarkT>
 libzeth::extended_proof<ppT, snarkT>    zkconsent_json<snarkT>::prove_test(circuitT& aZkp, const typename snarkT::proving_key &proving_key) const
 {
     std::vector<FieldT> out_public_data;
-    return aZkp.prove_test( a_sk, 
-                            mkaddrStudy, studyid, 
-                            mkaddrId, rhoId_in, rhoId_out, 
-                            mkaddrConsent, rhoConsent_in, traprConsent_in, choice_in,
-                            rhoConsent_out, traprConsent_out, 
-                            hsig, proving_key, out_public_data);
+    return aZkp.prove_test( this->a_sk, 
+                            this->mkaddrStudy, this->studyid, 
+                            this->mkaddrId, this->rhoId_in, this->rhoId_out, 
+                            this->mkaddrConsent, this->rhoConsent_in, this->traprConsent_in, this->choice_in,
+                            this->rhoConsent_out, this->traprConsent_out, 
+                            this->hsig, proving_key, out_public_data);
+}
+
+template<typename snarkT>
+libzeth::extended_proof<ppT, snarkT>    zkconsent_simp_json<snarkT>::prove_test(circuitT& aZkp, const typename snarkT::proving_key &proving_key) const
+{
+    return aZkp.prove_test( this->a_sk, 
+                            this->mkaddrStudy, this->studyid, 
+                            this->mkaddrId, this->rhoId_in, this->rhoId_out, 
+                            this->mkaddrConsent, this->rhoConsent_in, this->traprConsent_in, this->choice_in,
+                            this->rhoConsent_out, this->traprConsent_out, 
+                            this->hsig, proving_key);
 }
 
 //========================================================================================

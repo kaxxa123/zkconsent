@@ -23,6 +23,15 @@ echo ">> SNARKs Prove"
 ./snarks/build/zkconsent/zkconsent prove --pghr13 --zkconfterminate -w ./samples/zkconfterminate.json \
             | tee $HOME/zkconsent_logs/pghr13/zktermconf_proof.log
 
+./snarks/build/zkconsent/zkconsent prove --pghr13 --zkterminatesimp -w ./samples/zkterminate.json \
+            | tee $HOME/zkconsent_logs/pghr13/zksimpterm_proof.log
+
+./snarks/build/zkconsent/zkconsent prove --pghr13 --zkmintsimp      -w ./samples/zkmint.json \
+            | tee $HOME/zkconsent_logs/pghr13/zksimpmint_proof.log
+
+./snarks/build/zkconsent/zkconsent prove --pghr13 --zkconsentsimp   -w ./samples/zkconsent.json \
+            | tee $HOME/zkconsent_logs/pghr13/zksimpcons_proof.log
+
 
 ./snarks/build/zkconsent/zkconsent prove --pghr13 --zkterminate -w ./samples/zkterminate_other.json \
             --extproof-json $HOME/zkconsent_setup/pghr13/other/zkterm/exproof_zkterm.json \
@@ -58,3 +67,25 @@ echo ">> SNARKs Prove"
             --primary-bin   $HOME/zkconsent_setup/pghr13/other/zkconfterm/primary_zkconfterm.bin \
             --witness-bin   $HOME/zkconsent_setup/pghr13/other/zkconfterm/witness_zkconfterm.bin \
             | tee $HOME/zkconsent_logs/pghr13/zktermconf_proofother.log
+
+./snarks/build/zkconsent/zkconsent prove --pghr13 --zkterminatesimp -w ./samples/zkterminate_other.json \
+            --extproof-json $HOME/zkconsent_setup/pghr13/other/zksimpterm/exproof_zksimpterm.json \
+            --proof-bin     $HOME/zkconsent_setup/pghr13/other/zksimpterm/proof_zksimpterm.bin \
+            --primary-bin   $HOME/zkconsent_setup/pghr13/other/zksimpterm/primary_zksimpterm.bin \
+            --witness-bin   $HOME/zkconsent_setup/pghr13/other/zksimpterm/witness_zksimpterm.bin \
+            | tee $HOME/zkconsent_logs/pghr13/zksimpterm_proofother.log
+
+./snarks/build/zkconsent/zkconsent prove --pghr13 --zkmintsimp      -w ./samples/zkmint_other.json \
+            --extproof-json $HOME/zkconsent_setup/pghr13/other/zksimpmint/exproof_zksimpmint.json  \
+            --proof-bin     $HOME/zkconsent_setup/pghr13/other/zksimpmint/proof_zksimpmint.bin \
+            --primary-bin   $HOME/zkconsent_setup/pghr13/other/zksimpmint/primary_zksimpmint.bin \
+            --witness-bin   $HOME/zkconsent_setup/pghr13/other/zksimpmint/witness_zksimpmint.bin \
+            | tee $HOME/zkconsent_logs/pghr13/zksimpmint_proofother.log
+
+./snarks/build/zkconsent/zkconsent prove --pghr13 --zkconsentsimp   -w ./samples/zkconsent_other.json \
+            --extproof-json $HOME/zkconsent_setup/pghr13/other/zksimpcons/exproof_zksimpcons.json \
+            --proof-bin     $HOME/zkconsent_setup/pghr13/other/zksimpcons/proof_zksimpcons.bin \
+            --primary-bin   $HOME/zkconsent_setup/pghr13/other/zksimpcons/primary_zksimpcons.bin \
+            --witness-bin   $HOME/zkconsent_setup/pghr13/other/zksimpcons/witness_zksimpcons.bin \
+            | tee $HOME/zkconsent_logs/pghr13/zksimpcons_proofother.log
+

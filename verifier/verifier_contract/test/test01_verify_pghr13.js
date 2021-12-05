@@ -24,6 +24,19 @@ const zkconftermVK     = homedir + '/zkconsent_setup/pghr13/zkconfterm/vk_zkconf
 const zkconftermProof  = homedir + '/zkconsent_setup/pghr13/zkconfterm/exproof_zkconfterm.json'
 const zkconftermProof2 = homedir + '/zkconsent_setup/pghr13/other/zkconfterm/exproof_zkconfterm.json'
 
+const zksimptermVK     = homedir + '/zkconsent_setup/pghr13/zksimpterm/vk_zksimpterm.json'
+const zksimptermProof  = homedir + '/zkconsent_setup/pghr13/zksimpterm/exproof_zksimpterm.json'
+const zksimptermProof2 = homedir + '/zkconsent_setup/pghr13/other/zksimpterm/exproof_zksimpterm.json'
+
+const zksimpmintVK     = homedir + '/zkconsent_setup/pghr13/zksimpmint/vk_zksimpmint.json'
+const zksimpmintProof  = homedir + '/zkconsent_setup/pghr13/zksimpmint/exproof_zksimpmint.json'
+const zksimpmintProof2 = homedir + '/zkconsent_setup/pghr13/other/zksimpmint/exproof_zksimpmint.json'
+
+const zksimpconsVK     = homedir + '/zkconsent_setup/pghr13/zksimpcons/vk_zksimpcons.json'
+const zksimpconsProof  = homedir + '/zkconsent_setup/pghr13/zksimpcons/exproof_zksimpcons.json'
+const zksimpconsProof2 = homedir + '/zkconsent_setup/pghr13/other/zksimpcons/exproof_zksimpcons.json'
+
+
 var verifier; 
 
 //https://stackoverflow.com/questions/21667377/javascript-hexadecimal-string-to-decimal-string
@@ -202,6 +215,24 @@ contract('Verifier', function(accounts)
 	it("zkconfterm: should verify correct proof2",      async () => await verifyOkTest(zkconftermVK, zkconftermProof2, zkconftermProof2));
 	it("zkconfterm: shouldn't verify incorrect proof",  async () => await verifyWrong(zkconftermVK, zkconftermProof2, zkconftermProof));
 	it("zkconfterm: shouldn't verify incorrect input",  async () => await verifyWrong(zkconftermVK, zkconftermProof, zkconftermProof2));
+
+	it("zksimpterm: should set verifying key",          async () => await setkeyTest(zksimptermVK));
+	it("zksimpterm: should verify correct proof",       async () => await verifyOkTest(zksimptermVK, zksimptermProof, zksimptermProof));
+	it("zksimpterm: should verify correct proof2",      async () => await verifyOkTest(zksimptermVK, zksimptermProof2, zksimptermProof2));
+	it("zksimpterm: shouldn't verify incorrect proof",  async () => await verifyWrong(zksimptermVK, zksimptermProof2, zksimptermProof));
+	it("zksimpterm: shouldn't verify incorrect input",  async () => await verifyWrong(zksimptermVK, zksimptermProof, zksimptermProof2));
+
+    it("zksimpmint: should set verifying key",          async () => await setkeyTest(zksimpmintVK));
+	it("zksimpmint: should verify correct proof",       async () => await verifyOkTest(zksimpmintVK, zksimpmintProof, zksimpmintProof));
+	it("zksimpmint: should verify correct proof2",      async () => await verifyOkTest(zksimpmintVK, zksimpmintProof2, zksimpmintProof2));
+	it("zksimpmint: shouldn't verify incorrect proof",  async () => await verifyWrong(zksimpmintVK, zksimpmintProof2, zksimpmintProof));
+	it("zksimpmint: shouldn't verify incorrect input",  async () => await verifyWrong(zksimpmintVK, zksimpmintProof, zksimpmintProof2));
+
+    it("zksimpcons: should set verifying key",          async () => await setkeyTest(zksimpconsVK));
+	it("zksimpcons: should verify correct proof",       async () => await verifyOkTest(zksimpconsVK, zksimpconsProof, zksimpconsProof));
+	it("zksimpcons: should verify correct proof2",      async () => await verifyOkTest(zksimpconsVK, zksimpconsProof2, zksimpconsProof2));
+	it("zksimpcons: shouldn't verify incorrect proof",  async () => await verifyWrong(zksimpconsVK, zksimpconsProof2, zksimpconsProof));
+	it("zksimpcons: shouldn't verify incorrect input",  async () => await verifyWrong(zksimpconsVK, zksimpconsProof, zksimpconsProof2));
 });
 
 // console.log(pubIn)

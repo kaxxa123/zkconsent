@@ -30,7 +30,14 @@ CMDTYPS     GetCmd(std::string& sCmd)
     return CMD_ERROR;
 }
 
-ZKCIRC      GetCircuit(bool bTerm, bool bMint, bool bConsent, bool bConfCons, bool bConfTerm)
+ZKCIRC      GetCircuit( bool bTerm, 
+                        bool bMint, 
+                        bool bConsent, 
+                        bool bConfCons, 
+                        bool bConfTerm,
+                        bool bSimpTerm, 
+                        bool bSimpMint, 
+                        bool bSimpConsent)
 {
     int     iCnt    = 0;
     ZKCIRC  retCirc = ZK_ERROR;
@@ -60,6 +67,22 @@ ZKCIRC      GetCircuit(bool bTerm, bool bMint, bool bConsent, bool bConfCons, bo
         ++iCnt;
     }            
 
+    if (bSimpTerm) {
+        retCirc = ZK_SIMP_TERMINATE;
+        ++iCnt;
+    }
+
+    if (bSimpMint) {
+        retCirc = ZK_SIMP_MINT;
+        ++iCnt;
+    }
+
+    if (bSimpConsent) {
+        retCirc = ZK_SIMP_CONSENT;
+        ++iCnt;
+    }
+
+
     return (iCnt == 1) ? retCirc : ZK_ERROR;
 }
 
@@ -77,6 +100,12 @@ const char*    GetCircuitTag(ZKCIRC type)
             return FILETAG_CONFCONS;
         case ZK_CONFTERM:
             return FILETAG_CONFTERM;
+        case ZK_SIMP_TERMINATE:
+            return FILETAG_SIMP_TERMINATE;
+        case ZK_SIMP_MINT:
+            return FILETAG_SIMP_MINT;
+        case ZK_SIMP_CONSENT:            
+            return FILETAG_SIMP_CONSENT;
         default:
             break;
     }
@@ -129,16 +158,22 @@ int main(int argc, char** argv)
         ("pghr13",  "Run with PGHR13 ZKP Scheme");
 
     options.add_options()
-        ("zkterminate", "process user termination zkp");
+        ("zkterminate",     "process user termination zkp");
     options.add_options()
-        ("zkmint",      "process consent mint zkp");
+        ("zkmint",          "process consent mint zkp");
     options.add_options()
-        ("zkconsent",   "process consent change zkp");
+        ("zkconsent",       "process consent change zkp");
     options.add_options()
         ("zkconfconsent",   "process consent confirm zkp");
     options.add_options()
         ("zkconfterminate", "process terminate confirm zkp");
-        
+    options.add_options()
+        ("zkterminatesimp", "process user termination SIMPLE zkp");
+    options.add_options()
+        ("zkmintsimp",      "process consent mint SIMPLE zkp");
+    options.add_options()
+        ("zkconsentsimp",   "process consent change SIMPLE zkp");
+
     options.add_options()
         ("witness,w",
         po::value<boost::filesystem::path>(),
@@ -242,11 +277,19 @@ int main(int argc, char** argv)
 
         if (typeCmd != CMD_TEST)
         {
-            typeCirc = GetCircuit(vm.count("zkterminate"), vm.count("zkmint"), vm.count("zkconsent"), vm.count("zkconfconsent"), vm.count("zkconfterminate"));
+            typeCirc = GetCircuit(  vm.count("zkterminate"), 
+                                    vm.count("zkmint"), 
+                                    vm.count("zkconsent"), 
+                                    vm.count("zkconfconsent"), 
+                                    vm.count("zkconfterminate"),
+                                    vm.count("zkterminatesimp"), 
+                                    vm.count("zkmintsimp"), 
+                                    vm.count("zkconsentsimp"));
             if (typeCirc == ZK_ERROR)
             {
                 std::cerr << " ERROR: Specify ONE of the circuit selection flags"  << std::endl;
-                std::cerr << "  zkterminate | zkmint | zkconsent | zkconfconsent | zkconfterminate"  << std::endl;
+                std::cerr << "  zkterminate | zkmint | zkconsent | zkconfconsent | zkconfterminate |"  << std::endl;
+                std::cerr << "  zkterminatesimp | zkmintsimp | zkconsentsimp"  << std::endl;
                 return 1;
             }
         }

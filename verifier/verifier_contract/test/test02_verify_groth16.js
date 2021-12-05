@@ -34,6 +34,25 @@ const zkconftermInputs  = homedir + '/zkconsent_setup/groth16/zkconfterm/exproof
 const zkconftermProof2  = homedir + '/zkconsent_setup/groth16/other/zkconfterm/exproof_zkconfterm_params.json'
 const zkconftermInputs2 = homedir + '/zkconsent_setup/groth16/other/zkconfterm/exproof_zkconfterm.json'
 
+const zksimptermVK      = homedir + '/zkconsent_setup/groth16/zksimpterm/vk_zksimpterm_params.json'
+const zksimptermProof   = homedir + '/zkconsent_setup/groth16/zksimpterm/exproof_zksimpterm_params.json'
+const zksimptermInputs  = homedir + '/zkconsent_setup/groth16/zksimpterm/exproof_zksimpterm.json'
+const zksimptermProof2  = homedir + '/zkconsent_setup/groth16/other/zksimpterm/exproof_zksimpterm_params.json'
+const zksimptermInputs2 = homedir + '/zkconsent_setup/groth16/other/zksimpterm/exproof_zksimpterm.json'
+
+const zksimpmintVK       = homedir + '/zkconsent_setup/groth16/zksimpmint/vk_zksimpmint_params.json'
+const zksimpmintProof    = homedir + '/zkconsent_setup/groth16/zksimpmint/exproof_zksimpmint_params.json'
+const zksimpmintInputs   = homedir + '/zkconsent_setup/groth16/zksimpmint/exproof_zksimpmint.json'
+const zksimpmintProof2   = homedir + '/zkconsent_setup/groth16/other/zksimpmint/exproof_zksimpmint_params.json'
+const zksimpmintInputs2  = homedir + '/zkconsent_setup/groth16/other/zksimpmint/exproof_zksimpmint.json'
+
+const zksimpconsVK      = homedir + '/zkconsent_setup/groth16/zksimpcons/vk_zksimpcons_params.json'
+const zksimpconsProof   = homedir + '/zkconsent_setup/groth16/zksimpcons/exproof_zksimpcons_params.json'
+const zksimpconsInputs  = homedir + '/zkconsent_setup/groth16/zksimpcons/exproof_zksimpcons.json'
+const zksimpconsProof2  = homedir + '/zkconsent_setup/groth16/other/zksimpcons/exproof_zksimpcons_params.json'
+const zksimpconsInputs2 = homedir + '/zkconsent_setup/groth16/other/zksimpcons/exproof_zksimpcons.json'
+
+
 var verifier; 
 
 //https://stackoverflow.com/questions/21667377/javascript-hexadecimal-string-to-decimal-string
@@ -174,4 +193,22 @@ contract('Verifier', function(accounts)
 	it("zkconfterm: should verify correct proof2",      async () => await verifyOkTest(zkconftermVK, zkconftermProof2, zkconftermInputs2));
 	it("zkconfterm: shouldn't verify incorrect proof",  async () => await verifyWrong(zkconftermVK, zkconftermProof2, zkconftermInputs));
 	it("zkconfterm: shouldn't verify incorrect input",  async () => await verifyWrong(zkconftermVK, zkconftermProof, zkconftermInputs2));
+
+	it("zksimpterm: should set verifying key",          async () => await setkeyTest(zksimptermVK));
+	it("zksimpterm: should verify correct proof",       async () => await verifyOkTest(zksimptermVK, zksimptermProof, zksimptermInputs));
+	it("zksimpterm: should verify correct proof2",      async () => await verifyOkTest(zksimptermVK, zksimptermProof2, zksimptermInputs2));
+	it("zksimpterm: shouldn't verify incorrect proof",  async () => await verifyWrong(zksimptermVK, zksimptermProof2, zksimptermInputs));
+	it("zksimpterm: shouldn't verify incorrect input",  async () => await verifyWrong(zksimptermVK, zksimptermProof, zksimptermInputs2));
+
+	it("zksimpmint: should set verifying key",          async () => await setkeyTest(zksimpmintVK));
+	it("zksimpmint: should verify correct proof",       async () => await verifyOkTest(zksimpmintVK, zksimpmintProof, zksimpmintInputs));
+	it("zksimpmint: should verify correct proof2",      async () => await verifyOkTest(zksimpmintVK, zksimpmintProof2, zksimpmintInputs2));
+	it("zksimpmint: shouldn't verify incorrect proof",  async () => await verifyWrong(zksimpmintVK, zksimpmintProof2, zksimpmintInputs));
+	it("zksimpmint: shouldn't verify incorrect input",  async () => await verifyWrong(zksimpmintVK, zksimpmintProof, zksimpmintInputs2));
+
+    it("zksimpcons: should set verifying key",          async () => await setkeyTest(zksimpconsVK));
+	it("zksimpcons: should verify correct proof",       async () => await verifyOkTest(zksimpconsVK, zksimpconsProof, zksimpconsInputs));
+	it("zksimpcons: should verify correct proof2",      async () => await verifyOkTest(zksimpconsVK, zksimpconsProof2, zksimpconsInputs2));
+	it("zksimpcons: shouldn't verify incorrect proof",  async () => await verifyWrong(zksimpconsVK, zksimpconsProof2, zksimpconsInputs));
+	it("zksimpcons: shouldn't verify incorrect input",  async () => await verifyWrong(zksimpconsVK, zksimpconsProof, zksimpconsInputs2));
 });

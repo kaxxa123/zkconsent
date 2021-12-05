@@ -9,23 +9,19 @@ template<class jsonT>
 jsonT&  LoadZKJson(jsonT& zkjson, const boost::filesystem::path& jsonfile);
 
 template<typename snarkT>
-class zkterminate_json {
+class zkterminate_base_json {
 public:
-using   circuitT = zkterminate_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, ZKC_TreeDepth>;        
+    zkterminate_base_json() {}
+    zkterminate_base_json(const boost::filesystem::path& jsonfile) { set(jsonfile);  }
+    zkterminate_base_json(const boost::json::object& objJSON) { set(objJSON);  }
 
-    zkterminate_json() {}
-    zkterminate_json(const boost::filesystem::path& jsonfile) { set(jsonfile);  }
-    zkterminate_json(const boost::json::object& objJSON) { set(objJSON);  }
-
-    zkterminate_json<snarkT>& set(const boost::filesystem::path& jsonfile) {
+    zkterminate_base_json<snarkT>& set(const boost::filesystem::path& jsonfile) {
         return LoadZKJson(*this, jsonfile);
     }
-    zkterminate_json<snarkT>& set(const boost::json::object& objJSON);
-
-    libzeth::extended_proof<ppT, snarkT>    prove_test(circuitT& aZkp, const typename snarkT::proving_key &proving_key) const;
+    zkterminate_base_json<snarkT>& set(const boost::json::object& objJSON);
 
     void trace();
-private:
+protected:
     std::string   a_sk;
     size_t        mkaddrId;
     std::string   rhoId_in;
@@ -34,23 +30,37 @@ private:
 };
 
 template<typename snarkT>
-class zkmint_json {
+class zkterminate_json : public zkterminate_base_json<snarkT> {
 public:
-using   circuitT = zkmint_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, ZKC_TreeDepth>;        
-
-    zkmint_json() {}
-    zkmint_json(const boost::filesystem::path& jsonfile) { set(jsonfile);  }
-    zkmint_json(const boost::json::object& objJSON) { set(objJSON);  }
-
-    zkmint_json<snarkT>& set(const boost::filesystem::path& jsonfile) {
-        return LoadZKJson(*this, jsonfile);
-    }
-    zkmint_json<snarkT>& set(const boost::json::object& objJSON);
+using   circuitT = zkterminate_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, ZKC_TreeDepth>;
+using   zkterminate_base_json<snarkT>::zkterminate_base_json;
 
     libzeth::extended_proof<ppT, snarkT>    prove_test(circuitT& aZkp, const typename snarkT::proving_key &proving_key) const;
+};
+
+template<typename snarkT>
+class zkterminate_simp_json : public zkterminate_base_json<snarkT> {
+public:
+using   circuitT = zkterminate_simp_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, ZKC_TreeDepth>;
+using   zkterminate_base_json<snarkT>::zkterminate_base_json;
+
+    libzeth::extended_proof<ppT, snarkT>    prove_test(circuitT& aZkp, const typename snarkT::proving_key &proving_key) const;
+};
+
+template<typename snarkT>
+class zkmint_base_json {
+public:
+    zkmint_base_json() {}
+    zkmint_base_json(const boost::filesystem::path& jsonfile) { set(jsonfile);  }
+    zkmint_base_json(const boost::json::object& objJSON) { set(objJSON);  }
+
+    zkmint_base_json<snarkT>& set(const boost::filesystem::path& jsonfile) {
+        return LoadZKJson(*this, jsonfile);
+    }
+    zkmint_base_json<snarkT>& set(const boost::json::object& objJSON);
 
     void trace();
-private:
+protected:
         std::string     a_sk;
         size_t          mkaddrStudy;
         std::string     studyid;
@@ -64,23 +74,37 @@ private:
 };
 
 template<typename snarkT>
-class zkconsent_json {
+class zkmint_json : public zkmint_base_json<snarkT> {
 public:
-using   circuitT = zkconsent_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, ZKC_TreeDepth>;        
-
-    zkconsent_json() {}
-    zkconsent_json(const boost::filesystem::path& jsonfile) { set(jsonfile);  }
-    zkconsent_json(const boost::json::object& objJSON) { set(objJSON);  }
-
-    zkconsent_json<snarkT>& set(const boost::filesystem::path& jsonfile) {
-        return LoadZKJson(*this, jsonfile);
-    }
-    zkconsent_json<snarkT>& set(const boost::json::object& objJSON);
+using   circuitT = zkmint_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, ZKC_TreeDepth>;        
+using   zkmint_base_json<snarkT>::zkmint_base_json;
 
     libzeth::extended_proof<ppT, snarkT>    prove_test(circuitT& aZkp, const typename snarkT::proving_key &proving_key) const;
+};
+
+template<typename snarkT>
+class zkmint_simp_json : public zkmint_base_json<snarkT> {
+public:
+using   circuitT = zkmint_simp_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, ZKC_TreeDepth>;        
+using   zkmint_base_json<snarkT>::zkmint_base_json;
+
+    libzeth::extended_proof<ppT, snarkT>    prove_test(circuitT& aZkp, const typename snarkT::proving_key &proving_key) const;
+};
+
+template<typename snarkT>
+class zkconsent_base_json {
+public:
+    zkconsent_base_json() {}
+    zkconsent_base_json(const boost::filesystem::path& jsonfile) { set(jsonfile);  }
+    zkconsent_base_json(const boost::json::object& objJSON) { set(objJSON);  }
+
+    zkconsent_base_json<snarkT>& set(const boost::filesystem::path& jsonfile) {
+        return LoadZKJson(*this, jsonfile);
+    }
+    zkconsent_base_json<snarkT>& set(const boost::json::object& objJSON);
 
     void trace();
-private:
+protected:
         std::string     a_sk;
         size_t          mkaddrStudy; 
         std::string     studyid;
@@ -94,6 +118,24 @@ private:
         std::string     rhoConsent_out;
         std::string     traprConsent_out;
         std::string     hsig;
+};
+
+template<typename snarkT>
+class zkconsent_json: public zkconsent_base_json<snarkT> {
+public:
+using   circuitT = zkconsent_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, ZKC_TreeDepth>;        
+using   zkconsent_base_json<snarkT>::zkconsent_base_json;
+
+    libzeth::extended_proof<ppT, snarkT>    prove_test(circuitT& aZkp, const typename snarkT::proving_key &proving_key) const;
+};
+
+template<typename snarkT>
+class zkconsent_simp_json: public zkconsent_base_json<snarkT> {
+public:
+using   circuitT = zkconsent_simp_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, ZKC_TreeDepth>;        
+using   zkconsent_base_json<snarkT>::zkconsent_base_json;
+
+    libzeth::extended_proof<ppT, snarkT>    prove_test(circuitT& aZkp, const typename snarkT::proving_key &proving_key) const;
 };
 
 template<typename snarkT>
@@ -114,7 +156,7 @@ using   circuitT = zkconfconsent_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, ZKC
 
     void trace();
 
-private:
+protected:
     std::string a_pk;
     std::string studyid;
     std::string rho;
@@ -140,7 +182,7 @@ using   circuitT = zkconfterminate_wrap<ppT, FieldT, HashT, HashTreeT, snarkT, Z
 
     void trace();
 
-private:
+protected:
     std::string a_pk;
     std::string rho;
 };

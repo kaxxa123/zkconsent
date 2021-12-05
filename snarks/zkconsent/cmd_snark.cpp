@@ -81,6 +81,9 @@ void TrustedSetup(
     using zkconsentT       = zkconsent_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
     using zkconfconsentT   = zkconfconsent_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
     using zkconfterminateT = zkconfterminate_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
+    using zkterminatesimpT = zkterminate_simp_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
+    using zkmintsimpT      = zkmint_simp_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
+    using zkconsentsimpT   = zkconsent_simp_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
 
     switch (type)
     {
@@ -98,6 +101,15 @@ void TrustedSetup(
         break;
     case ZK_CONFTERM:
         ZKPSetup<zkconfterminateT, SnarkT, ZKStreamT>(keypair_file, pk_bin_file, vk_bin_file, vk_json_file, r1cs_json_file);
+        break;
+    case ZK_SIMP_TERMINATE:
+        ZKPSetup<zkterminatesimpT, SnarkT, ZKStreamT>(keypair_file, pk_bin_file, vk_bin_file, vk_json_file, r1cs_json_file);
+        break;
+    case ZK_SIMP_MINT:
+        ZKPSetup<zkmintsimpT, SnarkT, ZKStreamT>(keypair_file, pk_bin_file, vk_bin_file, vk_json_file, r1cs_json_file);
+        break;
+    case ZK_SIMP_CONSENT:
+        ZKPSetup<zkconsentsimpT, SnarkT, ZKStreamT>(keypair_file, pk_bin_file, vk_bin_file, vk_json_file, r1cs_json_file);
         break;
     default:
         std::cerr << "FAILED: invalid ciruict name" << std::endl;
@@ -186,6 +198,18 @@ void GenerateProof(
         ZKProve<zkconfterminate_json<SnarkT>, SnarkT, ZKStreamT>(
             keypair_file, witness_json_file, exproof_json_file, proof_bin_file, primary_bin_file ,witness_bin_file);
         break;
+    case ZK_SIMP_TERMINATE:
+        ZKProve<zkterminate_simp_json<SnarkT>, SnarkT, ZKStreamT>(
+            keypair_file, witness_json_file, exproof_json_file, proof_bin_file, primary_bin_file ,witness_bin_file);
+        break;
+    case ZK_SIMP_MINT:
+        ZKProve<zkmint_simp_json<SnarkT>, SnarkT, ZKStreamT>(
+            keypair_file, witness_json_file, exproof_json_file, proof_bin_file, primary_bin_file ,witness_bin_file);
+        break;
+    case ZK_SIMP_CONSENT:
+        ZKProve<zkconsent_simp_json<SnarkT>, SnarkT, ZKStreamT>(
+            keypair_file, witness_json_file, exproof_json_file, proof_bin_file, primary_bin_file ,witness_bin_file);
+        break;
     default:
         std::cerr << "FAILED: invalid ciruict name" << std::endl;
         break;
@@ -257,6 +281,9 @@ void VerifyProof(
     using zkconsentT       = zkconsent_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
     using zkconfconsentT   = zkconfconsent_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
     using zkconfterminateT = zkconfterminate_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
+    using zkterminatesimpT = zkterminate_simp_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
+    using zkmintsimpT      = zkmint_simp_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
+    using zkconsentsimpT   = zkconsent_simp_wrap<ppT, FieldT, HashT, HashTreeT, SnarkT, ZKC_TreeDepth>;        
 
     switch (type)
     {
@@ -274,6 +301,15 @@ void VerifyProof(
         break;
     case ZK_CONFTERM:
         ZKVerify<zkconfterminateT, SnarkT, ZKStreamT>(keypair_file, proof_bin_file, primary_bin_file);
+        break;
+    case ZK_SIMP_TERMINATE:
+        ZKVerify<zkterminatesimpT, SnarkT, ZKStreamT>(keypair_file, proof_bin_file, primary_bin_file);
+        break;
+    case ZK_SIMP_MINT:
+        ZKVerify<zkmintsimpT, SnarkT, ZKStreamT>(keypair_file, proof_bin_file, primary_bin_file);
+        break;
+    case ZK_SIMP_CONSENT:
+        ZKVerify<zkconsentsimpT, SnarkT, ZKStreamT>(keypair_file, proof_bin_file, primary_bin_file);
         break;
     default:
         std::cerr << "FAILED: invalid ciruict name" << std::endl;

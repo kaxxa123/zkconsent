@@ -6,11 +6,14 @@
 #define SCHEMEFLD_GROTH16   "groth16"
 #define SCHEMEFLD_PGHR13    "pghr13"
 
-#define FILETAG_MINT        "zkmint"
-#define FILETAG_CONSENT     "zkcons"
-#define FILETAG_CONFCONS    "zkconfcons"
-#define FILETAG_TERMINATE   "zkterm"
-#define FILETAG_CONFTERM    "zkconfterm"
+#define FILETAG_MINT            "zkmint"
+#define FILETAG_CONSENT         "zkcons"
+#define FILETAG_TERMINATE       "zkterm"
+#define FILETAG_CONFCONS        "zkconfcons"
+#define FILETAG_CONFTERM        "zkconfterm"
+#define FILETAG_SIMP_MINT       "zksimpmint"
+#define FILETAG_SIMP_CONSENT    "zksimpcons"
+#define FILETAG_SIMP_TERMINATE  "zksimpterm"
 
 #define BASE_KEYPAIR_FILE   "keypair"
 #define BASE_PK_FILE        "pk"
@@ -30,6 +33,9 @@ enum    ZKCIRC {
     ZK_CONSENT,
     ZK_CONFCONS,
     ZK_CONFTERM,
+    ZK_SIMP_TERMINATE,
+    ZK_SIMP_MINT,
+    ZK_SIMP_CONSENT,
     ZK_ERROR
 };
 

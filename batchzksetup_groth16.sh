@@ -18,3 +18,7 @@ echo ">> SNARKs Setup"
 ./snarks/build/zkconsent/zkconsent setup --groth16 --zkconsent        | tee $HOME/zkconsent_logs/groth16/zkcons_setup.log
 ./snarks/build/zkconsent/zkconsent setup --groth16 --zkconfconsent    | tee $HOME/zkconsent_logs/groth16/zkconsconf_setup.log
 ./snarks/build/zkconsent/zkconsent setup --groth16 --zkconfterminate  | tee $HOME/zkconsent_logs/groth16/zktermconf_setup.log
+./snarks/build/zkconsent/zkconsent setup --groth16 --zkterminatesimp  | tee $HOME/zkconsent_logs/groth16/zksimpterm_setup.log
+./snarks/build/zkconsent/zkconsent setup --groth16 --zkmintsimp       | tee $HOME/zkconsent_logs/groth16/zksimpmint_setup.log
+./snarks/build/zkconsent/zkconsent setup --groth16 --zkconsentsimp    | tee $HOME/zkconsent_logs/groth16/zksimpcons_setup.log
+
