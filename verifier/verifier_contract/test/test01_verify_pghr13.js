@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: LGPL-3.0+
+const VERBOSE_LOG = false;
 
 const fs = require('fs');
 const Verifier = artifacts.require("VerifyPGHR13");
@@ -126,6 +127,11 @@ const loadInput = (jsonFile) => {
     return pubInput;
 }
 
+const VerboseLog = (str) => {
+    if (VERBOSE_LOG)
+        console.log(str);
+}
+
 contract('Verifier', function(accounts) 
 {
     const setkeyTest = async (jsonVK) => {
@@ -133,10 +139,10 @@ contract('Verifier', function(accounts)
 
 		verifier = await Verifier.new();
 		
-        console.log("Loading VK...")
+        VerboseLog("Loading VK...")
         let vk = loadVK(jsonVK)
 
-        console.log("Setting VK at verifier...")
+        VerboseLog("Setting VK at verifier...")
 		await verifier.setVerifyingKey(vk.A, vk.B, vk.C, vk.gamma, vk.gamma_beta_1, vk.gamma_beta_2, vk.Z, vk.IC);
 
         let vkSet = await verifier.verifyingKeySet();
@@ -148,17 +154,17 @@ contract('Verifier', function(accounts)
         assert (fs.existsSync(jsonProof), `File not found: ${jsonProof}`);
         assert (fs.existsSync(jsonInputs), `File not found: ${jsonInputs}`);
 
-        console.log("Loading Proof...")
+        VerboseLog("Loading Proof...")
         let pi = loadProof(jsonProof)
 
-        console.log("Loading Public Input...")
+        VerboseLog("Loading Public Input...")
         let pubIn = loadInput(jsonInputs)
 
         let gasEst = await verifier.verifyTx.estimateGas(pi.A_g, pi.A_h, pi.B_g, pi.B_h, pi.C_g, pi.C_h,
                                                             pi.H, pi.K, pubIn);
         console.log(`GAS: verifyTx: ${gasEst}`);
 
-        console.log("Verifing...")
+        VerboseLog("Verifing...")
         let res = await verifier.verifyTx.call(pi.A_g, pi.A_h, pi.B_g, pi.B_h, pi.C_g, pi.C_h,
                                                 pi.H, pi.K, pubIn);
 
@@ -173,13 +179,13 @@ contract('Verifier', function(accounts)
         if (!fs.existsSync(jsonVK) || !fs.existsSync(jsonProof) || !fs.existsSync(jsonInputs))
             return;
 
-        console.log("Loading Proof...")
+        VerboseLog("Loading Proof...")
         let pi = loadProof(jsonProof)
 
-        console.log("Loading Public Input...")
+        VerboseLog("Loading Public Input...")
         let pubIn = loadInput(jsonInputs)
     
-        console.log("Verifiying Incorrect Proof/Input...")
+        VerboseLog("Verifiying Incorrect Proof/Input...")
         let res = await verifier.verifyTx.call(pi.A_g, pi.A_h, pi.B_g, pi.B_h, pi.C_g, pi.C_h,
             pi.H, pi.K, pubIn);
 
