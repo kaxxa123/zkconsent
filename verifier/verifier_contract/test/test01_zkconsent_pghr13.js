@@ -132,7 +132,7 @@ const VerboseLog = (str) => {
         console.log(str);
 }
 
-contract('Verifier', function(accounts) 
+contract('zkConsent PGHR13 Verification', function(accounts) 
 {
     const setkeyTest = async (jsonVK) => {
         assert (fs.existsSync(jsonVK), `File not found: ${jsonVK}`);

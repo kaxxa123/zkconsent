@@ -1,0 +1,37 @@
+Mint:     zeth mix  --vin 10  --out zeth-address.pub,10
+Transfer: zeth mix --in 16c85a9b  --in 23b466bf   --out ../bob.pub,5  --out ../alex.pub,15
+Burn:     zeth mix --in 024a60ef  --vout 3
+
+zeth sync
+zeth ls-notes
+
+python3 ./verifier/groth16_hlp/convertvk.py  \
+    ./zeth_tests/vk/vk_zeth.json  \
+    ./zeth_tests/vk/vk_zeth_params.json
+
+python3 ./verifier/groth16_hlp/convertproof.py \
+    ./zeth_tests/proofs/exproof_burn.json \
+    ./zeth_tests/proofs/exproof_burn_params.json
+
+python3 ./verifier/groth16_hlp/convertproof.py \
+    ./zeth_tests/proofs/exproof_mint.json \
+    ./zeth_tests/proofs/exproof_mint_params.json
+
+python3 ./verifier/groth16_hlp/convertproof.py \
+    ./zeth_tests/proofs/exproof_tx.json \
+    ./zeth_tests/proofs/exproof_tx_params.json
+
+
+python3 ./verifier/groth16_hlp/convertproof.py \
+    ./zeth_tests/proofs/exproof_burn2.json \
+    ./zeth_tests/proofs/exproof_burn2_params.json
+
+python3 ./verifier/groth16_hlp/convertproof.py \
+    ./zeth_tests/proofs/exproof_mint2.json \
+    ./zeth_tests/proofs/exproof_mint2_params.json
+
+python3 ./verifier/groth16_hlp/convertproof.py \
+    ./zeth_tests/proofs/exproof_tx2.json \
+    ./zeth_tests/proofs/exproof_tx2_params.json
+
+    
