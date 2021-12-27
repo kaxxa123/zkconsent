@@ -1,0 +1,18 @@
+{
+  "name": "eth-gas",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node app.js stats --server 'http://127.0.0.1:8545' --filename data/stats.csv --start 10460735 --end 10661251"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bignumber.js": "^9.0.2",
+    "is-valid-path": "^0.1.1",
+    "web3": "^1.6.1",
+    "yargs": "^17.3.1"
+  }
+}
