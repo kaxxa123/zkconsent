@@ -1,58 +1,67 @@
-The Web3 API is changing.
-This is a dump of what it returns on 27th Dec 2021
+The computation of gas fees changed with the London Fork (August 2021)
+Which included EIP-1559:
+https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1559.md
+https://medium.com/@eric.conner/fixing-the-ethereum-fee-market-eip-1559-9109f1c1814b
+
+
+Transaction Dump and a Transaction Receipt for
+TXID:  0xda49ec7415c24495097470294de164088e0b6aaf3d15ede4778f779d3babfd77   (27th Dec 2021)
+Geth:  Version: 1.10.13-stable
 
 > eth.getTransaction("0xda49ec7415c24495097470294de164088e0b6aaf3d15ede4778f779d3babfd77")
 {
-  accessList: [],
-  blockHash:                "0x07294622d3e15500987e05fd15a29d5510d0d50c289471c9bbab2c550ec2c58d",
-  blockNumber:              13886576,
-  chainId:                  "0x1",
-  from:                     "0x918d7703600159c3623e1d072b22910e756a3d4e",
+    accessList: [],
+    blockHash:                "0x07294622d3e15500987e05fd15a29d5510d0d50c289471c9bbab2c550ec2c58d",
+    blockNumber:              13886576,
+    chainId:                  "0x1",
 
-  gas:                      77500,
-  gasPrice:                 48613173097,
-  maxFeePerGas:             48613173097,
-  maxPriorityFeePerGas:     1345764029,
+    from:                     "0x918d7703600159c3623e1d072b22910e756a3d4e",
+    to:                       "0xb2dbf14d0b47ed3ba02bdb7c954e05a72deb7544",
+    value:                    0             //Value transferred in wei
 
+    gas:                      77500,        //Gas provided by the sender.
+    gasPrice:                 48613173097,  //Gas price provided by the sender in wei.
+    maxFeePerGas:             48613173097,
+    maxPriorityFeePerGas:     1345764029,
 
-  hash:                     "0xda49ec7415c24495097470294de164088e0b6aaf3d15ede4778f779d3babfd77",
-  input:                    "0xa9059cbb0000000000000000000000008287ae7b97de14609db95ceb655de3cee54792d500000000000000000000000000000000000000000000003a38be7db441880000",
-  nonce:                    612,
-  r:                        "0xfe5cd5087f4f513ff86d8502f5261479f9100085c7062753ec4e9e3c318e6a11",
-  s:                        "0x6d472207115f2ed3067c3bfe68a3cf285cb1ae48a8a0328c43b0efa569a83572",
-  to:                       "0xb2dbf14d0b47ed3ba02bdb7c954e05a72deb7544",
-  transactionIndex:         277,
-  type:                     "0x2",
-  v:                        "0x0",
-  value:                    0
+    hash:                     "0xda49ec7415c24495097470294de164088e0b6aaf3d15ede4778f779d3babfd77",
+    input:                    "0xa9059cbb0000000000000000000000008287ae7b97de14609db95ceb655de3cee54792d500000000000000000000000000000000000000000000003a38be7db441880000",
+    nonce:                    612,
+    r:                        "0xfe5cd5087f4f513ff86d8502f5261479f9100085c7062753ec4e9e3c318e6a11",
+    s:                        "0x6d472207115f2ed3067c3bfe68a3cf285cb1ae48a8a0328c43b0efa569a83572",
+    transactionIndex:         277,
+    type:                     "0x2",
+    v:                        "0x0",
 }
+
 
 > eth.getTransactionReceipt("0xda49ec7415c24495097470294de164088e0b6aaf3d15ede4778f779d3babfd77")
 {
-  blockHash:                "0x07294622d3e15500987e05fd15a29d5510d0d50c289471c9bbab2c550ec2c58d",
-  blockNumber:              13886576,
-  contractAddress:          null,
+    blockHash:                "0x07294622d3e15500987e05fd15a29d5510d0d50c289471c9bbab2c550ec2c58d",
+    blockNumber:              13886576,
+    contractAddress:          null,
 
-  cumulativeGasUsed:        20069190,
-  effectiveGasPrice:        48613173097,
-  gasUsed:                  51667,
+    from:                     "0x918d7703600159c3623e1d072b22910e756a3d4e",
+    to:                       "0xb2dbf14d0b47ed3ba02bdb7c954e05a72deb7544",
 
-  from:                     "0x918d7703600159c3623e1d072b22910e756a3d4e",
-  logs: [{
-      address:      "0xb2dbf14d0b47ed3ba02bdb7c954e05a72deb7544",
-      blockHash:    "0x07294622d3e15500987e05fd15a29d5510d0d50c289471c9bbab2c550ec2c58d",
-      blockNumber:  13886576,
-      data:         "0x00000000000000000000000000000000000000000000003a38be7db441880000",
-      logIndex:     387,
-      removed:      false,
-      topics:       ["0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef", "0x000000000000000000000000918d7703600159c3623e1d072b22910e756a3d4e", "0x0000000000000000000000008287ae7b97de14609db95ceb655de3cee54792d5"],
-      transactionHash: "0xda49ec7415c24495097470294de164088e0b6aaf3d15ede4778f779d3babfd77",
-      transactionIndex: 277
-  }],
-  logsBloom:            "0x00000000000000000000000000000000000000000000000000000000000200000000000000000000000000040000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000002000000000000000000001000000010000000000000000000000000000000000000200000000000000000000000000000000000000002000000000000000400000000000020000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000",
-  status:               "0x1",
-  to:                   "0xb2dbf14d0b47ed3ba02bdb7c954e05a72deb7544",
-  transactionHash:      "0xda49ec7415c24495097470294de164088e0b6aaf3d15ede4778f779d3babfd77",
-  transactionIndex:     277,
-  type:                 "0x2"
+    gasUsed:                  51667,        //The amount of gas used by this specific transaction alone
+    cumulativeGasUsed:        20069190,
+    effectiveGasPrice:        48613173097,
+
+    logs: [{
+        address:      "0xb2dbf14d0b47ed3ba02bdb7c954e05a72deb7544",
+        blockHash:    "0x07294622d3e15500987e05fd15a29d5510d0d50c289471c9bbab2c550ec2c58d",
+        blockNumber:  13886576,
+        data:         "0x00000000000000000000000000000000000000000000003a38be7db441880000",
+        logIndex:     387,
+        removed:      false,
+        topics:       ["0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef", "0x000000000000000000000000918d7703600159c3623e1d072b22910e756a3d4e", "0x0000000000000000000000008287ae7b97de14609db95ceb655de3cee54792d5"],
+        transactionHash: "0xda49ec7415c24495097470294de164088e0b6aaf3d15ede4778f779d3babfd77",
+        transactionIndex: 277
+    }],
+    logsBloom:                "0x00000000000000000000000000000000000000000000000000000000000200000000000000000000000000040000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000002000000000000000000001000000010000000000000000000000000000000000000200000000000000000000000000000000000000002000000000000000400000000000020000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000",
+    status:                   "0x1",
+    transactionHash:          "0xda49ec7415c24495097470294de164088e0b6aaf3d15ede4778f779d3babfd77",
+    transactionIndex:         277,
+    type:                     "0x2"
 }

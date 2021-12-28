@@ -2,6 +2,8 @@ const fs = require('fs')
 const Web3 = require('web3');
 const BigNumber = require('bignumber.js');
 
+// node app.js stats --server 'http://127.0.0.1:8545' --filename data/stats.csv --start 13690000 --end 13690100
+
 function report(filename, text, clear) {
     if (filename) {
         if (clear)
@@ -25,9 +27,9 @@ function getBNMedian(bnArray) {
                                         (bnArray[mid-1].plus(bnArray[mid])).dividedToIntegerBy(2);
 }
 
-async function blockStats(web3, accounts, blkNum, filename) {
+async function blockStats(web3, blkNum, filename) {
     
-    let blk = await web3.eth.getBlock(blkNum, {from: accounts[0]});
+    let blk = await web3.eth.getBlock(blkNum);
     let totTrn = blk.transactions.length;
     let gasArray = [];
     let total = BigNumber(0);
@@ -37,7 +39,8 @@ async function blockStats(web3, accounts, blkNum, filename) {
 
     for (cntTrn = 0; cntTrn < totTrn; ++cntTrn) {
         let trn = blk.transactions[cntTrn];
-        let price = BigNumber(trn.gasPrice);
+        let rcpt = await web3.eth.getTransactionReceipt(trn);        
+        let price = BigNumber(rcpt.effectiveGasPrice);
 
         gasArray.push(price);
         total = total.plus(price);
@@ -55,12 +58,11 @@ async function blockStats(web3, accounts, blkNum, filename) {
 
 async function blockRangeStats(httpServer, filename, start, end) {
     let web3 = new Web3(new Web3.providers.HttpProvider(httpServer));
-    let accounts = await web3.eth.getAccounts();
 
     report(filename, "Block, Total_Trns, Mean_GasPrice, Median_GasPrice\n", true);
 
     for (cntBlk = start; cntBlk <= end; ++cntBlk) {
-        await blockStats(web3, accounts, cntBlk, filename);
+        await blockStats(web3, cntBlk, filename);
     }
 }
 

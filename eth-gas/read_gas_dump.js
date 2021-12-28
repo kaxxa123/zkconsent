@@ -1,5 +1,8 @@
 const fs = require('fs')
 const Web3 = require('web3');
+const BigNumber = require('bignumber.js');
+
+// node app.js  dump --server 'http://127.0.0.1:8545' --filename data/stats.csv --start 13690000 --end 13690100
 
 function report(filename, text, clear) {
     if (filename) {
@@ -22,12 +25,9 @@ async function blockDump(web3, blkNum, filename) {
     for (cntTrn = 0; cntTrn < totTrn; ++cntTrn) {
         let trn = blk.transactions[cntTrn];
         let rcpt = await web3.eth.getTransactionReceipt(trn);
-        
-        if (cntTrn == 0)
-            console.log(rcpt)
+        let price = BigNumber(rcpt.effectiveGasPrice);       
 
-        buffer += `${blkNum}, \"${trn}\", ${rcpt.gasUsed}, ${trn.gasPrice}, ${trn.value}\n`;
-        // buffer += `${blkNum}, \"${trn.hash}\", \"${trn.from}\", \"${trn.to}\", ${rcpt.gasUsed}, ${trn.gasPrice}, ${trn.value}\n`;
+        buffer +=    `${blkNum}, \"${trn}\", ${rcpt.type}, ${rcpt.gasUsed}, ${price.toString()}, \"${rcpt.from}\", \"${rcpt.to}\"\n`;
     }
 
     report(filename, buffer);
@@ -37,7 +37,7 @@ async function blockRangeDump(httpServer, filename, start, end) {
 
     let web3 = new Web3(new Web3.providers.HttpProvider(httpServer));
 
-    report(filename, "Block, Transaction, From, To, GasUsed, GasPrice, Value\n", true);
+    report(filename, "Block, Transaction, Type, From, To, GasUsed, GasPrice\n", true);
 
     for (cntBlk = start; cntBlk <= end; ++cntBlk) {
         await blockDump(web3, cntBlk, filename);
