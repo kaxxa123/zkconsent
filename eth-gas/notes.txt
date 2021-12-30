@@ -1,29 +1,98 @@
 The computation of gas fees changed with the London Fork (August 2021)
-Which included EIP-1559:
-https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1559.md
-https://medium.com/@eric.conner/fixing-the-ethereum-fee-market-eip-1559-9109f1c1814b
+Which included EIP-1559
 
+Transaction Types:
+https://eips.ethereum.org/EIPS/eip-2718
+
+Transaction Type 0 
+    Old Transaction Format
+    rlp([nonce, gasPrice, gasLimit, to, value, data, v, r, s])
+
+Transaction Type 1 - EIP-2930
+    0x01 || rlp([chainId, nonce, gasPrice, gasLimit, to, value, data, accessList, signatureYParity, signatureR, signatureS])
+    https://eips.ethereum.org/EIPS/eip-2930
+
+Transaction Type 2 - EIP-1559
+    0x02 || rlp([chain_id, nonce, max_priority_fee_per_gas, max_fee_per_gas, gas_limit, destination, amount, data, access_list, signature_y_parity, signature_r, signature_s])
+    https://eips.ethereum.org/EIPS/eip-1559
+    https://ethereum.org/en/developers/docs/gas
+
+
+=============================================================================
+
+13527859 - Nov-01-2021 12:00:07 AM +UTC
+13717847 - Dec-01-2021 12:00:45 AM +UTC
+
+node app.js stats --server 'http://127.0.0.1:8545' --filename data/stats1.csv --start 13527859 --end 13591188
+node app.js stats --server 'http://127.0.0.1:8545' --filename data/stats2.csv --start 13591189 --end 13654517
+node app.js stats --server 'http://127.0.0.1:8545' --filename data/stats3.csv --start 13654518 --end 13717847
+
+node app.js dump  --server 'http://127.0.0.1:8545' --filename data/13527886.csv --start 13527886 --end 13527886
+
+node app.js base --server 'http://127.0.0.1:8545' --filename data/basestats.csv --start 13527859 --end 13717847
+=============================================================================
+
+Ethereum /EUR Price Historical
+https://coinmarketcap.com/currencies/ethereum/historical-data/
+
+=============================================================================
 
 Transaction Dump and a Transaction Receipt for
+Block: 13886576
 TXID:  0xda49ec7415c24495097470294de164088e0b6aaf3d15ede4778f779d3babfd77   (27th Dec 2021)
 Geth:  Version: 1.10.13-stable
 
+> eth.getTransaction(13886576)
+{
+    baseFeePerGas:  48411929729,
+    gasLimit:       29999972,
+    gasUsed:        20522282,
+
+    difficulty:     '11815594033885567',
+    extraData:      '0x617369612d65617374322d37',
+    hash:           '0x07294622d3e15500987e05fd15a29d5510d0d50c289471c9bbab2c550ec2c58d',
+    logsBloom:      '0x04b49f6b430b808391ab1277b91b5647789d721ed8d84d1bfe813a76e41efa4b773fffab146f881be6745bc7584fcd8f1b259cc34832bfedb759eeca343ae9048f4c0a47de2edd7ffda25c2bebf72fb689627f475df1d156774a3f61d3d1b1e47aa0459d8ea6c565d03c95c0de583dfcf0185fdcdb173e7a33beddd9c0ec733048bd8d7c9b6a3335954f0b6a19a73e36cc2e5fcd13a51c5aa62700f69b7fadf4e7acf7ca5fe1bea436f8f794d99d65fef924b258b7ab2c924bf3dcd638ddcdedd71b8323c8092a50e7928c2a12fddb348a69463ad5ea1c188a02a1cbfa7ba62c90bbad7f562805d8ff8cd73221965da6b6ad95ecf6d0a9f7367b4ddfd1f1de55',
+    miner:          '0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8',
+    mixHash:        '0x4c814072f117250e695506b9adeb175732decf1972e902473462fa4c7985c0a6',
+    nonce:          '0x98c1ef1c1590e46a',
+    number:         13886576,
+    parentHash:     '0xbbbc1f9b8d1e89136281a3360577e8411e000c81eb0f975026cd6bd30f434b43',
+    receiptsRoot:   '0x95f42ad9ea1b993351cee1a2979bb97bd090bd2b5096bf47d578a7fb11bf4082',
+    sha3Uncles:     '0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347',
+    size:           105510,
+    stateRoot:      '0xe178befa944810af16dce1975d8bc37b2b0e4ed58bea8e24c9598d531ac30fd5',
+    timestamp:      1640598475,
+    totalDifficulty: '37529341266543745152545',
+    transactions: [
+        '0xc0025e9ee41e57259a4815f2ac93c6ed86ae93fdb15dc047f6e242e170d36cb4',
+        '0x6607166aed837c9f0260de213828c63a58c8b8dbfdb9df1d676937a7d1a79637',
+        '0x9e4ec61a3de470628b1079915d858c2340e974ca63c1fe7bcbb397c51effee50',
+        '0xb0cf755abe4838d35d11cc806a87ecddb5d735fc09086e77f2a669574ebfb57a',
+        '0x8cf78d4fbbad7f4c214767c1f3b3a7edcefd9a51548dda5205c698c8e995527f',
+        '0xfb75515514ade1bef60881d52f70c11e3194b302761a9ff3e4cc264346f25387',
+        '0x69689ee245fe44ed636a1eb959e5aa7eb1b0f35dbda792cf43a802a7b4afe0f8',
+        ... 
+    ],
+    transactionsRoot: '0x27dd641af0dfd1314c3aac56f2b51911f988a62b61910867c2f2bebffbd184bd',
+    uncles: []
+}
+
 > eth.getTransaction("0xda49ec7415c24495097470294de164088e0b6aaf3d15ede4778f779d3babfd77")
 {
-    accessList: [],
-    blockHash:                "0x07294622d3e15500987e05fd15a29d5510d0d50c289471c9bbab2c550ec2c58d",
-    blockNumber:              13886576,
-    chainId:                  "0x1",
-
-    from:                     "0x918d7703600159c3623e1d072b22910e756a3d4e",
-    to:                       "0xb2dbf14d0b47ed3ba02bdb7c954e05a72deb7544",
-    value:                    0             //Value transferred in wei
 
     gas:                      77500,        //Gas provided by the sender.
     gasPrice:                 48613173097,  //Gas price provided by the sender in wei.
     maxFeePerGas:             48613173097,
     maxPriorityFeePerGas:     1345764029,
 
+    blockNumber:              13886576,
+    blockHash:                "0x07294622d3e15500987e05fd15a29d5510d0d50c289471c9bbab2c550ec2c58d",
+    from:                     "0x918d7703600159c3623e1d072b22910e756a3d4e",
+    to:                       "0xb2dbf14d0b47ed3ba02bdb7c954e05a72deb7544",
+    value:                    0,
+
+    accessList:               [],
+    chainId:                  "0x1",
     hash:                     "0xda49ec7415c24495097470294de164088e0b6aaf3d15ede4778f779d3babfd77",
     input:                    "0xa9059cbb0000000000000000000000008287ae7b97de14609db95ceb655de3cee54792d500000000000000000000000000000000000000000000003a38be7db441880000",
     nonce:                    612,
@@ -37,17 +106,16 @@ Geth:  Version: 1.10.13-stable
 
 > eth.getTransactionReceipt("0xda49ec7415c24495097470294de164088e0b6aaf3d15ede4778f779d3babfd77")
 {
-    blockHash:                "0x07294622d3e15500987e05fd15a29d5510d0d50c289471c9bbab2c550ec2c58d",
-    blockNumber:              13886576,
-    contractAddress:          null,
-
-    from:                     "0x918d7703600159c3623e1d072b22910e756a3d4e",
-    to:                       "0xb2dbf14d0b47ed3ba02bdb7c954e05a72deb7544",
-
     gasUsed:                  51667,        //The amount of gas used by this specific transaction alone
     cumulativeGasUsed:        20069190,
     effectiveGasPrice:        48613173097,
 
+    blockNumber:              13886576,
+    blockHash:                "0x07294622d3e15500987e05fd15a29d5510d0d50c289471c9bbab2c550ec2c58d",
+    from:                     "0x918d7703600159c3623e1d072b22910e756a3d4e",
+    to:                       "0xb2dbf14d0b47ed3ba02bdb7c954e05a72deb7544",
+
+    contractAddress:          null,
     logs: [{
         address:      "0xb2dbf14d0b47ed3ba02bdb7c954e05a72deb7544",
         blockHash:    "0x07294622d3e15500987e05fd15a29d5510d0d50c289471c9bbab2c550ec2c58d",

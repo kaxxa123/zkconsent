@@ -27,7 +27,7 @@ async function blockDump(web3, blkNum, filename) {
         let rcpt = await web3.eth.getTransactionReceipt(trn);
         let price = BigNumber(rcpt.effectiveGasPrice);       
 
-        buffer +=    `${blkNum}, \"${trn}\", ${rcpt.type}, ${rcpt.gasUsed}, ${price.toString()}, \"${rcpt.from}\", \"${rcpt.to}\"\n`;
+        buffer += `${blkNum}, \"${trn}\", ${rcpt.type}, ${rcpt.gasUsed}, ${price.toString()}, \"${rcpt.from}\", \"${rcpt.to}\"\n`;
     }
 
     report(filename, buffer);
@@ -36,8 +36,7 @@ async function blockDump(web3, blkNum, filename) {
 async function blockRangeDump(httpServer, filename, start, end) {
 
     let web3 = new Web3(new Web3.providers.HttpProvider(httpServer));
-
-    report(filename, "Block, Transaction, Type, From, To, GasUsed, GasPrice\n", true);
+    report(filename, "Block, Transaction, Type, GasUsed, GasPrice, From, To\n", true);
 
     for (cntBlk = start; cntBlk <= end; ++cntBlk) {
         await blockDump(web3, cntBlk, filename);
