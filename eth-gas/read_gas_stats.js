@@ -2,6 +2,8 @@ const fs = require('fs')
 const Web3 = require('web3');
 const BigNumber = require('bignumber.js');
 
+// node app.js stats --server 'http://127.0.0.1:8545' --filename data/stats.csv --start 13690000 --end 13690100
+
 function report(filename, text, clear) {
     if (filename) {
         if (clear)
@@ -25,19 +27,27 @@ function getBNMedian(bnArray) {
                                         (bnArray[mid-1].plus(bnArray[mid])).dividedToIntegerBy(2);
 }
 
-async function blockStats(web3, accounts, blkNum, filename) {
+async function blockStats(web3, blkNum, filename) {
     
-    let blk = await web3.eth.getBlock(blkNum, {from: accounts[0]});
+    let blk = await web3.eth.getBlock(blkNum);
     let totTrn = blk.transactions.length;
     let gasArray = [];
     let total = BigNumber(0);
+    let type0 = 0;
+    let type1 = 0;
+    let type2 = 0;
 
     if (filename)
         console.log(`Processing Block# ${blkNum} having ${totTrn} transactions`);
 
     for (cntTrn = 0; cntTrn < totTrn; ++cntTrn) {
         let trn = blk.transactions[cntTrn];
-        let price = BigNumber(trn.gasPrice);
+        let rcpt = await web3.eth.getTransactionReceipt(trn);        
+        let price = BigNumber(rcpt.effectiveGasPrice);
+
+        if          (rcpt.type == "0x2") type2 += 1;
+        else if     (rcpt.type == "0x0") type0 += 1;
+        else if     (rcpt.type == "0x1") type1 += 1;        //Least common
 
         gasArray.push(price);
         total = total.plus(price);
@@ -49,18 +59,19 @@ async function blockStats(web3, accounts, blkNum, filename) {
         const mean = total.dividedToIntegerBy(totTrn);
 
         //Log data
-        report(filename, `${blkNum}, ${totTrn}, ${mean.toString()}, ${median.toString()}\n`)
+        report(filename, `${blkNum}, ${totTrn}, ${mean.toString()}, ${median.toString()}, ` +
+                         `${blk.baseFeePerGas}, ${blk.gasLimit}, ${blk.gasUsed}, ` + 
+                         `${type0}, ${type1}, ${type2}, ${(totTrn-type0-type1-type2)}\n`);
     }
 }
 
 async function blockRangeStats(httpServer, filename, start, end) {
     let web3 = new Web3(new Web3.providers.HttpProvider(httpServer));
-    let accounts = await web3.eth.getAccounts();
 
-    report(filename, "Block, Total_Trns, Mean_GasPrice, Median_GasPrice\n", true);
+    report(filename, "Block, Total_Trns, Mean_GasPrice, Median_GasPrice, BaseGasFee, BlockGasLimit, BlockGasUsed, Type0, Type1, Type2, TypeOther\n", true);
 
     for (cntBlk = start; cntBlk <= end; ++cntBlk) {
-        await blockStats(web3, accounts, cntBlk, filename);
+        await blockStats(web3, cntBlk, filename);
     }
 }
 

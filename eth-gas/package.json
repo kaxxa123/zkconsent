@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "node app.js stats --server 'http://127.0.0.1:8545' --filename data/stats.csv --start 10460735 --end 10661251"
+    "test": "node app.js stats --server 'http://127.0.0.1:8545' --filename data/stats.csv --start 13527859 --end 13717847"
   },
   "keywords": [],
   "author": "",
