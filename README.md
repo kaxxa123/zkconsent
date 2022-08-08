@@ -83,7 +83,7 @@ This section describes the repository structure.
 
 | Folder | Description                                          |
 |--------|------------------------------------------------------|
-|./eth-gas | A node.js project for retrieving Ethereum Gas fees. This command-line tool takes as input a block range and returns the gas fees paid for each transaction. |
+|./eth-gas | A node.js project for retrieving Ethereum Gas fees. This command-line tool takes as input a block range and returns the base gas fees for each block. |
 |./samples | A set of json files containing sample ZKP witnesses that may be used for test generation of proofs. |
 |./tests/blake2s | A node.js project for computing commitments using an independent implementation of Blake2s. |
 |./zeth_tests | Raw data obtained from tests ran against Zeth. |
@@ -93,7 +93,7 @@ This section describes the repository structure.
 
 <!-- | Folder | Description                                          |
 |--------|------------------------------------------------------|
-|./eth-gas | A node.js project for retrieving Ethereum Gas fees. This command-line tool takes as input a block range and returns the gas fees paid for each transaction. |
+|./eth-gas | A node.js project for retrieving Ethereum Gas fees. This command-line tool takes as input a block range and returns the base gas fees for each block. |
 |./samples | A set of json files containing sample ZKP witnesses that may be used for test generation of proofs. |
 |./snarks  | Root folder containing the implementation of libsnark based ZKPs.  |
 |./snarks/depends  | Git module dependencies for the zkconsenthlp library.  |
