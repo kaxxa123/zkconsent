@@ -2,11 +2,12 @@
 
 This repository includes the code developed for the dissertation titled:
 
-__Privacy-Preserving Solutions for Decentralized Permissionless Blockchains__
+__[Privacy-Preserving Solutions for Decentralized Permissionless Blockchains](https://www.um.edu.mt/library/oar/handle/123456789/111760)__
 
-A dissertation submitted in partial fulfilment of the requirements for the degree of M.Sc. in Blockchain and DLTs, University of Malta.
+A dissertation submitted in partial fulfilment of the requirements for an M.Sc. in Blockchain and DLTs, University of Malta.
 
-This code started off from a [fork of the Zeth project](https://github.com/clearmatics/zeth/tree/8247fc3df9d0025000196293e121330440178ec0) from Clearmatics. Based on this the ZKPs for the consent system presented in this dissertation were developed.
+
+This code started off from a [fork of the Zeth project](https://github.com/clearmatics/zeth/tree/8247fc3df9d0025000196293e121330440178ec0) from Clearmatics. Based on this, five ZKPs were developed for a consent solution for the biobanking sector. Check the [dissertation writeup](https://www.um.edu.mt/library/oar/handle/123456789/111760) for all design details.
 
 <br />
 
